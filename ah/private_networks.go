@@ -38,6 +38,7 @@ type PrivateNetworksAPI interface {
 	List(context.Context, *ListOptions) ([]PrivateNetwork, error)
 	Get(context.Context, string) (*PrivateNetworkInfo, error)
 	Create(context.Context, *PrivateNetworkCreateRequest) (*PrivateNetworkInfo, error)
+	Update(context.Context, string, *PrivateNetworkUpdateRequest) (*PrivateNetworkInfo, error)
 	Delete(context.Context, string) error
 }
 
@@ -67,7 +68,7 @@ type privateNetworkInfoRoot struct {
 	PrivateNetwork *PrivateNetworkInfo `json:"private_network,omitempty"`
 }
 
-// Get private network
+// Get private network info
 func (pns *PrivateNetworksService) Get(ctx context.Context, privateNetworkID string) (*PrivateNetworkInfo, error) {
 	path := fmt.Sprintf("api/v1/private_networks/%s", privateNetworkID)
 	req, err := pns.client.newRequest(http.MethodGet, path, nil)
@@ -115,7 +116,29 @@ func (pns *PrivateNetworksService) Create(ctx context.Context, createRequest *Pr
 	}
 
 	return pnInfo.PrivateNetwork, nil
+}
 
+// PrivateNetworkUpdateRequest represents a request to update a private network.
+type PrivateNetworkUpdateRequest struct {
+	Name string `json:"name,omitempty"`
+	CIDR string `json:"cidr,omitempty"`
+}
+
+// Update private network
+func (pns *PrivateNetworksService) Update(ctx context.Context, privateNetworkID string, request *PrivateNetworkUpdateRequest) (*PrivateNetworkInfo, error) {
+	path := fmt.Sprintf("api/v1/private_networks/%s", privateNetworkID)
+	req, err := pns.client.newRequest(http.MethodPut, path, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var pnInfo privateNetworkInfoRoot
+	if _, err := pns.client.Do(ctx, req, &pnInfo); err != nil {
+		return nil, err
+	}
+
+	return pnInfo.PrivateNetwork, nil
 }
 
 // Delete private network

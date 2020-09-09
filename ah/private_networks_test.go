@@ -125,6 +125,40 @@ func TestPrivateNetworks_Get(t *testing.T) {
 	}
 }
 
+func TestPrivateNetworks_Update(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: privateNetworkGetResponse}
+	server := newFakeServer("/api/v1/private_networks/1bb35cbf-4b0f-467f-aa12-343e896e2d22", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+
+	var expectedResult privateNetworkInfoRoot
+	json.Unmarshal([]byte(privateNetworkGetResponse), &expectedResult)
+
+	request := &PrivateNetworkUpdateRequest{
+		Name: "aaaa",
+		CIDR: "10.0.3.6/24",
+	}
+
+	privateNetwork, err := api.PrivateNetworks.Update(ctx, "1bb35cbf-4b0f-467f-aa12-343e896e2d22", request)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if privateNetwork == nil || privateNetwork.ID != "1bb35cbf-4b0f-467f-aa12-343e896e2d22" {
+		t.Errorf("Invalid response: %v", privateNetwork)
+	}
+
+	if !reflect.DeepEqual(expectedResult.PrivateNetwork, privateNetwork) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, privateNetwork)
+	}
+}
+
 func TestPrivateNetworks_Create(t *testing.T) {
 	request := &PrivateNetworkCreateRequest{
 		Name: "test-name",
