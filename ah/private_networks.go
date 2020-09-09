@@ -38,6 +38,7 @@ type PrivateNetworksAPI interface {
 	List(context.Context, *ListOptions) ([]PrivateNetwork, error)
 	Get(context.Context, string) (*PrivateNetworkInfo, error)
 	Create(context.Context, *PrivateNetworkCreateRequest) (*PrivateNetworkInfo, error)
+	Delete(context.Context, string) error
 }
 
 // PrivateNetworksService implements PrivateNetworksAPI interface.
@@ -115,4 +116,18 @@ func (pns *PrivateNetworksService) Create(ctx context.Context, createRequest *Pr
 
 	return pnInfo.PrivateNetwork, nil
 
+}
+
+// Delete private network
+func (pns *PrivateNetworksService) Delete(ctx context.Context, privateNetworkID string) error {
+	path := fmt.Sprintf("api/v1/private_networks/%s", privateNetworkID)
+	req, err := pns.client.newRequest(http.MethodDelete, path, nil)
+	if err != nil {
+		return err
+	}
+	_, err = pns.client.Do(ctx, req, nil)
+	if err != nil {
+		return err
+	}
+	return nil
 }

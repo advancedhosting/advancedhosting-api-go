@@ -162,3 +162,21 @@ func TestPrivateNetworks_Create(t *testing.T) {
 	}
 
 }
+
+func TestPrivateNetworks_Delete(t *testing.T) {
+	fakeResponse := &fakeServerResponse{}
+	server := newFakeServer("/api/v1/private_networks/test_id", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	err := api.PrivateNetworks.Delete(ctx, "test_id")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
