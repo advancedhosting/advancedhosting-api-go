@@ -129,41 +129,38 @@ type InstanceSSHKey struct {
 
 // Instance object
 type Instance struct {
-	ID                         string              `json:"id,omitempty"`
-	CreatedAt                  string              `json:"created_at,omitempty"`
-	UpdatedAt                  string              `json:"updated_at,omitempty"`
-	Number                     string              `json:"number,omitempty"`
-	Name                       string              `json:"name,omitempty"`
-	State                      string              `json:"state,omitempty"`
-	Disk                       int                 `json:"disk,omitempty"`
-	StateDescription           string              `json:"state_description,omitempty"`
-	Locked                     bool                `json:"locked,omitempty"`
-	UseSSHPassword             bool                `json:"use_ssh_password,omitempty"`
-	SSHKeys                    []InstanceSSHKey    `json:"ssh_keys,omitempty"`
-	ProductID                  string              `json:"product_id,omitempty"`
-	Vcpu                       int                 `json:"vcpu,omitempty"`
-	RAM                        int                 `json:"ram,omitempty"`
-	Traffic                    int                 `json:"traffic,omitempty"`
-	Tags                       []string            `json:"tags,omitempty"`
-	PrimaryInstanceIPAddressID string              `json:"primary_instance_ip_address_id,omitempty"`
-	IPScheme                   string              `json:"ip_scheme,omitempty"`
-	Region                     *InstanceRegion     `json:"region,omitempty"`
-	Datacenter                 *InstanceDatacenter `json:"datacenter,omitempty"`
-	Features                   []string            `json:"features,omitempty"`
-	Networks                   *InstanceNetworks   `json:"networks,omitempty"`
-	CurrentAction              *Action             `json:"current_action,omitempty"`
-	LastAction                 *Action             `json:"last_action,omitempty"`
-	Reason                     string              `json:"reason,omitempty"`
-	SnapshotBySchedule         bool                `json:"snapshot_by_schedule,omitempty"`
-	SnapshotPeriod             string              `json:"snapshot_period,omitempty"`
-	MaxVolumesNumber           int                 `json:"max_volumes_number,omitempty"`
-	PrivateNetworks            []struct {
-		InstancePrivateNetwork
-		PrivateNetwork *PrivateNetwork `json:"private_network,omitempty"`
-	} `json:"instance_private_networks,omitempty"`
-	IPAddresses []InstanceIPAddress `json:"instance_ip_addresses,omitempty"`
-	Image       *InstanceImage      `json:"image,omitempty"`
-	Volumes     []InstanceVolume    `json:"volumes,omitempty"`
+	ID                         string                       `json:"id,omitempty"`
+	CreatedAt                  string                       `json:"created_at,omitempty"`
+	UpdatedAt                  string                       `json:"updated_at,omitempty"`
+	Number                     string                       `json:"number,omitempty"`
+	Name                       string                       `json:"name,omitempty"`
+	State                      string                       `json:"state,omitempty"`
+	Disk                       int                          `json:"disk,omitempty"`
+	StateDescription           string                       `json:"state_description,omitempty"`
+	Locked                     bool                         `json:"locked,omitempty"`
+	UseSSHPassword             bool                         `json:"use_ssh_password,omitempty"`
+	SSHKeys                    []InstanceSSHKey             `json:"ssh_keys,omitempty"`
+	ProductID                  string                       `json:"product_id,omitempty"`
+	Vcpu                       int                          `json:"vcpu,omitempty"`
+	RAM                        int                          `json:"ram,omitempty"`
+	Traffic                    int                          `json:"traffic,omitempty"`
+	Tags                       []string                     `json:"tags,omitempty"`
+	PrimaryInstanceIPAddressID string                       `json:"primary_instance_ip_address_id,omitempty"`
+	IPScheme                   string                       `json:"ip_scheme,omitempty"`
+	Region                     *InstanceRegion              `json:"region,omitempty"`
+	Datacenter                 *InstanceDatacenter          `json:"datacenter,omitempty"`
+	Features                   []string                     `json:"features,omitempty"`
+	Networks                   *InstanceNetworks            `json:"networks,omitempty"`
+	CurrentAction              *Action                      `json:"current_action,omitempty"`
+	LastAction                 *Action                      `json:"last_action,omitempty"`
+	Reason                     string                       `json:"reason,omitempty"`
+	SnapshotBySchedule         bool                         `json:"snapshot_by_schedule,omitempty"`
+	SnapshotPeriod             string                       `json:"snapshot_period,omitempty"`
+	MaxVolumesNumber           int                          `json:"max_volumes_number,omitempty"`
+	PrivateNetworks            []InstancePrivateNetworkInfo `json:"instance_private_networks,omitempty"`
+	IPAddresses                []InstanceIPAddress          `json:"instance_ip_addresses,omitempty"`
+	Image                      *InstanceImage               `json:"image,omitempty"`
+	Volumes                    []InstanceVolume             `json:"volumes,omitempty"`
 }
 
 // PrimaryIPAddr returns primary IP object of the instance

@@ -33,6 +33,14 @@ type PrivateNetwork struct {
 	InstancesCount int    `json:"instances_count,omitempty"`
 }
 
+// PrivateNetworkInfo object
+type PrivateNetworkInfo struct {
+	PrivateNetwork
+	InstancePrivateNetworks []struct {
+		InstancePrivateNetworkInfo
+	} `json:"instance_private_networks,omitempty"`
+}
+
 // PrivateNetworksAPI is an interface for private networks.
 type PrivateNetworksAPI interface {
 	List(context.Context, *ListOptions) ([]PrivateNetwork, error)
