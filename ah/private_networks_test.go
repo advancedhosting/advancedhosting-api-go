@@ -124,3 +124,41 @@ func TestPrivateNetworks_Get(t *testing.T) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, privateNetwork)
 	}
 }
+
+func TestPrivateNetworks_Create(t *testing.T) {
+	request := &PrivateNetworkCreateRequest{
+		Name: "test-name",
+		CIDR: "10.0.0.0/24",
+		InstancePrivateNetworkAttributes: []InstancePrivateNetworkAttributes{
+			{
+				InstanceID: "test-id",
+			},
+		},
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: privateNetworkGetResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/private_networks", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	privateNetwork, err := api.PrivateNetworks.Create(ctx, request)
+
+	if privateNetwork == nil {
+		t.Errorf("Empty response")
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
+}

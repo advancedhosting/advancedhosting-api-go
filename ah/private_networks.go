@@ -37,6 +37,7 @@ type PrivateNetwork struct {
 type PrivateNetworksAPI interface {
 	List(context.Context, *ListOptions) ([]PrivateNetwork, error)
 	Get(context.Context, string) (*PrivateNetworkInfo, error)
+	Create(context.Context, *PrivateNetworkCreateRequest) (*PrivateNetworkInfo, error)
 }
 
 // PrivateNetworksService implements PrivateNetworksAPI interface.
@@ -85,8 +86,8 @@ func (pns *PrivateNetworksService) Get(ctx context.Context, privateNetworkID str
 
 // InstancePrivateNetworkAttributes object
 type InstancePrivateNetworkAttributes struct {
-	InstanceID string `json:"instance_id"`
-	IP         string `json:"ip"`
+	InstanceID string `json:"instance_id,omitempty"`
+	IP         string `json:"ip,omitempty"`
 }
 
 // PrivateNetworkCreateRequest object
@@ -97,21 +98,21 @@ type PrivateNetworkCreateRequest struct {
 }
 
 // Create private network
-// func (pns *PrivateNetworksService) Create(ctx context.Context, createRequest *PrivateNetworkCreateRequest) (*IPAddress, error) {
+func (pns *PrivateNetworksService) Create(ctx context.Context, createRequest *PrivateNetworkCreateRequest) (*PrivateNetworkInfo, error) {
 
-// 	type request struct {
-// 		PrivateNetwork *PrivateNetworkCreateRequest `json:"private_network"`
-// 	}
-// 	req, err := pns.client.newRequest(http.MethodPost, "api/v1/private_networks", &request{createRequest})
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	type request struct {
+		PrivateNetwork *PrivateNetworkCreateRequest `json:"private_network"`
+	}
+	req, err := pns.client.newRequest(http.MethodPost, "api/v1/private_networks", &request{createRequest})
+	if err != nil {
+		return nil, err
+	}
 
-// 	var ipRoot ipAddressRoot
-// 	if _, err := ips.client.Do(ctx, req, &ipRoot); err != nil {
-// 		return nil, err
-// 	}
+	var pnInfo privateNetworkInfoRoot
+	if _, err := pns.client.Do(ctx, req, &pnInfo); err != nil {
+		return nil, err
+	}
 
-// 	return ipRoot.IPAddress, nil
+	return pnInfo.PrivateNetwork, nil
 
-// }
+}
