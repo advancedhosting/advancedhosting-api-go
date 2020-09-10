@@ -104,18 +104,6 @@ type InstanceVolume struct {
 	AttachedAt string `json:"attached_at,omitempty"`
 }
 
-// InstancePrivateNetwork object
-type InstancePrivateNetwork struct {
-	ID             string `json:"id,omitempty"`
-	IP             string `json:"ip,omitempty"`
-	MacAddress     string `json:"mac_address,omitempty"`
-	State          string `json:"state,omitempty"`
-	ConnectedAt    string `json:"connected_at,omitempty"`
-	PrivateNetwork struct {
-		ID string `json:"id,omitempty"`
-	} `json:"private_network,omitempty"`
-}
-
 // InstanceImage object
 type InstanceImage struct {
 	ID           string `json:"id,omitempty"`

@@ -37,13 +37,15 @@ const defaultAPIURL = "https://api.websa.com"
 
 // APIClient implements communication with AH API
 type APIClient struct {
-	client               *http.Client
-	options              *ClientOptions
-	apiURL               *url.URL
-	token                string
-	Instances            InstancesAPI
-	IPAddresses          IPAddressesAPI
-	IPAddressAssignments IPAddressAssignmentsAPI
+	client                  *http.Client
+	options                 *ClientOptions
+	apiURL                  *url.URL
+	token                   string
+	Instances               InstancesAPI
+	IPAddresses             IPAddressesAPI
+	IPAddressAssignments    IPAddressAssignmentsAPI
+	PrivateNetworks         PrivateNetworksAPI
+	InstancePrivateNetworks InstancePrivateNetworksAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -158,5 +160,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Instances = &InstancesService{client: c}
 	c.IPAddresses = &IPAddressesService{client: c}
 	c.IPAddressAssignments = &IPAddressAssignmentsService{client: c}
+	c.PrivateNetworks = &PrivateNetworksService{client: c}
+	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
 	return c, nil
 }
