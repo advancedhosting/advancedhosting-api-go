@@ -442,7 +442,7 @@ func TestInstance_SetPrimaryIP(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionRoot
+	var expectedResult actionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
@@ -468,7 +468,7 @@ func TestInstance_ActionInfo(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionRoot
+	var expectedResult actionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
@@ -493,7 +493,7 @@ func TestInstance_Actions(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionsRoot
+	var expectedResult actionsRoot
 	json.Unmarshal([]byte(actionListResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Actions, actions) {

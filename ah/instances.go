@@ -75,35 +75,6 @@ type InstanceNetworks struct {
 	V4 []InstanceV4Network `json:"v4,omitempty"`
 }
 
-// Action object
-type Action struct {
-	ID           string `json:"id,omitempty"`
-	ResourceID   string `json:"resource_id,omitempty"`
-	State        string `json:"state,omitempty"`
-	ResourceType string `json:"resource_type,omitempty"`
-	Type         string `json:"type,omitempty"`
-	UserID       string `json:"user_id,omitempty"`
-	Note         string `json:"note,omitempty"`
-	CreatedAt    string `json:"created_at,omitempty"`
-	UpdatedAt    string `json:"updated_at,omitempty"`
-	StartedAt    string `json:"started_at,omitempty"`
-	CompletedAt  string `json:"completed_at,omitempty"`
-}
-
-// InstanceVolume object
-type InstanceVolume struct {
-	ID         string `json:"id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	Size       int    `json:"size,omitempty"`
-	Number     string `json:"number,omitempty"`
-	ProductID  string `json:"product_id,omitempty"`
-	Port       int    `json:"port,omitempty"`
-	FileSystem string `json:"file_system,omitempty"`
-	State      string `json:"state,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
-	AttachedAt string `json:"attached_at,omitempty"`
-}
-
 // InstanceImage object
 type InstanceImage struct {
 	ID           string `json:"id,omitempty"`
@@ -160,7 +131,7 @@ type Instance struct {
 	PrivateNetworks            []InstancePrivateNetwork `json:"instance_private_networks,omitempty"`
 	IPAddresses                []InstanceIPAddress      `json:"instance_ip_addresses,omitempty"`
 	Image                      *InstanceImage           `json:"image,omitempty"`
-	Volumes                    []InstanceVolume         `json:"volumes,omitempty"`
+	Volumes                    []Volume                 `json:"volumes,omitempty"`
 }
 
 // PrimaryIPAddr returns primary IP object of the instance
@@ -235,9 +206,9 @@ type InstancesAPI interface {
 	Shutdown(context.Context, string) error
 	PowerOff(context.Context, string) error
 	Destroy(context.Context, string) error
-	SetPrimaryIP(context.Context, string, string) (*InstanceAction, error)
-	ActionInfo(context.Context, string, string) (*InstanceAction, error)
-	Actions(context.Context, string) ([]InstanceAction, error)
+	SetPrimaryIP(context.Context, string, string) (*Action, error)
+	ActionInfo(context.Context, string, string) (*Action, error)
+	Actions(context.Context, string) ([]Action, error)
 }
 
 // InstancesService implements InstancesApi interface.
@@ -378,8 +349,7 @@ func (is *InstancesService) Destroy(ctx context.Context, instanceID string) erro
 		return err
 	}
 
-	var a interface{}
-	resp, err := is.client.Do(ctx, req, a)
+	resp, err := is.client.Do(ctx, req, nil)
 	if err != nil {
 		return err
 	}
@@ -429,7 +399,7 @@ type instanceSetPrimaryIPRequest struct {
 }
 
 // SetPrimaryIP makes ip primary for instance
-func (is *InstancesService) SetPrimaryIP(ctx context.Context, instanceID, ipAssignmentID string) (*InstanceAction, error) {
+func (is *InstancesService) SetPrimaryIP(ctx context.Context, instanceID, ipAssignmentID string) (*Action, error) {
 	request := &instanceSetPrimaryIPRequest{
 		InstanceIPAddressID: ipAssignmentID,
 		Type:                "set_primary_ip",
@@ -440,48 +410,25 @@ func (is *InstancesService) SetPrimaryIP(ctx context.Context, instanceID, ipAssi
 		return nil, err
 	}
 
-	var actionRoot instanceActionRoot
-	_, err = is.client.Do(ctx, req, &actionRoot)
+	var aRoot actionRoot
+	_, err = is.client.Do(ctx, req, &aRoot)
 	if err != nil {
 		return nil, err
 	}
 
-	return actionRoot.Action, nil
-}
-
-// InstanceAction object
-type InstanceAction struct {
-	ID           string `json:"id,omitempty"`
-	State        string `json:"state,omitempty"`
-	ResourceID   string `json:"resource_id,omitempty"`
-	CreatedAt    string `json:"created_at,omitempty"`
-	ResourceType string `json:"resource_type,omitempty"`
-	Type         string `json:"type,omitempty"`
-	UserID       string `json:"user_id,omitempty"`
-	Note         string `json:"note,omitempty"`
-	UpdatedAt    string `json:"updated_at,omitempty"`
-	StartedAt    string `json:"started_at,omitempty"`
-	CompletedAt  string `json:"completed_at,omitempty"`
-}
-
-type instanceActionRoot struct {
-	Action *InstanceAction `json:"action"`
-}
-
-type instanceActionsRoot struct {
-	Actions []InstanceAction `json:"actions"`
+	return aRoot.Action, nil
 }
 
 // ActionInfo returns instance's action info by action ID
-func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID string) (*InstanceAction, error) {
+func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID string) (*Action, error) {
 	path := fmt.Sprintf("api/v1/instances/%s/actions/%s", instanceID, actionID)
 	req, err := is.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var actionRoot instanceActionRoot
-	resp, err := is.client.Do(ctx, req, &actionRoot)
+	var aRoot actionRoot
+	resp, err := is.client.Do(ctx, req, &aRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -490,21 +437,21 @@ func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID
 		return nil, fmt.Errorf("Error getting instance action: %v", resp.StatusCode)
 	}
 
-	return actionRoot.Action, nil
+	return aRoot.Action, nil
 }
 
 // Actions returns instance's actions list
-func (is *InstancesService) Actions(ctx context.Context, instanceID string) ([]InstanceAction, error) {
+func (is *InstancesService) Actions(ctx context.Context, instanceID string) ([]Action, error) {
 	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
 	req, err := is.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var actionsRoot instanceActionsRoot
+	var asRoot actionsRoot
 
-	if _, err = is.client.Do(ctx, req, &actionsRoot); err != nil {
+	if _, err = is.client.Do(ctx, req, &asRoot); err != nil {
 		return nil, err
 	}
-	return actionsRoot.Actions, nil
+	return asRoot.Actions, nil
 }

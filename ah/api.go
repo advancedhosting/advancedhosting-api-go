@@ -46,6 +46,7 @@ type APIClient struct {
 	IPAddressAssignments    IPAddressAssignmentsAPI
 	PrivateNetworks         PrivateNetworksAPI
 	InstancePrivateNetworks InstancePrivateNetworksAPI
+	Volumes                 VolumesAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -162,5 +163,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.IPAddressAssignments = &IPAddressAssignmentsService{client: c}
 	c.PrivateNetworks = &PrivateNetworksService{client: c}
 	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
+	c.Volumes = &VolumesService{client: c}
 	return c, nil
 }
