@@ -75,6 +75,16 @@ func (ips *IPAddressAssignmentsService) Create(ctx context.Context, createReques
 	return ipRoot.InstanceIPAddress, nil
 }
 
+// Get ip address assignment
+// TODO Implement after WCS-3500
+func (ips *IPAddressAssignmentsService) Get(ctx context.Context) {
+}
+
+// List ip address assignments
+// TODO Implement after WCS-3500
+func (ips *IPAddressAssignmentsService) List(ctx context.Context) {
+}
+
 // Delete assignment
 func (ips *IPAddressAssignmentsService) Delete(ctx context.Context, isntanceIPAssignmentID string) error {
 	path := fmt.Sprintf("api/v1/instance_ip_addresses/%s", isntanceIPAssignmentID)
