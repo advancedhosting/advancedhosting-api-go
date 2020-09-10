@@ -36,9 +36,7 @@ type PrivateNetwork struct {
 // PrivateNetworkInfo object
 type PrivateNetworkInfo struct {
 	PrivateNetwork
-	InstancePrivateNetworks []struct {
-		InstancePrivateNetworkInfo
-	} `json:"instance_private_networks,omitempty"`
+	InstancePrivateNetworks []InstancePrivateNetworkInfo `json:"instance_private_networks,omitempty"`
 }
 
 // PrivateNetworksAPI is an interface for private networks.
