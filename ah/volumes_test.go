@@ -221,7 +221,7 @@ func TestVolumes_Resize(t *testing.T) {
 func TestVolumes_Create(t *testing.T) {
 	request := &VolumeCreateRequest{
 		Name:       "test-name",
-		Size:       "50",
+		Size:       50,
 		ProductID:  "Test_product_id",
 		FileSystem: "ext4",
 		InstanceID: "test_instance_id",
