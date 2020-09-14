@@ -207,6 +207,8 @@ type InstancesAPI interface {
 	PowerOff(context.Context, string) error
 	Destroy(context.Context, string) error
 	SetPrimaryIP(context.Context, string, string) (*Action, error)
+	AttachVolume(context.Context, string, string) (*Action, error)
+	DetachVolume(context.Context, string, string) (*Action, error)
 	ActionInfo(context.Context, string, string) (*Action, error)
 	Actions(context.Context, string) ([]Action, error)
 }
@@ -454,4 +456,56 @@ func (is *InstancesService) Actions(ctx context.Context, instanceID string) ([]A
 		return nil, err
 	}
 	return asRoot.Actions, nil
+}
+
+type instanceAttachVolumeRequest struct {
+	VolumeID string `json:"volume_id"`
+	Type     string `json:"type"`
+}
+
+// AttachVolume connects volume to the instance
+func (is *InstancesService) AttachVolume(ctx context.Context, instanceID, volumeID string) (*Action, error) {
+	request := &instanceAttachVolumeRequest{
+		VolumeID: volumeID,
+		Type:     "attach_volume",
+	}
+	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
+	req, err := is.client.newRequest(http.MethodPost, path, request)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot actionRoot
+	_, err = is.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return aRoot.Action, nil
+}
+
+type instanceDetachVolumeRequest struct {
+	VolumeID string `json:"volume_id"`
+	Type     string `json:"type"`
+}
+
+// DetachVolume disconnects volume to the instance
+func (is *InstancesService) DetachVolume(ctx context.Context, instanceID, volumeID string) (*Action, error) {
+	request := &instanceDetachVolumeRequest{
+		VolumeID: volumeID,
+		Type:     "detach_volume",
+	}
+	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
+	req, err := is.client.newRequest(http.MethodPost, path, request)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot actionRoot
+	_, err = is.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return aRoot.Action, nil
 }
