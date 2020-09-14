@@ -211,6 +211,7 @@ type InstancesAPI interface {
 	DetachVolume(context.Context, string, string) (*Action, error)
 	ActionInfo(context.Context, string, string) (*Action, error)
 	Actions(context.Context, string) ([]Action, error)
+	AvailableVolumes(context.Context, string, *ListOptions) ([]Volume, *Meta, error)
 }
 
 // InstancesService implements InstancesApi interface.
@@ -508,4 +509,16 @@ func (is *InstancesService) DetachVolume(ctx context.Context, instanceID, volume
 	}
 
 	return aRoot.Action, nil
+}
+
+// AvailableVolumes return all attached volumes to the instance.
+func (is *InstancesService) AvailableVolumes(ctx context.Context, instanceID string, options *ListOptions) ([]Volume, *Meta, error) {
+	path := fmt.Sprintf("api/v1/instances/%s/available_volumes", instanceID)
+
+	var vsRoot volumesRoot
+
+	if err := is.client.list(ctx, path, options, &vsRoot); err != nil {
+		return nil, nil, err
+	}
+	return vsRoot.Volumes, vsRoot.Meta, nil
 }

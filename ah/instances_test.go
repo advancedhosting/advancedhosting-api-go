@@ -550,3 +550,33 @@ func TestInstance_DetachVolume(t *testing.T) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
 	}
 }
+
+func TestInstance_AvailableVolumes(t *testing.T) {
+
+	fakeResponse := &fakeServerResponse{responseBody: volumeListResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/available_volumes", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	volumes, meta, err := api.Instances.AvailableVolumes(ctx, "2a758843-b82c-435d-b2b2-65581361345b", nil)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	if meta == nil {
+		t.Errorf("unexpected meta: %v", meta)
+	}
+
+	var expectedResult volumesRoot
+	json.Unmarshal([]byte(volumeListResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Volumes, volumes) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, volumes)
+	}
+}
