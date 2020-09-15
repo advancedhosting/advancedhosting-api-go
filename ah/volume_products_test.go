@@ -83,9 +83,6 @@ func TestVolumeProducts_List(t *testing.T) {
 				Value: "ggg",
 			},
 		},
-		Meta: &ListMetaOptions{
-			PerPage: "all",
-		},
 	}
 	volumeProducts, meta, err := api.VolumeProducts.List(ctx, options)
 
