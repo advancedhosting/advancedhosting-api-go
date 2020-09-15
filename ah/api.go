@@ -47,6 +47,7 @@ type APIClient struct {
 	PrivateNetworks         PrivateNetworksAPI
 	InstancePrivateNetworks InstancePrivateNetworksAPI
 	Volumes                 VolumesAPI
+	VolumeProducts          VolumeProductsAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -83,7 +84,6 @@ func (c *APIClient) list(ctx context.Context, path string, options *ListOptions,
 		params := buildListQuery(options)
 		path = fmt.Sprintf("%s?%s", path, params)
 	}
-
 	req, err := c.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return err
@@ -164,5 +164,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.PrivateNetworks = &PrivateNetworksService{client: c}
 	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
 	c.Volumes = &VolumesService{client: c}
+	c.VolumeProducts = &VolumeProductsService{client: c}
 	return c, nil
 }
