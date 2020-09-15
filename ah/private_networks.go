@@ -89,7 +89,7 @@ func (pns *PrivateNetworksService) Get(ctx context.Context, privateNetworkID str
 		return nil, err
 	}
 
-	return pnInfo.PrivateNetwork, err
+	return pnInfo.PrivateNetwork, nil
 }
 
 // InstancePrivateNetworkAttributes object
