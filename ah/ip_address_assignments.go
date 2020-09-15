@@ -35,12 +35,32 @@ type IPAddressAssignment struct {
 // IPAddressAssignmentsAPI is an interface for ip address assignments.
 type IPAddressAssignmentsAPI interface {
 	Create(context.Context, *IPAddressAssignmentCreateRequest) (*IPAddressAssignment, error)
+	Get(context.Context, string) (*IPAddressAssignment, error)
+	List(context.Context, *ListOptions) ([]IPAddressAssignment, error)
 	Delete(context.Context, string) error
 }
 
 // IPAddressAssignmentsService implements IPAddressAssignmentsAPI interface.
 type IPAddressAssignmentsService struct {
 	client *APIClient
+}
+
+type ipAddressAssignmentsRoot struct {
+	InstanceIPAddresses []IPAddressAssignment `json:"instance_ip_addresses"`
+}
+
+// List returns all available ip address assignments
+func (ips *IPAddressAssignmentsService) List(ctx context.Context, options *ListOptions) ([]IPAddressAssignment, error) {
+	path := "api/v1/instance_ip_addresses"
+
+	var ipsRoot ipAddressAssignmentsRoot
+
+	if err := ips.client.list(ctx, path, options, &ipsRoot); err != nil {
+		return nil, err
+	}
+
+	return ipsRoot.InstanceIPAddresses, nil
+
 }
 
 // IPAddressAssignmentCreateRequest represents a request to assign an ip address to isntance.
@@ -75,14 +95,22 @@ func (ips *IPAddressAssignmentsService) Create(ctx context.Context, createReques
 	return ipRoot.InstanceIPAddress, nil
 }
 
-// Get ip address assignment
-// TODO Implement after WCS-3500
-func (ips *IPAddressAssignmentsService) Get(ctx context.Context) {
-}
+// Get an ip address assignment
+func (ips *IPAddressAssignmentsService) Get(ctx context.Context, IPAddressAssignmentID string) (*IPAddressAssignment, error) {
+	path := fmt.Sprintf("api/v1/instance_ip_addresses/%s", IPAddressAssignmentID)
+	req, err := ips.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
 
-// List ip address assignments
-// TODO Implement after WCS-3500
-func (ips *IPAddressAssignmentsService) List(ctx context.Context) {
+	var ipRoot ipAddressAssignmentRoot
+	_, err = ips.client.Do(ctx, req, &ipRoot)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ipRoot.InstanceIPAddress, nil
 }
 
 // Delete assignment
