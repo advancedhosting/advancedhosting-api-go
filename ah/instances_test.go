@@ -442,7 +442,7 @@ func TestInstance_SetPrimaryIP(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionRoot
+	var expectedResult actionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
@@ -468,7 +468,7 @@ func TestInstance_ActionInfo(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionRoot
+	var expectedResult actionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
@@ -493,10 +493,90 @@ func TestInstance_Actions(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult instanceActionsRoot
+	var expectedResult actionsRoot
 	json.Unmarshal([]byte(actionListResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Actions, actions) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, actions)
+	}
+}
+
+func TestInstance_AttachVolume(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/actions", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	action, err := api.Instances.AttachVolume(ctx, "2a758843-b82c-435d-b2b2-65581361345b", "test_volume_id")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult actionRoot
+	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
+func TestInstance_DetachVolume(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/actions", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	action, err := api.Instances.DetachVolume(ctx, "2a758843-b82c-435d-b2b2-65581361345b", "test_volume_id")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult actionRoot
+	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
+func TestInstance_AvailableVolumes(t *testing.T) {
+
+	fakeResponse := &fakeServerResponse{responseBody: volumeListResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/available_volumes", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	volumes, meta, err := api.Instances.AvailableVolumes(ctx, "2a758843-b82c-435d-b2b2-65581361345b", nil)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	if meta == nil {
+		t.Errorf("unexpected meta: %v", meta)
+	}
+
+	var expectedResult volumesRoot
+	json.Unmarshal([]byte(volumeListResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Volumes, volumes) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, volumes)
 	}
 }

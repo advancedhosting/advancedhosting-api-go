@@ -31,7 +31,8 @@ type ListOptions struct {
 
 // ListMetaOptions represents meta options.
 type ListMetaOptions struct {
-	Page int `url:"page"`
+	Page    int    `url:"page,omitempty"`
+	PerPage string `url:"per,omitempty"`
 }
 
 func buildListQuery(options *ListOptions) string {
