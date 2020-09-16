@@ -48,6 +48,7 @@ type APIClient struct {
 	InstancePrivateNetworks InstancePrivateNetworksAPI
 	Volumes                 VolumesAPI
 	VolumeProducts          VolumeProductsAPI
+	Backups                 BackupsAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -165,5 +166,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
 	c.Volumes = &VolumesService{client: c}
 	c.VolumeProducts = &VolumeProductsService{client: c}
+	c.Backups = &BackupsService{client: c}
 	return c, nil
 }
