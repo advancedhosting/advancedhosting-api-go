@@ -18,6 +18,8 @@ package ah
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 )
 
 // Backup object
@@ -47,6 +49,9 @@ type InstanceBackup struct {
 // BackupsAPI is an interface for backups.
 type BackupsAPI interface {
 	List(context.Context, *ListOptions) ([]InstanceBackup, error)
+	Get(context.Context, string) (*Backup, error)
+	Update(context.Context, string, *BackUpUpdateRequest) (*Backup, error)
+	Delete(context.Context, string) (*Action, error)
 }
 
 // BackupsService implements BackupsAPI interface.
@@ -70,4 +75,64 @@ func (bs *BackupsService) List(ctx context.Context, options *ListOptions) ([]Ins
 
 	return ibRoot.InstancesBackups, nil
 
+}
+
+type backupRoot struct {
+	Backup *Backup `json:"backup"`
+}
+
+// Get backup info
+func (bs *BackupsService) Get(ctx context.Context, backupID string) (*Backup, error) {
+	path := fmt.Sprintf("api/v1/backups/%s", backupID)
+	req, err := bs.client.newRequest(http.MethodGet, path, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var bRoot backupRoot
+	if _, err := bs.client.Do(ctx, req, &bRoot); err != nil {
+		return nil, err
+	}
+
+	return bRoot.Backup, nil
+}
+
+// BackUpUpdateRequest represents a request to update a volume.
+type BackUpUpdateRequest struct {
+	Note string `json:"note,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
+// Update backup
+func (bs *BackupsService) Update(ctx context.Context, backupID string, request *BackUpUpdateRequest) (*Backup, error) {
+	path := fmt.Sprintf("api/v1/backups/%s", backupID)
+	req, err := bs.client.newRequest(http.MethodPut, path, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var bRoot backupRoot
+	if _, err := bs.client.Do(ctx, req, &bRoot); err != nil {
+		return nil, err
+	}
+
+	return bRoot.Backup, nil
+}
+
+// Delete backup
+func (bs *BackupsService) Delete(ctx context.Context, backupID string) (*Action, error) {
+	path := fmt.Sprintf("api/v1/backups/%s", backupID)
+	req, err := bs.client.newRequest(http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot actionRoot
+	_, err = bs.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+	return aRoot.Action, nil
 }
