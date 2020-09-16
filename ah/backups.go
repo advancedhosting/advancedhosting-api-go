@@ -37,8 +37,8 @@ type Backup struct {
 	MinDiskSize int    `json:"min_disk_size,omitempty"`
 }
 
-// InstanceBackup object
-type InstanceBackup struct {
+// InstanceBackups object
+type InstanceBackups struct {
 	InstanceID                 string   `json:"instance_id,omitempty"`
 	InstanceName               string   `json:"instance_name,omitempty"`
 	InstanceRemoved            bool     `json:"instance_removed,omitempty"`
@@ -48,7 +48,7 @@ type InstanceBackup struct {
 
 // BackupsAPI is an interface for backups.
 type BackupsAPI interface {
-	List(context.Context, *ListOptions) ([]InstanceBackup, error)
+	List(context.Context, *ListOptions) ([]InstanceBackups, error)
 	Get(context.Context, string) (*Backup, error)
 	Update(context.Context, string, *BackUpUpdateRequest) (*Backup, error)
 	Delete(context.Context, string) (*Action, error)
@@ -60,11 +60,11 @@ type BackupsService struct {
 }
 
 type instancesBackupsRoot struct {
-	InstancesBackups []InstanceBackup `json:"instances_backups"`
+	InstancesBackups []InstanceBackups `json:"instances_backups"`
 }
 
 // List returns all available private networks
-func (bs *BackupsService) List(ctx context.Context, options *ListOptions) ([]InstanceBackup, error) {
+func (bs *BackupsService) List(ctx context.Context, options *ListOptions) ([]InstanceBackups, error) {
 	path := "api/v1/backups"
 
 	var ibRoot instancesBackupsRoot
