@@ -212,6 +212,7 @@ type InstancesAPI interface {
 	ActionInfo(context.Context, string, string) (*Action, error)
 	Actions(context.Context, string) ([]Action, error)
 	AvailableVolumes(context.Context, string, *ListOptions) ([]Volume, *Meta, error)
+	CreateBackup(context.Context, string, string) (*CreateBackUpAction, error)
 }
 
 // InstancesService implements InstancesApi interface.
@@ -521,4 +522,35 @@ func (is *InstancesService) AvailableVolumes(ctx context.Context, instanceID str
 		return nil, nil, err
 	}
 	return vsRoot.Volumes, vsRoot.Meta, nil
+}
+
+// CreateBackUpAction object
+type CreateBackUpAction struct {
+	*Action
+}
+
+type createBackupActionRoot struct {
+	Action *CreateBackUpAction `json:"action"`
+}
+
+// CreateBackup creates instance's backups
+func (is *InstancesService) CreateBackup(ctx context.Context, instanceID, note string) (*CreateBackUpAction, error) {
+
+	var request = &struct {
+		Note string `json:"note"`
+	}{note}
+
+	path := fmt.Sprintf("api/v1/instances/%s/backups", instanceID)
+	req, err := is.client.newRequest(http.MethodPost, path, request)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot createBackupActionRoot
+	_, err = is.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return aRoot.Action, nil
 }
