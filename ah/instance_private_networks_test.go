@@ -18,7 +18,9 @@ package ah
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -89,6 +91,34 @@ func TestInstancePrivateNetworks_Create(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Unexpected error %s", err)
+	}
+}
+
+func TestInstancePrivateNetworks_Get(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: instancePrivateNetworkGetResponse}
+	server := newFakeServer("/api/v1/instance_private_networks/bb68f57c-15c6-4fd4-b388-a6c57cff36ff", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	instancePrivateNetwork, err := api.InstancePrivateNetworks.Get(ctx, "bb68f57c-15c6-4fd4-b388-a6c57cff36ff")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if instancePrivateNetwork == nil || instancePrivateNetwork.ID != "bb68f57c-15c6-4fd4-b388-a6c57cff36ff" {
+		t.Errorf("Invalid response: %v", "bb68f57c-15c6-4fd4-b388-a6c57cff36ff")
+	}
+
+	var expectedResult instancePrivateNetworkInfoRoot
+	json.Unmarshal([]byte(instancePrivateNetworkGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.InstancePrivateNetwork, instancePrivateNetwork) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instancePrivateNetwork)
 	}
 
 }

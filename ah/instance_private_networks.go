@@ -46,6 +46,7 @@ type InstancePrivateNetwork struct {
 // InstancePrivateNetworksAPI is an interface for instance connection to private network.
 type InstancePrivateNetworksAPI interface {
 	Create(context.Context, *InstancePrivateNetworkCreateRequest) (*InstancePrivateNetwork, error)
+	Get(context.Context, string) (*InstancePrivateNetwork, error)
 	Update(context.Context, string, *InstancePrivateNetworkUpdateRequest) (*InstancePrivateNetwork, error)
 	Delete(context.Context, string) (*InstancePrivateNetwork, error)
 }
@@ -64,6 +65,24 @@ type InstancePrivateNetworkCreateRequest struct {
 
 type instancePrivateNetworkInfoRoot struct {
 	InstancePrivateNetwork *InstancePrivateNetwork `json:"instance_private_network"`
+}
+
+// Get instance private network info
+func (ipns *InstancePrivateNetworksService) Get(ctx context.Context, instancePrivateNetworkID string) (*InstancePrivateNetwork, error) {
+
+	path := fmt.Sprintf("api/v1/instance_private_networks/%s", instancePrivateNetworkID)
+
+	req, err := ipns.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var ipnInfo instancePrivateNetworkInfoRoot
+	if _, err := ipns.client.Do(ctx, req, &ipnInfo); err != nil {
+		return nil, err
+	}
+
+	return ipnInfo.InstancePrivateNetwork, nil
 }
 
 // Create instance connection to the private network
