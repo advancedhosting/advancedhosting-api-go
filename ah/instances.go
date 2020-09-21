@@ -212,6 +212,10 @@ type InstancesAPI interface {
 	ActionInfo(context.Context, string, string) (*Action, error)
 	Actions(context.Context, string) ([]Action, error)
 	AvailableVolumes(context.Context, string, *ListOptions) ([]Volume, *Meta, error)
+	FirewallRules(context.Context, string) ([]FirewallRule, error)
+	CreateFirewallRule(context.Context, string, *FirewallRuleCreateRequest) (*FirewallRule, error)
+	UpdateFirewallRule(context.Context, string, string, *FirewallRuleUpdateRequest) (*FirewallRule, error)
+	DeleteFirewallRule(context.Context, string, string) error
 }
 
 // InstancesService implements InstancesApi interface.
@@ -521,4 +525,123 @@ func (is *InstancesService) AvailableVolumes(ctx context.Context, instanceID str
 		return nil, nil, err
 	}
 	return vsRoot.Volumes, vsRoot.Meta, nil
+}
+
+// FirewallRule object
+type FirewallRule struct {
+	ID          string   `json:"id,omitempty"`
+	InstanceID  string   `json:"instance_id,omitempty"`
+	Priority    int      `json:"priority,omitempty"`
+	Type        string   `json:"type,omitempty"`
+	TrafficType string   `json:"traffic_type,omitempty"`
+	CIDR        string   `json:"cidr,omitempty"`
+	Ports       []int    `json:"ports,omitempty"`
+	PortsRanges []string `json:"port_ranges,omitempty"`
+	PortsString string   `json:"ports_string,omitempty"`
+	Action      string   `json:"action,omitempty"`
+	Enabled     bool     `json:"enabled,omitempty"`
+}
+
+type firewallRulesRoot struct {
+	FirewallRules []FirewallRule `json:"firewall_rules"`
+}
+
+// FirewallRules returns list of instance rules
+func (is *InstancesService) FirewallRules(ctx context.Context, instanceID string) ([]FirewallRule, error) {
+	path := fmt.Sprintf("api/v1/instances/%s/firewall_rules", instanceID)
+
+	req, err := is.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var frRoot firewallRulesRoot
+	_, err = is.client.Do(ctx, req, &frRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return frRoot.FirewallRules, nil
+}
+
+type firewallRuleRoot struct {
+	FirewallRule *FirewallRule `json:"firewall_rule"`
+}
+
+// FirewallRuleCreateRequest object
+type FirewallRuleCreateRequest struct {
+	Priority    int      `json:"priority,omitempty"`
+	Type        string   `json:"type,omitempty"`
+	TrafficType string   `json:"traffic_type,omitempty"`
+	CIDR        string   `json:"cidr,omitempty"`
+	Ports       []int    `json:"ports,omitempty"`
+	PortsRanges []string `json:"port_ranges,omitempty"`
+	PortsString string   `json:"ports_string,omitempty"`
+	Action      string   `json:"action,omitempty"`
+	Enabled     bool     `json:"enabled,omitempty"`
+}
+
+// CreateFirewallRule updates instance firewall rule.
+func (is *InstancesService) CreateFirewallRule(ctx context.Context, instanceID string, request *FirewallRuleCreateRequest) (*FirewallRule, error) {
+	path := fmt.Sprintf("api/v1/instances/%s/firewall_rules", instanceID)
+
+	req, err := is.client.newRequest(http.MethodPost, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var frRoot firewallRuleRoot
+	_, err = is.client.Do(ctx, req, &frRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return frRoot.FirewallRule, nil
+}
+
+// FirewallRuleUpdateRequest object
+type FirewallRuleUpdateRequest struct {
+	Priority    int      `json:"priority,omitempty"`
+	Type        string   `json:"type,omitempty"`
+	TrafficType string   `json:"traffic_type,omitempty"`
+	CIDR        string   `json:"cidr,omitempty"`
+	Ports       []int    `json:"ports,omitempty"`
+	PortsRanges []string `json:"port_ranges,omitempty"`
+	PortsString string   `json:"ports_string,omitempty"`
+	Action      string   `json:"action,omitempty"`
+	Enabled     bool     `json:"enabled,omitempty"`
+}
+
+// UpdateFirewallRule updates instance firewall rule.
+func (is *InstancesService) UpdateFirewallRule(ctx context.Context, instanceID, firewallRuleID string, request *FirewallRuleUpdateRequest) (*FirewallRule, error) {
+	path := fmt.Sprintf("api/v1/instances/%s/firewall_rules/%s", instanceID, firewallRuleID)
+
+	req, err := is.client.newRequest(http.MethodPut, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var frRoot firewallRuleRoot
+	_, err = is.client.Do(ctx, req, &frRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return frRoot.FirewallRule, nil
+}
+
+// DeleteFirewallRule removes instance firewall rule.
+func (is *InstancesService) DeleteFirewallRule(ctx context.Context, instanceID, firewallRuleID string) error {
+	path := fmt.Sprintf("api/v1/instances/%s/firewall_rules/%s", instanceID, firewallRuleID)
+
+	req, err := is.client.newRequest(http.MethodDelete, path, nil)
+	if err != nil {
+		return err
+	}
+
+	if _, err := is.client.Do(ctx, req, nil); err != nil {
+		return err
+	}
+
+	return nil
 }

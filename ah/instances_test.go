@@ -160,11 +160,27 @@ const instanceActionResponse = `{
 	"result_params": {}
 }`
 
+const instanceFirewallResponse = `{
+	"id": "10e48164-6c3f-464b-a1ff-7f64e77828bd",
+	"instance_id": "61463ad8-f5a2-493a-80a0-7b0059ccaafb",
+	"priority": 1,
+	"type": "inbound",
+	"traffic_type": "tcp",
+	"cidr": null,
+	"ports": [80],
+	"port_ranges": [],
+	"ports_string": "80",
+	"action": "accept",
+	"enabled": true
+}`
+
 var (
-	getResponse        = fmt.Sprintf(`{"instance": %s}`, instanceResponse)
-	listResponse       = fmt.Sprintf(`{"instances": [%s]}`, instanceResponse)
-	actionGetResponse  = fmt.Sprintf(`{"action": %s}`, instanceActionResponse)
-	actionListResponse = fmt.Sprintf(`{"actions": [%s]}`, instanceActionResponse)
+	getResponse         = fmt.Sprintf(`{"instance": %s}`, instanceResponse)
+	listResponse        = fmt.Sprintf(`{"instances": [%s]}`, instanceResponse)
+	actionGetResponse   = fmt.Sprintf(`{"action": %s}`, instanceActionResponse)
+	actionListResponse  = fmt.Sprintf(`{"actions": [%s]}`, instanceActionResponse)
+	firewallListRespone = fmt.Sprintf(`{"firewall_rules": [%s]}`, instanceFirewallResponse)
+	firewallGetRespone  = fmt.Sprintf(`{"firewall_rule": %s}`, instanceFirewallResponse)
 )
 
 type fakeServerResponse struct {
@@ -578,5 +594,115 @@ func TestInstance_AvailableVolumes(t *testing.T) {
 
 	if !reflect.DeepEqual(expectedResult.Volumes, volumes) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, volumes)
+	}
+}
+
+func TestInstance_FirewallRules(t *testing.T) {
+
+	fakeResponse := &fakeServerResponse{responseBody: firewallListRespone, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/firewall_rules", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	firewallRules, err := api.Instances.FirewallRules(ctx, "2a758843-b82c-435d-b2b2-65581361345b")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult firewallRulesRoot
+	json.Unmarshal([]byte(firewallListRespone), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.FirewallRules, firewallRules) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, firewallRules)
+	}
+}
+
+func TestInstance_CreateFirewallRule(t *testing.T) {
+
+	fakeResponse := &fakeServerResponse{responseBody: firewallGetRespone, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/firewall_rules/", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	request := &FirewallRuleCreateRequest{
+		Action:      "accept",
+		CIDR:        "10.0.0.0/24",
+		Enabled:     true,
+		PortsString: "80",
+		Priority:    1,
+		TrafficType: "tcp",
+		Type:        "inbound",
+	}
+
+	ctx := context.Background()
+	firewallRule, err := api.Instances.CreateFirewallRule(ctx, "2a758843-b82c-435d-b2b2-65581361345b", request)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult firewallRuleRoot
+	json.Unmarshal([]byte(firewallGetRespone), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.FirewallRule, firewallRule) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, firewallRule)
+	}
+}
+
+func TestInstance_UpdateFirewallRule(t *testing.T) {
+
+	fakeResponse := &fakeServerResponse{responseBody: firewallGetRespone, statusCode: 200}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/firewall_rules/10e48164-6c3f-464b-a1ff-7f64e77828bd", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	request := &FirewallRuleUpdateRequest{
+		Enabled: false,
+	}
+
+	ctx := context.Background()
+	firewallRule, err := api.Instances.UpdateFirewallRule(ctx, "2a758843-b82c-435d-b2b2-65581361345b", "10e48164-6c3f-464b-a1ff-7f64e77828bd", request)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult firewallRuleRoot
+	json.Unmarshal([]byte(firewallGetRespone), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.FirewallRule, firewallRule) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, firewallRule)
+	}
+}
+
+func TestInstance_DeleteFirewallRule(t *testing.T) {
+	fakeResponse := &fakeServerResponse{}
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/firewall_rules/10e48164-6c3f-464b-a1ff-7f64e77828bd", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	err := api.Instances.DeleteFirewallRule(ctx, "2a758843-b82c-435d-b2b2-65581361345b", "10e48164-6c3f-464b-a1ff-7f64e77828bd")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 }
