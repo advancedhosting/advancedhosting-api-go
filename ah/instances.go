@@ -570,15 +570,13 @@ type firewallRuleRoot struct {
 
 // FirewallRuleCreateRequest object
 type FirewallRuleCreateRequest struct {
-	Priority    int      `json:"priority,omitempty"`
-	Type        string   `json:"type,omitempty"`
-	TrafficType string   `json:"traffic_type,omitempty"`
-	CIDR        string   `json:"cidr,omitempty"`
-	Ports       []int    `json:"ports,omitempty"`
-	PortsRanges []string `json:"port_ranges,omitempty"`
-	PortsString string   `json:"ports_string,omitempty"`
-	Action      string   `json:"action,omitempty"`
-	Enabled     bool     `json:"enabled,omitempty"`
+	Priority    int    `json:"priority,omitempty"`
+	Type        string `json:"type,omitempty"`
+	TrafficType string `json:"traffic_type,omitempty"`
+	CIDR        string `json:"cidr,omitempty"`
+	PortsString string `json:"ports_string,omitempty"`
+	Action      string `json:"action,omitempty"`
+	Enabled     bool   `json:"enabled,omitempty"`
 }
 
 // CreateFirewallRule updates instance firewall rule.
