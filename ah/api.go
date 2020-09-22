@@ -48,6 +48,7 @@ type APIClient struct {
 	InstancePrivateNetworks InstancePrivateNetworksAPI
 	Volumes                 VolumesAPI
 	VolumeProducts          VolumeProductsAPI
+	SSHKeys                 SSHKeysAPI
 	Backups                 BackupsAPI
 }
 
@@ -166,6 +167,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
 	c.Volumes = &VolumesService{client: c}
 	c.VolumeProducts = &VolumeProductsService{client: c}
+	c.SSHKeys = &SSHKeysService{client: c}
 	c.Backups = &BackupsService{client: c}
 	return c, nil
 }
