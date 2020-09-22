@@ -51,14 +51,32 @@ type Volume struct {
 	} `json:"volume_pool,omitempty"`
 }
 
+// VolumeAction object
+type VolumeAction struct {
+	*Action
+	ResultParams *struct {
+		CopiedVolumeID string `json:"copied_volume_id,omitempty"`
+	} `json:"result_params,omitempty"`
+}
+
+type volumeActionRoot struct {
+	Action *VolumeAction `json:"action"`
+}
+
+type volumeActionsRoot struct {
+	Actions []VolumeAction `json:"actions"`
+}
+
 // VolumesAPI is an interface for volumes.
 type VolumesAPI interface {
 	List(context.Context, *ListOptions) ([]Volume, *Meta, error)
 	Get(context.Context, string) (*Volume, error)
 	Create(context.Context, *VolumeCreateRequest) (*Volume, error)
 	Update(context.Context, string, *VolumeUpdateRequest) (*Volume, error)
-	Copy(context.Context, string, string, string) (*Action, error)
+	Copy(context.Context, string, string, string) (*VolumeAction, error)
 	Resize(context.Context, string, int) (*Action, error)
+	ActionInfo(context.Context, string, string) (*VolumeAction, error)
+	Actions(context.Context, string) ([]VolumeAction, error)
 	Delete(context.Context, string) error
 }
 
@@ -165,7 +183,7 @@ type volumeCopyActionRequest struct {
 }
 
 // Copy volume
-func (vs *VolumesService) Copy(ctx context.Context, volumeID, name, productID string) (*Action, error) {
+func (vs *VolumesService) Copy(ctx context.Context, volumeID, name, productID string) (*VolumeAction, error) {
 	path := fmt.Sprintf("api/v1/volumes/%s/actions", volumeID)
 
 	request := &volumeCopyActionRequest{
@@ -180,7 +198,7 @@ func (vs *VolumesService) Copy(ctx context.Context, volumeID, name, productID st
 		return nil, err
 	}
 
-	var aRoot actionRoot
+	var aRoot volumeActionRoot
 	if _, err := vs.client.Do(ctx, req, &aRoot); err != nil {
 		return nil, err
 	}
@@ -214,6 +232,43 @@ func (vs *VolumesService) Resize(ctx context.Context, volumeID string, size int)
 	}
 
 	return aRoot.Action, nil
+}
+
+// ActionInfo returns volume's action info by action ID
+func (vs *VolumesService) ActionInfo(ctx context.Context, volumeID, actionID string) (*VolumeAction, error) {
+	path := fmt.Sprintf("api/v1/volumes/%s/actions/%s", volumeID, actionID)
+	req, err := vs.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot volumeActionRoot
+	resp, err := vs.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Error getting volume action: %v", resp.StatusCode)
+	}
+
+	return aRoot.Action, nil
+}
+
+// Actions returns volume's actions list
+func (vs *VolumesService) Actions(ctx context.Context, volumeID string) ([]VolumeAction, error) {
+	path := fmt.Sprintf("api/v1/volumes/%s/actions", volumeID)
+	req, err := vs.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var asRoot volumeActionsRoot
+
+	if _, err = vs.client.Do(ctx, req, &asRoot); err != nil {
+		return nil, err
+	}
+	return asRoot.Actions, nil
 }
 
 // Delete volume
