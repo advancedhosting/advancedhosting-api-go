@@ -173,7 +173,7 @@ func TestVolumes_Copy(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult actionRoot
+	var expectedResult volumeActionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", "new name", "test_product_id")
@@ -251,7 +251,113 @@ func TestVolumes_Create(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error %s", err)
 	}
+}
 
+func TestVolumes_ActionInfo(t *testing.T) {
+	actionGetResponse := `{
+		"action": {
+			"id": "7dc9faa7-6049-432e-8576-00313cb0cafe",
+			"resource_id": "f90558e9-c66c-4ad9-8760-a26a162b07e2",
+			"state": "success",
+			"created_at": "2020-09-21T08:37:18.047Z",
+			"resource_type": "volume",
+			"type": "copy",
+			"user_id": "de1c6534-0782-45c7-948f-522c644c9240",
+			"note": null,
+			"updated_at": "2020-09-21T08:37:33.868Z",
+			"started_at": "2020-09-21T08:37:18.071Z",
+			"completed_at": "2020-09-21T08:37:33.860Z",
+			"result_params": {
+				"copied_volume_id": "fcd60ac7-b119-4a5e-bd96-6d90983a3e22"
+			}
+		}
+	}
+	`
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions/7dc9faa7-6049-432e-8576-00313cb0cafe", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	action, err := api.Volumes.ActionInfo(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", "7dc9faa7-6049-432e-8576-00313cb0cafe")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult volumeActionRoot
+	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
+func TestVolumes_Actions(t *testing.T) {
+	actionListResponse := `{
+		"actions": [
+			{
+				"id": "7dc9faa7-6049-432e-8576-00313cb0cafe",
+				"resource_id": "f90558e9-c66c-4ad9-8760-a26a162b07e2",
+				"state": "success",
+				"created_at": "2020-09-21T08:37:18.047Z",
+				"resource_type": "volume",
+				"type": "copy",
+				"user_id": "de1c6534-0782-45c7-948f-522c644c9240",
+				"note": null,
+				"updated_at": "2020-09-21T08:37:33.868Z",
+				"started_at": "2020-09-21T08:37:18.071Z",
+				"completed_at": "2020-09-21T08:37:33.860Z",
+				"result_params": {
+					"copied_volume_id": "fcd60ac7-b119-4a5e-bd96-6d90983a3e22"
+				}
+			},
+			{
+				"id": "6dbdc31e-e1e3-4858-a62f-de1a91a7f3e6",
+				"resource_id": "f90558e9-c66c-4ad9-8760-a26a162b07e2",
+				"state": "success",
+				"created_at": "2020-06-19T11:48:41.603Z",
+				"resource_type": "volume",
+				"type": "build",
+				"user_id": null,
+				"note": null,
+				"updated_at": "2020-06-19T11:48:48.725Z",
+				"started_at": "2020-06-19T11:48:41.614Z",
+				"completed_at": "2020-06-19T11:48:48.721Z",
+				"result_params": {}
+			}
+		]
+	}`
+	fakeResponse := &fakeServerResponse{responseBody: actionListResponse, statusCode: 200}
+
+	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	actions, err := api.Volumes.Actions(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var expectedResult volumeActionsRoot
+	json.Unmarshal([]byte(actionListResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Actions, actions) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, actions)
+	}
+
+	if actions[0].ResultParams.CopiedVolumeID != "fcd60ac7-b119-4a5e-bd96-6d90983a3e22" {
+		t.Errorf("unexpected copied_volume_id, expected fcd60ac7-b119-4a5e-bd96-6d90983a3e22. got: %s", actions[0].ResultParams.CopiedVolumeID)
+	}
 }
 
 func TestVolumes_Delete(t *testing.T) {
