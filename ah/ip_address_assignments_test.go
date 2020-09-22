@@ -18,7 +18,9 @@ package ah
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -32,7 +34,8 @@ const ipAddressAssignmentResponse = `{
 }`
 
 var (
-	ipAddressAssignmentGetResponse = fmt.Sprintf(`{"instance_ip_address": %s}`, ipAddressResponse)
+	ipAddressAssignmentGetResponse  = fmt.Sprintf(`{"instance_ip_address": %s}`, ipAddressResponse)
+	ipAddressAssignmentListResponse = fmt.Sprintf(`{"instance_ip_addresses": [%s]}`, ipAddressResponse)
 )
 
 func TestIPAddressAssignment_Create(t *testing.T) {
@@ -66,6 +69,65 @@ func TestIPAddressAssignment_Create(t *testing.T) {
 		t.Errorf("Unexpected error %s", err)
 	}
 
+}
+
+func TestIPAddressAssignment_Get(t *testing.T) {
+	fakeResponse := &fakeServerResponse{
+		responseBody: ipAddressAssignmentGetResponse,
+		statusCode:   200,
+	}
+
+	server := newFakeServer("/api/v1/instance_ip_addresses/test_id", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	ipAddressAssignment, err := api.IPAddressAssignments.Get(ctx, "test_id")
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	var expectedResult ipAddressAssignmentRoot
+	json.Unmarshal([]byte(ipAddressAssignmentGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.InstanceIPAddress, ipAddressAssignment) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, ipAddressAssignment)
+	}
+}
+
+func TestIPAddressAssignment_List(t *testing.T) {
+	fakeResponse := &fakeServerResponse{
+		responseBody: ipAddressAssignmentListResponse,
+		statusCode:   200,
+	}
+
+	server := newFakeServer("/api/v1/instance_ip_addresses", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	ipAddressAssignments, err := api.IPAddressAssignments.List(ctx, nil)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	var expectedResult ipAddressAssignmentsRoot
+	json.Unmarshal([]byte(ipAddressAssignmentListResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.InstanceIPAddresses, ipAddressAssignments) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, ipAddressAssignments)
+	}
 }
 
 func TestIPAddressAssignment_Delete(t *testing.T) {
