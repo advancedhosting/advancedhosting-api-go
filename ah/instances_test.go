@@ -157,7 +157,9 @@ const instanceActionResponse = `{
 	"updated_at": "2020-09-04T16:31:29.586Z",
 	"started_at": "2020-09-04T16:31:28.198Z",
 	"completed_at": "2020-09-04T16:31:29.584Z",
-	"result_params": {}
+	"result_params": {
+		"snapshot_id": "a66efd38-177f-4eb9-9a99-f4d3bce6b4f4"
+	}
 }`
 
 var (
@@ -468,7 +470,7 @@ func TestInstance_ActionInfo(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult actionRoot
+	var expectedResult instanceActionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
@@ -493,7 +495,7 @@ func TestInstance_Actions(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult actionsRoot
+	var expectedResult instanceActionsRoot
 	json.Unmarshal([]byte(actionListResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Actions, actions) {
@@ -598,10 +600,14 @@ func TestInstance_CreateBackup(t *testing.T) {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	var expectedResult createBackupActionRoot
+	var expectedResult instanceActionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+
+	if action.ResultParams.SnapshotID != "a66efd38-177f-4eb9-9a99-f4d3bce6b4f4" {
+		t.Errorf("unexpected snapshot id, expected a66efd38-177f-4eb9-9a99-f4d3bce6b4f4. got: %s", action.ResultParams.SnapshotID)
 	}
 }
