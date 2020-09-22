@@ -134,6 +134,14 @@ type Instance struct {
 	Volumes                    []Volume                 `json:"volumes,omitempty"`
 }
 
+// InstanceAction object
+type InstanceAction struct {
+	*Action
+	ResultParams *struct {
+		SnapshotID string `json:"snapshot_id,omitempty"`
+	} `json:"result_params,omitempty"`
+}
+
 // PrimaryIPAddr returns primary IP object of the instance
 func (i *Instance) PrimaryIPAddr() (*InstanceIPAddress, error) {
 	for _, ipAddress := range i.IPAddresses {
@@ -209,9 +217,10 @@ type InstancesAPI interface {
 	SetPrimaryIP(context.Context, string, string) (*Action, error)
 	AttachVolume(context.Context, string, string) (*Action, error)
 	DetachVolume(context.Context, string, string) (*Action, error)
-	ActionInfo(context.Context, string, string) (*Action, error)
-	Actions(context.Context, string) ([]Action, error)
+	ActionInfo(context.Context, string, string) (*InstanceAction, error)
+	Actions(context.Context, string) ([]InstanceAction, error)
 	AvailableVolumes(context.Context, string, *ListOptions) ([]Volume, *Meta, error)
+	CreateBackup(context.Context, string, string) (*InstanceAction, error)
 }
 
 // InstancesService implements InstancesApi interface.
@@ -422,15 +431,23 @@ func (is *InstancesService) SetPrimaryIP(ctx context.Context, instanceID, ipAssi
 	return aRoot.Action, nil
 }
 
+type instanceActionRoot struct {
+	Action *InstanceAction `json:"action"`
+}
+
+type instanceActionsRoot struct {
+	Actions []InstanceAction `json:"actions"`
+}
+
 // ActionInfo returns instance's action info by action ID
-func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID string) (*Action, error) {
+func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID string) (*InstanceAction, error) {
 	path := fmt.Sprintf("api/v1/instances/%s/actions/%s", instanceID, actionID)
 	req, err := is.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var aRoot actionRoot
+	var aRoot instanceActionRoot
 	resp, err := is.client.Do(ctx, req, &aRoot)
 	if err != nil {
 		return nil, err
@@ -444,14 +461,14 @@ func (is *InstancesService) ActionInfo(ctx context.Context, instanceID, actionID
 }
 
 // Actions returns instance's actions list
-func (is *InstancesService) Actions(ctx context.Context, instanceID string) ([]Action, error) {
+func (is *InstancesService) Actions(ctx context.Context, instanceID string) ([]InstanceAction, error) {
 	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
 	req, err := is.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var asRoot actionsRoot
+	var asRoot instanceActionsRoot
 
 	if _, err = is.client.Do(ctx, req, &asRoot); err != nil {
 		return nil, err
@@ -521,4 +538,26 @@ func (is *InstancesService) AvailableVolumes(ctx context.Context, instanceID str
 		return nil, nil, err
 	}
 	return vsRoot.Volumes, vsRoot.Meta, nil
+}
+
+// CreateBackup creates instance's backups
+func (is *InstancesService) CreateBackup(ctx context.Context, instanceID, note string) (*InstanceAction, error) {
+
+	var request = &struct {
+		Note string `json:"note"`
+	}{note}
+
+	path := fmt.Sprintf("api/v1/instances/%s/backups", instanceID)
+	req, err := is.client.newRequest(http.MethodPost, path, request)
+	if err != nil {
+		return nil, err
+	}
+
+	var aRoot instanceActionRoot
+	_, err = is.client.Do(ctx, req, &aRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	return aRoot.Action, nil
 }
