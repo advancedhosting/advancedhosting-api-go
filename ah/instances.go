@@ -45,23 +45,6 @@ type InstanceRegion struct {
 	Services     []string `json:"services,omitempty"`
 }
 
-// InstanceDatacenterRegion object
-type InstanceDatacenterRegion struct {
-	ID          string `json:"id,omitempty"`
-	Name        string `json:"name,omitempty"`
-	CountryCode string `json:"country_code,omitempty"`
-}
-
-// InstanceDatacenter object
-type InstanceDatacenter struct {
-	ID                string                    `json:"id,omitempty"`
-	Name              string                    `json:"name,omitempty"`
-	FullName          string                    `json:"full_name,omitempty"`
-	InstancesRunning  int                       `json:"instances_running,omitempty"`
-	PrivateNodesCount int                       `json:"private_nodes_count,omitempty"`
-	Region            *InstanceDatacenterRegion `json:"region,omitempty"`
-}
-
 // InstanceV4Network object
 type InstanceV4Network struct {
 	Type      string `json:"type,omitempty"`
@@ -119,7 +102,7 @@ type Instance struct {
 	PrimaryInstanceIPAddressID string                   `json:"primary_instance_ip_address_id,omitempty"`
 	IPScheme                   string                   `json:"ip_scheme,omitempty"`
 	Region                     *InstanceRegion          `json:"region,omitempty"`
-	Datacenter                 *InstanceDatacenter      `json:"datacenter,omitempty"`
+	Datacenter                 *Datacenter              `json:"datacenter,omitempty"`
 	Features                   []string                 `json:"features,omitempty"`
 	Networks                   *InstanceNetworks        `json:"networks,omitempty"`
 	CurrentAction              *Action                  `json:"current_action,omitempty"`

@@ -50,6 +50,7 @@ type APIClient struct {
 	VolumeProducts          VolumeProductsAPI
 	SSHKeys                 SSHKeysAPI
 	Backups                 BackupsAPI
+	Datacenters             DatacentersAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -169,5 +170,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.VolumeProducts = &VolumeProductsService{client: c}
 	c.SSHKeys = &SSHKeysService{client: c}
 	c.Backups = &BackupsService{client: c}
+	c.Datacenters = &DatacentersService{client: c}
 	return c, nil
 }
