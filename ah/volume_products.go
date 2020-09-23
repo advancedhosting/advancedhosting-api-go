@@ -18,18 +18,19 @@ type VolumeProduct struct {
 	CreatedAt     string                `json:"created_at,omitempty"`
 	UpdatedAt     string                `json:"updated_at,omitempty"`
 	Name          string                `json:"name,omitempty"`
-	Type          string                `json:"type"`
-	Price         string                `json:"price"`
-	Currency      string                `json:"currency"`
-	Hot           bool                  `json:"hot"`
-	Tariff        []VolumeProductTariff `json:"tariff"`
-	MinSize       int                   `json:"min_size"`
-	MaxSize       int                   `json:"max_size"`
-	DatacenterIDs []string              `json:"datacenter_ids"`
+	Type          string                `json:"type,omitempty"`
+	Price         string                `json:"price,omitempty"`
+	Currency      string                `json:"currency,omitempty"`
+	Hot           bool                  `json:"hot,omitempty"`
+	Tariff        []VolumeProductTariff `json:"tariff,omitempty"`
+	MinSize       int                   `json:"min_size,omitempty"`
+	MaxSize       int                   `json:"max_size,omitempty"`
+	DatacenterIDs []string              `json:"datacenter_ids,omitempty"`
+	Slug          string                `json:"product_slug,omitempty"`
 	Category      *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
-	} `json:"category"`
+	} `json:"category,omitempty"`
 	VolumeType *struct {
 		ID               string `json:"id,omitempty"`
 		Name             string `json:"name,omitempty"`
