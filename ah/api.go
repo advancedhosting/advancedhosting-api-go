@@ -52,6 +52,7 @@ type APIClient struct {
 	Backups                 BackupsAPI
 	Datacenters             DatacentersAPI
 	Images                  ImagesAPI
+	InstanceProducts        InstanceProductsAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -173,5 +174,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Backups = &BackupsService{client: c}
 	c.Datacenters = &DatacentersService{client: c}
 	c.Images = &ImagesService{client: c}
+	c.InstanceProducts = &InstanceProductsService{client: c}
 	return c, nil
 }
