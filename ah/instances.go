@@ -60,16 +60,8 @@ type InstanceNetworks struct {
 
 // InstanceImage object
 type InstanceImage struct {
-	ID           string `json:"id,omitempty"`
-	CreatedAt    string `json:"created_at,omitempty"`
-	UpdatedAt    string `json:"updated_at,omitempty"`
-	Type         string `json:"type,omitempty"`
-	Name         string `json:"name,omitempty"`
-	Distribution string `json:"distribution,omitempty"`
-	Version      string `json:"version,omitempty"`
-	Architecture string `json:"architecture,omitempty"`
-	Slug         string `json:"slug,omitempty"`
-	Public       bool   `json:"public,omitempty"`
+	*Image
+	Type string `json:"type,omitempty"`
 }
 
 // InstanceSSHKey object
@@ -105,8 +97,8 @@ type Instance struct {
 	Datacenter                 *Datacenter              `json:"datacenter,omitempty"`
 	Features                   []string                 `json:"features,omitempty"`
 	Networks                   *InstanceNetworks        `json:"networks,omitempty"`
-	CurrentAction              *Action                  `json:"current_action,omitempty"`
-	LastAction                 *Action                  `json:"last_action,omitempty"`
+	CurrentAction              *InstanceAction          `json:"current_action,omitempty"`
+	LastAction                 *InstanceAction          `json:"last_action,omitempty"`
 	Reason                     string                   `json:"reason,omitempty"`
 	SnapshotBySchedule         bool                     `json:"snapshot_by_schedule,omitempty"`
 	SnapshotPeriod             string                   `json:"snapshot_period,omitempty"`

@@ -51,6 +51,7 @@ type APIClient struct {
 	SSHKeys                 SSHKeysAPI
 	Backups                 BackupsAPI
 	Datacenters             DatacentersAPI
+	Images                  ImagesAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -171,5 +172,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.SSHKeys = &SSHKeysService{client: c}
 	c.Backups = &BackupsService{client: c}
 	c.Datacenters = &DatacentersService{client: c}
+	c.Images = &ImagesService{client: c}
 	return c, nil
 }
