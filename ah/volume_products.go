@@ -26,7 +26,7 @@ type VolumeProduct struct {
 	MinSize       int                   `json:"min_size,omitempty"`
 	MaxSize       int                   `json:"max_size,omitempty"`
 	DatacenterIDs []string              `json:"datacenter_ids,omitempty"`
-	Slug          string                `json:"product_slug,omitempty"`
+	Slug          string                `json:"slug,omitempty"`
 	Category      *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
