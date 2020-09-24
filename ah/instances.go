@@ -583,7 +583,7 @@ type FirewallRuleCreateRequest struct {
 func (is *InstancesService) CreateFirewallRule(ctx context.Context, instanceID string, request *FirewallRuleCreateRequest) (*FirewallRule, error) {
 	path := fmt.Sprintf("api/v1/instances/%s/firewall_rules", instanceID)
 
-	req, err := is.client.newRequest(http.MethodPost, path, nil)
+	req, err := is.client.newRequest(http.MethodPost, path, request)
 	if err != nil {
 		return nil, err
 	}
