@@ -102,6 +102,39 @@ func TestIPAddress_Create(t *testing.T) {
 
 }
 
+func TestIPAddress_CreateWithSlug(t *testing.T) {
+	request := &IPAddressCreateRequest{
+		Type:           "public",
+		DatacenterSlug: "test-datacenter-slug",
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: ipAddressesGetResponse,
+		statusCode:   201,
+	}
+
+	server := newFakeServer("/api/v1/ip_addresses/", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	ipAddress, err := api.IPAddresses.Create(ctx, request)
+
+	if ipAddress == nil {
+		t.Errorf("Empty response")
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
+}
+
 func TestIPAddresses_Get(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: ipAddressesListResponse}
 	server := newFakeServer("/api/v1/ip_addresses", fakeResponse)
