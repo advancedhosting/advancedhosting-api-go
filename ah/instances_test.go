@@ -330,6 +330,43 @@ func TestInstance_Create(t *testing.T) {
 
 }
 
+func TestInstance_CreateWithSlugs(t *testing.T) {
+	request := &InstanceCreateRequest{
+		Name:                  "Test",
+		DatacenterSlug:        "test-datacenter-slug",
+		ImageSlug:             "test-image-slug",
+		ProductSlug:           "test-product-slug",
+		CreatePublicIPAddress: true,
+		UseSSHPassword:        true,
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: getResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/instances/", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	instance, err := api.Instances.Create(ctx, request)
+
+	if instance == nil {
+		t.Errorf("Invalid response %v", instance)
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
+}
+
 func TestInstance_Rename(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: getResponse}
 

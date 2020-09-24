@@ -150,9 +150,12 @@ type instanceRoot struct {
 // InstanceCreateRequest represents a request to create a instance.
 type InstanceCreateRequest struct {
 	Name                  string   `json:"name"`
-	DatacenterID          string   `json:"datacenter_id"`
-	ImageID               string   `json:"image_id"`
-	ProductID             string   `json:"product_id"`
+	DatacenterID          string   `json:"datacenter_id,omitempty"`
+	DatacenterSlug        string   `json:"datacenter_slug,omitempty"`
+	ImageID               string   `json:"image_id,omitempty"`
+	ImageSlug             string   `json:"image_slug,omitempty"`
+	ProductID             string   `json:"product_id,omitempty"`
+	ProductSlug           string   `json:"product_slug,omitempty"`
 	UseSSHPassword        bool     `json:"use_ssh_password"`
 	Tags                  []string `json:"tags"`
 	SSHKeyIDs             []string `json:"ssh_key_ids"`
