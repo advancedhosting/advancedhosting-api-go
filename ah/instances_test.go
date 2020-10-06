@@ -330,6 +330,43 @@ func TestInstance_Create(t *testing.T) {
 
 }
 
+func TestInstance_CreateWithSlugs(t *testing.T) {
+	request := &InstanceCreateRequest{
+		Name:                  "Test",
+		DatacenterSlug:        "test-datacenter-slug",
+		ImageSlug:             "test-image-slug",
+		ProductSlug:           "test-product-slug",
+		CreatePublicIPAddress: true,
+		UseSSHPassword:        true,
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: getResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/instances/", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	instance, err := api.Instances.Create(ctx, request)
+
+	if instance == nil {
+		t.Errorf("Invalid response %v", instance)
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
+}
+
 func TestInstance_Rename(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: getResponse}
 
@@ -367,7 +404,35 @@ func TestInstance_Upgrade(t *testing.T) {
 	api, _ := NewAPIClient(fakeClientOptions)
 
 	ctx := context.Background()
-	err := api.Instances.Upgrade(ctx, "2a758843-b82c-435d-b2b2-65581361345b", "new_product_id")
+
+	request := &InstanceUpgradeRequest{
+		ProductID: "new_product_id",
+	}
+
+	err := api.Instances.Upgrade(ctx, "2a758843-b82c-435d-b2b2-65581361345b", request)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+}
+
+func TestInstance_UpgradeWithSlug(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: getResponse, statusCode: 202}
+
+	server := newFakeServer("/api/v1/instances/2a758843-b82c-435d-b2b2-65581361345b/actions", fakeResponse)
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+
+	request := &InstanceUpgradeRequest{
+		ProductSlug: "new_product_slug",
+	}
+
+	err := api.Instances.Upgrade(ctx, "2a758843-b82c-435d-b2b2-65581361345b", request)
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
 	}

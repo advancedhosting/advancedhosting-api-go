@@ -150,9 +150,12 @@ type instanceRoot struct {
 // InstanceCreateRequest represents a request to create a instance.
 type InstanceCreateRequest struct {
 	Name                  string   `json:"name"`
-	DatacenterID          string   `json:"datacenter_id"`
-	ImageID               string   `json:"image_id"`
-	ProductID             string   `json:"product_id"`
+	DatacenterID          string   `json:"datacenter_id,omitempty"`
+	DatacenterSlug        string   `json:"datacenter_slug,omitempty"`
+	ImageID               string   `json:"image_id,omitempty"`
+	ImageSlug             string   `json:"image_slug,omitempty"`
+	ProductID             string   `json:"product_id,omitempty"`
+	ProductSlug           string   `json:"product_slug,omitempty"`
 	UseSSHPassword        bool     `json:"use_ssh_password"`
 	Tags                  []string `json:"tags"`
 	SSHKeyIDs             []string `json:"ssh_key_ids"`
@@ -172,20 +175,13 @@ type InstanceActionRequest struct {
 	Type string `json:"type"`
 }
 
-// InstanceUpgradeRequest represents a request to upgrade the instance.
-type InstanceUpgradeRequest struct {
-	ID        string `json:"id"`
-	Type      string `json:"type"`
-	ProductID string `json:"product_id"`
-}
-
 // InstancesAPI is an interface for instances.
 type InstancesAPI interface {
 	List(context.Context, *ListOptions) ([]Instance, *Meta, error)
 	Get(context.Context, string) (*Instance, error)
 	Create(context.Context, *InstanceCreateRequest) (*Instance, error)
 	Rename(context.Context, string, string) (*Instance, error)
-	Upgrade(context.Context, string, string) error
+	Upgrade(context.Context, string, *InstanceUpgradeRequest) error
 	Shutdown(context.Context, string) error
 	PowerOff(context.Context, string) error
 	Destroy(context.Context, string) error
@@ -202,6 +198,8 @@ type InstancesAPI interface {
 type InstancesService struct {
 	client *APIClient
 }
+
+var _ InstancesAPI = &InstancesService{}
 
 // Create new instance.
 func (is *InstancesService) Create(ctx context.Context, createRequest *InstanceCreateRequest) (*Instance, error) {
@@ -250,13 +248,32 @@ func (is *InstancesService) Rename(ctx context.Context, instanceID, name string)
 	return instanceRoot.Instance, err
 }
 
+// InstanceUpgradeRequest represents a request to upgrade the instance.
+type InstanceUpgradeRequest struct {
+	ProductID   string
+	ProductSlug string
+}
+
+type instanceUpgradeRequest struct {
+	ID          string `json:"id"`
+	Type        string `json:"type"`
+	ProductID   string `json:"product_id,omitempty"`
+	ProductSlug string `json:"product_slug,omitempty"`
+}
+
 // Upgrade instance.
-func (is *InstancesService) Upgrade(ctx context.Context, instanceID, productID string) error {
-	upgradeRequest := &InstanceUpgradeRequest{
-		ID:        instanceID,
-		Type:      "upgrade",
-		ProductID: productID,
+func (is *InstancesService) Upgrade(ctx context.Context, instanceID string, request *InstanceUpgradeRequest) error {
+	upgradeRequest := &instanceUpgradeRequest{
+		ID:   instanceID,
+		Type: "upgrade",
 	}
+
+	if request.ProductSlug != "" {
+		upgradeRequest.ProductSlug = request.ProductSlug
+	} else {
+		upgradeRequest.ProductID = request.ProductID
+	}
+
 	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
 	req, err := is.client.newRequest(http.MethodPost, path, upgradeRequest)
 	if err != nil {

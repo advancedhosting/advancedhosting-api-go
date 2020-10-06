@@ -253,6 +253,41 @@ func TestVolumes_Create(t *testing.T) {
 	}
 }
 
+func TestVolumes_CreateWithSlug(t *testing.T) {
+	request := &VolumeCreateRequest{
+		Name:        "test-name",
+		Size:        50,
+		ProductSlug: "Test_product_id",
+		FileSystem:  "ext4",
+		InstanceID:  "test_instance_id",
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: volumeGetResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/volumes", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	volume, err := api.Volumes.Create(ctx, request)
+
+	if volume == nil {
+		t.Errorf("Empty response")
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+}
+
 func TestVolumes_ActionInfo(t *testing.T) {
 	actionGetResponse := `{
 		"action": {

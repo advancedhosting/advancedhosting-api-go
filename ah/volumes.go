@@ -128,11 +128,12 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
-	Name       string `json:"name"`
-	Size       int    `json:"size"`
-	ProductID  string `json:"product_id"`
-	FileSystem string `json:"file_system,omitempty"`
-	InstanceID string `json:"instance_id,omitempty"`
+	Name        string `json:"name"`
+	Size        int    `json:"size"`
+	ProductID   string `json:"product_id,omitempty"`
+	ProductSlug string `json:"product_slug,omitempty"`
+	FileSystem  string `json:"file_system,omitempty"`
+	InstanceID  string `json:"instance_id,omitempty"`
 }
 
 // Create volume

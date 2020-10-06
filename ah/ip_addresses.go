@@ -72,7 +72,8 @@ func (ips *IPAddressesService) List(ctx context.Context, options *ListOptions) (
 // IPAddressCreateRequest represents a request to create an ip address.
 type IPAddressCreateRequest struct {
 	Type             string   `json:"address_type"`
-	DatacenterID     string   `json:"datacenter_id"`
+	DatacenterID     string   `json:"datacenter_id,omitempty"`
+	DatacenterSlug   string   `json:"datacenter_slug,omitempty"`
 	DeleteProtection bool     `json:"delete_protection,omitempty"`
 	ReverseDNS       string   `json:"reverse_dns,omitempty"`
 	InstanceIDs      []string `json:"instance_ids,omitempty"`
