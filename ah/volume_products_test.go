@@ -66,7 +66,7 @@ var (
 
 func TestVolumeProducts_List(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: volumeProductListResponse}
-	server := newFakeServer("/api/v1/products", fakeResponse)
+	server := newFakeServer("/api/v1/products/volumes", fakeResponse)
 
 	fakeClientOptions := &ClientOptions{
 		Token:      "test_token",
@@ -105,7 +105,7 @@ func TestVolumeProducts_List(t *testing.T) {
 
 func TestVolumeProducts_ListWithoutOptions(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: volumeProductListResponse}
-	server := newFakeServer("/api/v1/products", fakeResponse)
+	server := newFakeServer("/api/v1/products/volumes", fakeResponse)
 
 	fakeClientOptions := &ClientOptions{
 		Token:      "test_token",
