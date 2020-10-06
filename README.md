@@ -17,7 +17,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/advancedhosters/advancedhosting-api-go/ah"
+	"github.com/advancedhosting/advancedhosting-api-go/ah"
 )
 
 func main() {
