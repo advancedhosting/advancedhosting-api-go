@@ -58,20 +58,7 @@ type productsRoot struct {
 // List returns all available volume products
 func (vps *VolumeProductsService) List(ctx context.Context, options *ListOptions) ([]VolumeProduct, *Meta, error) {
 
-	eqTypeFilter := &EqFilter{
-		Keys:  []string{"type"},
-		Value: "VolumeProduct",
-	}
-
-	if options == nil || options.Filters == nil {
-		options = &ListOptions{
-			Filters: []FilterInterface{eqTypeFilter},
-		}
-	} else {
-		options.Filters = append(options.Filters, eqTypeFilter)
-	}
-
-	path := "api/v1/products"
+	path := "api/v1/products/volumes"
 
 	var pRoot productsRoot
 
