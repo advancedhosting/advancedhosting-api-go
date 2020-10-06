@@ -28,7 +28,7 @@ const datacenterResponse = `{
 	"id": "62893e3a-84e7-46a4-9cc2-ad892ef37a48",
 	"name": "Ams1",
 	"full_name": "NL, Amsterdam 1, Ams1",
-	"datacenter_slug": null,
+	"slug": "ams1",
 	"instances_running": 1,
 	"private_nodes_count": 0,
 	"region": {
@@ -39,7 +39,8 @@ const datacenterResponse = `{
 }`
 
 var (
-	datacenterListResponse = fmt.Sprintf(`{"products": [%s]}`, datacenterResponse)
+	datacenterListResponse = fmt.Sprintf(`{"datacenters": [%s]}`, datacenterResponse)
+	datacenterGetResponse  = fmt.Sprintf(`{"datacenter": %s}`, datacenterResponse)
 )
 
 func TestDatacenters_List(t *testing.T) {
@@ -60,11 +61,46 @@ func TestDatacenters_List(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
+	if datacenters == nil {
+		t.Errorf("Unexpected response: %v", datacenters)
+	}
+
 	var expectedResult datacentersRoot
 	json.Unmarshal([]byte(datacenterListResponse), &expectedResult)
 
 	if !reflect.DeepEqual(expectedResult.Datacenters, datacenters) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, datacenters)
+	}
+
+}
+
+func TestDatacenters_Get(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: datacenterGetResponse}
+	server := newFakeServer("/api/v1/datacenters/62893e3a-84e7-46a4-9cc2-ad892ef37a48", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	datacenter, err := api.Datacenters.Get(ctx, "62893e3a-84e7-46a4-9cc2-ad892ef37a48")
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if datacenter == nil {
+		t.Errorf("Unexpected response: %v", datacenter)
+	}
+
+	var expectedResult datacenterRoot
+	json.Unmarshal([]byte(datacenterGetResponse), &expectedResult)
+
+	if !reflect.DeepEqual(expectedResult.Datacenter, datacenter) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, datacenter)
 	}
 
 }
