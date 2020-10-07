@@ -73,7 +73,7 @@ type VolumesAPI interface {
 	Get(context.Context, string) (*Volume, error)
 	Create(context.Context, *VolumeCreateRequest) (*Volume, error)
 	Update(context.Context, string, *VolumeUpdateRequest) (*Volume, error)
-	Copy(context.Context, string, string, string) (*VolumeAction, error)
+	Copy(context.Context, string, *VolumeCopyActionRequest) (*VolumeAction, error)
 	Resize(context.Context, string, int) (*Action, error)
 	ActionInfo(context.Context, string, string) (*VolumeAction, error)
 	Actions(context.Context, string) ([]VolumeAction, error)
@@ -177,23 +177,36 @@ func (vs *VolumesService) Update(ctx context.Context, volumeID string, request *
 	return vRoot.Volume, nil
 }
 
+// VolumeCopyActionRequest represents a request to create new volume from origin.
+type VolumeCopyActionRequest struct {
+	Name        string
+	ProductID   string
+	ProductSlug string
+}
+
 type volumeCopyActionRequest struct {
-	Name      string `json:"name"`
-	ProductID string `json:"product_id"`
-	Type      string `json:"type"`
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	ProductID   string `json:"product_id,omitempty"`
+	ProductSlug string `json:"product_slug,omitempty"`
 }
 
 // Copy volume
-func (vs *VolumesService) Copy(ctx context.Context, volumeID, name, productID string) (*VolumeAction, error) {
+func (vs *VolumesService) Copy(ctx context.Context, volumeID string, request *VolumeCopyActionRequest) (*VolumeAction, error) {
 	path := fmt.Sprintf("api/v1/volumes/%s/actions", volumeID)
 
-	request := &volumeCopyActionRequest{
-		Name:      name,
-		ProductID: productID,
-		Type:      "copy",
+	copyRequest := &volumeCopyActionRequest{
+		Name: request.Name,
+		Type: "copy",
 	}
 
-	req, err := vs.client.newRequest(http.MethodPost, path, request)
+	if request.ProductSlug != "" {
+		copyRequest.ProductSlug = request.ProductSlug
+	} else {
+		copyRequest.ProductID = request.ProductID
+	}
+
+	req, err := vs.client.newRequest(http.MethodPost, path, copyRequest)
 
 	if err != nil {
 		return nil, err
