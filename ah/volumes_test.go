@@ -176,7 +176,46 @@ func TestVolumes_Copy(t *testing.T) {
 	var expectedResult volumeActionRoot
 	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
 
-	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", "new name", "test_product_id")
+	request := &VolumeCopyActionRequest{
+		Name:      "new name",
+		ProductID: "test_product_id",
+	}
+
+	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if action == nil {
+		t.Errorf("Invalid response: %v", action)
+	}
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
+func TestVolumes_CopyWithProductSlug(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse}
+	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+
+	var expectedResult volumeActionRoot
+	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+
+	request := &VolumeCopyActionRequest{
+		Name:        "new name",
+		ProductSlug: "test_product_slug",
+	}
+
+	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
