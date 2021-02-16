@@ -79,6 +79,7 @@ func (c *APIClient) newRequest(method string, path string, body interface{}) (*h
 
 	req, err := http.NewRequest(method, u.String(), buf)
 	req.Header.Add("X-Auth-Token", c.token)
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Add("Content-Type", "application/json")
 	return req, nil
 
