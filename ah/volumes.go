@@ -30,6 +30,7 @@ type Volume struct {
 	Size       int    `json:"size,omitempty"`
 	Port       int    `json:"port,omitempty"`
 	State      string `json:"state,omitempty"`
+	Number     string `json:"number,omitempty"`
 	OriginalID string `json:"original_id,omitempty"`
 	CreatedAt  string `json:"created_at,omitempty"`
 	AttachedAt string `json:"attached_at,omitempty"`
