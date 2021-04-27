@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/oauth2"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -40,7 +41,6 @@ type APIClient struct {
 	client                  *http.Client
 	options                 *ClientOptions
 	apiURL                  *url.URL
-	token                   string
 	Instances               InstancesAPI
 	IPAddresses             IPAddressesAPI
 	IPAddressAssignments    IPAddressAssignmentsAPI
@@ -78,7 +78,9 @@ func (c *APIClient) newRequest(method string, path string, body interface{}) (*h
 	}
 
 	req, err := http.NewRequest(method, u.String(), buf)
-	req.Header.Add("X-Auth-Token", c.token)
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Add("Content-Type", "application/json")
 	return req, nil
 
@@ -118,7 +120,7 @@ func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*
 		case http.StatusNotFound:
 			err = ErrResourceNotFound
 		case http.StatusBadRequest:
-			err = fmt.Errorf("Bad Request")
+			err = fmt.Errorf("bad Request")
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			err = fmt.Errorf(string(body))
@@ -150,18 +152,20 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 		return nil, err
 	}
 	if options.Token == "" {
-		return nil, fmt.Errorf("Invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
-
-	httpClient := &http.Client{}
+	var httpClient *http.Client
 	if options.HTTPClient != nil {
 		httpClient = options.HTTPClient
+	} else {
+		token := &oauth2.Token{AccessToken: options.Token}
+		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(token))
 	}
+
 
 	c := &APIClient{
 		client: httpClient,
 		apiURL: apiURL,
-		token:  options.Token,
 	}
 	c.Instances = &InstancesService{client: c}
 	c.IPAddresses = &IPAddressesService{client: c}
