@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,8 +61,7 @@ const instancesBackupsResponse = `{
 }`
 
 var (
-	instancesBackupsListResponse = fmt.Sprintf(`{"instances_backups": [%s]}`, instancesBackupsResponse)
-	backupGetResponse            = fmt.Sprintf(`{"backup": %s}`, backupResponse)
+	backupGetResponse = fmt.Sprintf(`{"backup": %s}`, backupResponse)
 )
 
 func TestBackups_List(t *testing.T) {
@@ -83,7 +82,9 @@ func TestBackups_List(t *testing.T) {
 	}
 
 	var expectedResult instancesBackupsRoot
-	json.Unmarshal([]byte(instancesBackupsResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(instancesBackupsResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.InstancesBackups, backups) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, backups)
@@ -108,7 +109,9 @@ func TestBackups_Get(t *testing.T) {
 	}
 
 	var expectedResult backupRoot
-	json.Unmarshal([]byte(backupGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(backupGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Backup, backup) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, backup)
@@ -138,7 +141,9 @@ func TestBackups_Update(t *testing.T) {
 	}
 
 	var expectedResult backupRoot
-	json.Unmarshal([]byte(backupGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(backupGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Backup, backup) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, backup)
@@ -163,7 +168,9 @@ func TestBackups_Delete(t *testing.T) {
 	}
 
 	var expectedResult actionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)

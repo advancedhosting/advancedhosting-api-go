@@ -1,3 +1,19 @@
+/*
+Copyright 2021 Advanced Hosting
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package ah
 
 import (
@@ -7,33 +23,33 @@ import (
 // InstanceProductTariff object
 type InstanceProductTariff struct {
 	Component              string  `json:"component,omitempty"`
+	Measure                string  `json:"measure,omitempty"`
 	TariffPrice            float64 `json:"tariff_price,omitempty"`
 	AdditionalServicePrice int     `json:"additional_service_price,omitempty"`
 	IncludedValue          int     `json:"included_value,omitempty"`
-	Measure                string  `json:"measure,omitempty"`
 }
 
 // InstanceProduct object
 type InstanceProduct struct {
-	ID               string                  `json:"id,omitempty"`
-	CreatedAt        string                  `json:"created_at,omitempty"`
-	UpdatedAt        string                  `json:"updated_at,omitempty"`
-	Name             string                  `json:"name,omitempty"`
-	Type             string                  `json:"type,omitempty"`
-	Price            string                  `json:"price,omitempty"`
-	Currency         string                  `json:"currency,omitempty"`
-	Hot              bool                    `json:"hot,omitempty"`
-	Tariff           []InstanceProductTariff `json:"tariff,omitempty"`
-	Vcpu             string                  `json:"vcpu,omitempty"`
-	RAM              string                  `json:"ram,omitempty"`
-	Disk             string                  `json:"disk,omitempty"`
-	Traffic          string                  `json:"traffic,omitempty"`
-	AvailableOnTrial bool                    `json:"available_on_trial,omitempty"`
-	Slug             string                  `json:"slug,omitempty"`
-	Category         *struct {
+	Tariff    []InstanceProductTariff `json:"tariff,omitempty"`
+	ID        string                  `json:"id,omitempty"`
+	CreatedAt string                  `json:"created_at,omitempty"`
+	UpdatedAt string                  `json:"updated_at,omitempty"`
+	Name      string                  `json:"name,omitempty"`
+	Type      string                  `json:"type,omitempty"`
+	Price     string                  `json:"price,omitempty"`
+	Currency  string                  `json:"currency,omitempty"`
+	Vcpu      string                  `json:"vcpu,omitempty"`
+	RAM       string                  `json:"ram,omitempty"`
+	Disk      string                  `json:"disk,omitempty"`
+	Traffic   string                  `json:"traffic,omitempty"`
+	Slug      string                  `json:"slug,omitempty"`
+	Category  *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	} `json:"category,omitempty"`
+	Hot              bool `json:"hot,omitempty"`
+	AvailableOnTrial bool `json:"available_on_trial,omitempty"`
 }
 
 // InstanceProductsAPI is an interface for instance products.

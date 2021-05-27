@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -87,7 +87,9 @@ func TestVolumes_List(t *testing.T) {
 	}
 
 	var expectedResult volumesRoot
-	json.Unmarshal([]byte(volumeListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(volumeListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if meta == nil {
 		t.Errorf("unexpected meta: %v", meta)
@@ -112,7 +114,9 @@ func TestVolumes_Get(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult volumeRoot
-	json.Unmarshal([]byte(volumeGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(volumeGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	volume, err := api.Volumes.Get(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a")
 	if err != nil {
@@ -141,7 +145,9 @@ func TestVolumes_Update(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult volumeRoot
-	json.Unmarshal([]byte(volumeGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(volumeGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	request := &VolumeUpdateRequest{
 		Name: "New Name",
@@ -174,7 +180,9 @@ func TestVolumes_Copy(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult volumeActionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	request := &VolumeCopyActionRequest{
 		Name:      "new name",
@@ -208,7 +216,9 @@ func TestVolumes_CopyWithProductSlug(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult volumeActionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	request := &VolumeCopyActionRequest{
 		Name:        "new name",
@@ -242,7 +252,9 @@ func TestVolumes_Resize(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult actionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	action, err := api.Volumes.Resize(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", 20)
 	if err != nil {
@@ -364,7 +376,9 @@ func TestVolumes_ActionInfo(t *testing.T) {
 	}
 
 	var expectedResult volumeActionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
@@ -423,7 +437,9 @@ func TestVolumes_Actions(t *testing.T) {
 	}
 
 	var expectedResult volumeActionsRoot
-	json.Unmarshal([]byte(actionListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Actions, actions) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, actions)

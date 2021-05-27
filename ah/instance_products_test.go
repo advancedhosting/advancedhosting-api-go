@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -85,7 +85,9 @@ func TestInstanceProducts_List(t *testing.T) {
 	}
 
 	var expectedResult instanceProductsRoot
-	json.Unmarshal([]byte(instanceProductListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(instanceProductListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if meta == nil {
 		t.Errorf("unexpected meta: %v", meta)

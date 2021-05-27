@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -66,7 +66,9 @@ func TestDatacenters_List(t *testing.T) {
 	}
 
 	var expectedResult datacentersRoot
-	json.Unmarshal([]byte(datacenterListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(datacenterListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Datacenters, datacenters) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, datacenters)
@@ -97,7 +99,9 @@ func TestDatacenters_Get(t *testing.T) {
 	}
 
 	var expectedResult datacenterRoot
-	json.Unmarshal([]byte(datacenterGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(datacenterGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Datacenter, datacenter) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, datacenter)

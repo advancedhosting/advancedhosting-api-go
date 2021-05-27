@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,8 +33,4 @@ type Action struct {
 
 type actionRoot struct {
 	Action *Action `json:"action"`
-}
-
-type actionsRoot struct {
-	Actions []Action `json:"actions"`
 }

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -75,38 +75,38 @@ type InstanceSSHKey struct {
 
 // Instance object
 type Instance struct {
+	SSHKeys                    []InstanceSSHKey         `json:"ssh_keys,omitempty"`
+	Tags                       []string                 `json:"tags,omitempty"`
+	Features                   []string                 `json:"features,omitempty"`
+	PrivateNetworks            []InstancePrivateNetwork `json:"instance_private_networks,omitempty"`
+	IPAddresses                []InstanceIPAddress      `json:"instance_ip_addresses,omitempty"`
+	Volumes                    []Volume                 `json:"volumes,omitempty"`
 	ID                         string                   `json:"id,omitempty"`
 	CreatedAt                  string                   `json:"created_at,omitempty"`
 	UpdatedAt                  string                   `json:"updated_at,omitempty"`
 	Number                     string                   `json:"number,omitempty"`
 	Name                       string                   `json:"name,omitempty"`
 	State                      string                   `json:"state,omitempty"`
-	Disk                       int                      `json:"disk,omitempty"`
 	StateDescription           string                   `json:"state_description,omitempty"`
-	Locked                     bool                     `json:"locked,omitempty"`
-	UseSSHPassword             bool                     `json:"use_ssh_password,omitempty"`
-	SSHKeys                    []InstanceSSHKey         `json:"ssh_keys,omitempty"`
 	ProductID                  string                   `json:"product_id,omitempty"`
+	PrimaryInstanceIPAddressID string                   `json:"primary_instance_ip_address_id,omitempty"`
+	IPScheme                   string                   `json:"ip_scheme,omitempty"`
+	Reason                     string                   `json:"reason,omitempty"`
+	SnapshotPeriod             string                   `json:"snapshot_period,omitempty"`
+	Disk                       int                      `json:"disk,omitempty"`
 	Vcpu                       int                      `json:"vcpu,omitempty"`
 	RAM                        int                      `json:"ram,omitempty"`
 	Traffic                    int                      `json:"traffic,omitempty"`
-	Tags                       []string                 `json:"tags,omitempty"`
-	PrimaryInstanceIPAddressID string                   `json:"primary_instance_ip_address_id,omitempty"`
-	IPScheme                   string                   `json:"ip_scheme,omitempty"`
 	Region                     *InstanceRegion          `json:"region,omitempty"`
 	Datacenter                 *Datacenter              `json:"datacenter,omitempty"`
-	Features                   []string                 `json:"features,omitempty"`
 	Networks                   *InstanceNetworks        `json:"networks,omitempty"`
 	CurrentAction              *InstanceAction          `json:"current_action,omitempty"`
 	LastAction                 *InstanceAction          `json:"last_action,omitempty"`
-	Reason                     string                   `json:"reason,omitempty"`
-	SnapshotBySchedule         bool                     `json:"snapshot_by_schedule,omitempty"`
-	SnapshotPeriod             string                   `json:"snapshot_period,omitempty"`
 	MaxVolumesNumber           int                      `json:"max_volumes_number,omitempty"`
-	PrivateNetworks            []InstancePrivateNetwork `json:"instance_private_networks,omitempty"`
-	IPAddresses                []InstanceIPAddress      `json:"instance_ip_addresses,omitempty"`
 	Image                      *InstanceImage           `json:"image,omitempty"`
-	Volumes                    []Volume                 `json:"volumes,omitempty"`
+	Locked                     bool                     `json:"locked,omitempty"`
+	UseSSHPassword             bool                     `json:"use_ssh_password,omitempty"`
+	SnapshotBySchedule         bool                     `json:"snapshot_by_schedule,omitempty"`
 }
 
 // InstanceAction object
@@ -149,6 +149,8 @@ type instanceRoot struct {
 
 // InstanceCreateRequest represents a request to create a instance.
 type InstanceCreateRequest struct {
+	Tags                  []string `json:"tags"`
+	SSHKeyIDs             []string `json:"ssh_key_ids"`
 	Name                  string   `json:"name"`
 	DatacenterID          string   `json:"datacenter_id,omitempty"`
 	DatacenterSlug        string   `json:"datacenter_slug,omitempty"`
@@ -156,11 +158,9 @@ type InstanceCreateRequest struct {
 	ImageSlug             string   `json:"image_slug,omitempty"`
 	ProductID             string   `json:"product_id,omitempty"`
 	ProductSlug           string   `json:"product_slug,omitempty"`
-	UseSSHPassword        bool     `json:"use_ssh_password"`
-	Tags                  []string `json:"tags"`
-	SSHKeyIDs             []string `json:"ssh_key_ids"`
-	CreatePublicIPAddress bool     `json:"create_public_ip_address"`
 	SnapshotPeriod        string   `json:"snapshot_period"`
+	UseSSHPassword        bool     `json:"use_ssh_password"`
+	CreatePublicIPAddress bool     `json:"create_public_ip_address"`
 	SnapshotBySchedule    bool     `json:"snapshot_by_schedule"`
 }
 
