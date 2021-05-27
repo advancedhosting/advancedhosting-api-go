@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -89,7 +89,9 @@ func TestPrivateNetworks_List(t *testing.T) {
 	}
 
 	var expectedResult privateNetworksRoot
-	json.Unmarshal([]byte(privateNetworkListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(privateNetworkListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.PrivateNetworks, privateNetworks) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, privateNetworks)
@@ -110,7 +112,9 @@ func TestPrivateNetworks_Get(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult privateNetworkInfoRoot
-	json.Unmarshal([]byte(privateNetworkGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(privateNetworkGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	privateNetwork, err := api.PrivateNetworks.Get(ctx, "1bb35cbf-4b0f-467f-aa12-343e896e2d22")
 	if err != nil {
@@ -139,7 +143,9 @@ func TestPrivateNetworks_Update(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult privateNetworkInfoRoot
-	json.Unmarshal([]byte(privateNetworkGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(privateNetworkGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	request := &PrivateNetworkUpdateRequest{
 		Name: "aaaa",

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,16 +24,16 @@ import (
 
 // IPAddress object
 type IPAddress struct {
+	InstanceIDs                  []string `json:"instance_ids,omitempty"`
 	Address                      string   `json:"address,omitempty"`
 	Type                         string   `json:"address_type,omitempty"`
 	CreatedAt                    string   `json:"created_at,omitempty"`
 	DatacenterFullName           string   `json:"datacenter_full_name,omitempty"`
-	DeleteProtection             bool     `json:"delete_protection,omitempty"`
 	ID                           string   `json:"id,omitempty"`
-	InstanceIDs                  []string `json:"instance_ids,omitempty"`
-	NetworkUsedForPrivateCluster bool     `json:"network_used_for_private_cluster,omitempty"`
 	ReverseDNS                   string   `json:"reverse_dns,omitempty"`
 	UpdatedAt                    string   `json:"updated_at,omitempty"`
+	DeleteProtection             bool     `json:"delete_protection,omitempty"`
+	NetworkUsedForPrivateCluster bool     `json:"network_used_for_private_cluster,omitempty"`
 }
 
 type ipAddressesRoot struct {

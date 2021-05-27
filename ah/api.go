@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ const defaultAPIURL = "https://api.websa.com"
 // APIClient implements communication with AH API
 type APIClient struct {
 	client                  *http.Client
-	options                 *ClientOptions
 	apiURL                  *url.URL
 	Instances               InstancesAPI
 	IPAddresses             IPAddressesAPI
@@ -53,6 +52,7 @@ type APIClient struct {
 	Datacenters             DatacentersAPI
 	Images                  ImagesAPI
 	InstanceProducts        InstanceProductsAPI
+	LoadBalancers           LoadBalancersAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -162,7 +162,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(token))
 	}
 
-
 	c := &APIClient{
 		client: httpClient,
 		apiURL: apiURL,
@@ -179,5 +178,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Datacenters = &DatacentersService{client: c}
 	c.Images = &ImagesService{client: c}
 	c.InstanceProducts = &InstanceProductsService{client: c}
+	c.LoadBalancers = &LoadBalancersService{client: c}
 	return c, nil
 }

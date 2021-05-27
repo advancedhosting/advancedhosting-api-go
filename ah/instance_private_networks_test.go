@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -115,7 +115,9 @@ func TestInstancePrivateNetworks_Get(t *testing.T) {
 	}
 
 	var expectedResult instancePrivateNetworkInfoRoot
-	json.Unmarshal([]byte(instancePrivateNetworkGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(instancePrivateNetworkGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.InstancePrivateNetwork, instancePrivateNetwork) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instancePrivateNetwork)

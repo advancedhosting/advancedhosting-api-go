@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -56,7 +56,9 @@ func TestSSHKeys_List(t *testing.T) {
 	}
 
 	var expectedResult sshKeysRoot
-	json.Unmarshal([]byte(sshKeyListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(sshKeyListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if meta == nil {
 		t.Errorf("unexpected meta: %v", meta)
@@ -82,7 +84,9 @@ func TestSSHKeys_Get(t *testing.T) {
 	ctx := context.Background()
 
 	var expectedResult sshKeyRoot
-	json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	sshKey, err := api.SSHKeys.Get(ctx, "c1965765-c1b5-4c1e-a55a-aa0a208cd89e")
 	if err != nil {
@@ -129,7 +133,9 @@ func TestSSHKeys_Create(t *testing.T) {
 	}
 
 	var expectedResult sshKeyRoot
-	json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.SSHKey, sshKey) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, sshKey)
@@ -158,7 +164,9 @@ func TestSSHKeys_Update(t *testing.T) {
 	api, _ := NewAPIClient(fakeClientOptions)
 
 	var expectedResult sshKeyRoot
-	json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult)
+	if err := json.Unmarshal([]byte(sshKeyGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	ctx := context.Background()
 	sshKey, err := api.SSHKeys.Update(ctx, "c1965765-c1b5-4c1e-a55a-aa0a208cd89e", request)

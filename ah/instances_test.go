@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -180,7 +180,7 @@ func newFakeServer(url string, response *fakeServerResponse) *httptest.Server {
 		if response.statusCode != 0 {
 			rw.WriteHeader(response.statusCode)
 		}
-		rw.Write([]byte(response.responseBody))
+		_, _ = rw.Write([]byte(response.responseBody))
 	})
 	return httptest.NewServer(mux)
 }
@@ -203,7 +203,9 @@ func TestInstances_List(t *testing.T) {
 	}
 
 	var expectedResult instancesRoot
-	json.Unmarshal([]byte(listResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(listResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Instances, instances) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instances)
@@ -233,7 +235,9 @@ func TestInstances_ListOptions(t *testing.T) {
 	}
 
 	var expectedResult instancesRoot
-	json.Unmarshal([]byte(listResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(listResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Instances, instances) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instances)
@@ -258,7 +262,9 @@ func TestInstance_Get(t *testing.T) {
 	}
 
 	var expectedResult instanceRoot
-	json.Unmarshal([]byte(getResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(getResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Instance, instance) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instance)
@@ -385,7 +391,9 @@ func TestInstance_Rename(t *testing.T) {
 	}
 
 	var expectedResult instanceRoot
-	json.Unmarshal([]byte(getResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(getResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Instance, instance) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, instance)
@@ -510,7 +518,9 @@ func TestInstance_SetPrimaryIP(t *testing.T) {
 	}
 
 	var expectedResult actionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
@@ -536,7 +546,9 @@ func TestInstance_ActionInfo(t *testing.T) {
 	}
 
 	var expectedResult instanceActionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
@@ -561,7 +573,9 @@ func TestInstance_Actions(t *testing.T) {
 	}
 
 	var expectedResult instanceActionsRoot
-	json.Unmarshal([]byte(actionListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Actions, actions) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, actions)
@@ -586,7 +600,9 @@ func TestInstance_AttachVolume(t *testing.T) {
 	}
 
 	var expectedResult actionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
@@ -611,7 +627,9 @@ func TestInstance_DetachVolume(t *testing.T) {
 	}
 
 	var expectedResult actionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
@@ -641,7 +659,9 @@ func TestInstance_AvailableVolumes(t *testing.T) {
 	}
 
 	var expectedResult volumesRoot
-	json.Unmarshal([]byte(volumeListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(volumeListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Volumes, volumes) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, volumes)
@@ -666,7 +686,9 @@ func TestInstance_CreateBackup(t *testing.T) {
 	}
 
 	var expectedResult instanceActionRoot
-	json.Unmarshal([]byte(actionGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.Action, action) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)

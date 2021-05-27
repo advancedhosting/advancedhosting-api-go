@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Advanced Hosting
+Copyright 2021 Advanced Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ const ipAddressAssignmentResponse = `{
 }`
 
 var (
-	ipAddressAssignmentGetResponse  = fmt.Sprintf(`{"instance_ip_address": %s}`, ipAddressResponse)
-	ipAddressAssignmentListResponse = fmt.Sprintf(`{"instance_ip_addresses": [%s]}`, ipAddressResponse)
+	ipAddressAssignmentGetResponse  = fmt.Sprintf(`{"instance_ip_address": %s}`, ipAddressAssignmentResponse)
+	ipAddressAssignmentListResponse = fmt.Sprintf(`{"instance_ip_addresses": [%s]}`, ipAddressAssignmentResponse)
 )
 
 func TestIPAddressAssignment_Create(t *testing.T) {
@@ -94,7 +94,9 @@ func TestIPAddressAssignment_Get(t *testing.T) {
 	}
 
 	var expectedResult ipAddressAssignmentRoot
-	json.Unmarshal([]byte(ipAddressAssignmentGetResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(ipAddressAssignmentGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.InstanceIPAddress, ipAddressAssignment) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, ipAddressAssignment)
@@ -123,7 +125,9 @@ func TestIPAddressAssignment_List(t *testing.T) {
 	}
 
 	var expectedResult ipAddressAssignmentsRoot
-	json.Unmarshal([]byte(ipAddressAssignmentListResponse), &expectedResult)
+	if err = json.Unmarshal([]byte(ipAddressAssignmentListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
 
 	if !reflect.DeepEqual(expectedResult.InstanceIPAddresses, ipAddressAssignments) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, ipAddressAssignments)
