@@ -168,7 +168,7 @@ func (lb *LoadBalancersService) Get(ctx context.Context, lbID string) (*LoadBala
 type LoadBalancerCreateRequest struct {
 	Name                  string                          `json:"name"`
 	DatacenterID          string                          `json:"datacenter_id"`
-	CreatePublicIPAddress bool                            `json:"create_public_ip_address,omitempty"`
+	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
 	BalancingAlgorithm    string                          `json:"balancing_algorithm,omitempty"`
 	IPAddressIDs          []string                        `json:"ip_address_ids,omitempty"`
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
