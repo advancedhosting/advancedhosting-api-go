@@ -18,23 +18,21 @@ package ah
 
 // PlanPrice object
 type PlanPrice struct {
-	Id       int         `json:"id"`
-	PlanId   int         `json:"plan_id"`
-	Type     string      `json:"type"`
-	Unit     string      `json:"unit"`
-	Currency string      `json:"currency"`
-	Quantity string      `json:"quantity"`
-	Price    string      `json:"price"`
-	ObjectId interface{} `json:"object_id"`
+	Type     string `json:"type"`
+	Unit     string `json:"unit"`
+	Currency string `json:"currency"`
+	Quantity string `json:"quantity"`
+	Price    string `json:"price"`
+	Id       int    `json:"id"`
+	PlanId   int    `json:"plan_id"`
 }
 
 // Plan object
 type Plan struct {
-	Id               int           `json:"id"`
-	Type             string        `json:"type"`
-	Currency         string        `json:"currency"`
-	Name             string        `json:"name"`
-	Data             []interface{} `json:"data"`
+	Prices           map[int]PlanPrice `json:"prices"`
+	Type             string            `json:"type"`
+	Currency         string            `json:"currency"`
+	Name             string            `json:"name"`
 	CustomAttributes struct {
 		Ram              string `json:"ram"`
 		Disk             string `json:"disk"`
@@ -45,5 +43,5 @@ type Plan struct {
 		Hot              bool   `json:"hot"`
 		AvailableOnTrial bool   `json:"available_on_trial"`
 	} `json:"custom_attributes"`
-	Prices map[int]PlanPrice `json:"prices"`
+	Id int `json:"id"`
 }

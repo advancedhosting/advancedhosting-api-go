@@ -46,8 +46,8 @@ type SSHKeysService struct {
 }
 
 type sshKeysRoot struct {
-	SSHKeys []SSHKey `json:"ssh_keys"`
 	Meta    *Meta    `json:"meta"`
+	SSHKeys []SSHKey `json:"ssh_keys"`
 }
 
 // List returns all available ssh keys

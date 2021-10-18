@@ -59,9 +59,9 @@ type APIClient struct {
 
 // ClientOptions represents options to communicate with AH API
 type ClientOptions struct {
+	HTTPClient *http.Client
 	BaseURL    string
 	Token      string
-	HTTPClient *http.Client
 }
 
 func (c *APIClient) newRequest(method string, path string, body interface{}) (*http.Request, error) {

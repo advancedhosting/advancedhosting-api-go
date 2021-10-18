@@ -44,8 +44,8 @@ func (f *InFilter) Encode() []string {
 
 // EqFilter represents Ransack "*_eq" filter .
 type EqFilter struct {
-	Keys  []string
 	Value string
+	Keys  []string
 }
 
 // Encode returns Ransack "*_eq" filter expression
@@ -56,8 +56,8 @@ func (f *EqFilter) Encode() []string {
 
 // ContFilter represents Ransack "*_cont" filter .
 type ContFilter struct {
-	Keys  []string
 	Value string
+	Keys  []string
 }
 
 // Encode returns Ransack "*_eq" filter expression

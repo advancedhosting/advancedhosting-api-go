@@ -31,25 +31,25 @@ type InstanceProductTariff struct {
 
 // InstanceProduct object
 type InstanceProduct struct {
-	Tariff    []InstanceProductTariff `json:"tariff,omitempty"`
-	ID        string                  `json:"id,omitempty"`
-	CreatedAt string                  `json:"created_at,omitempty"`
-	UpdatedAt string                  `json:"updated_at,omitempty"`
-	Name      string                  `json:"name,omitempty"`
-	Type      string                  `json:"type,omitempty"`
-	Price     string                  `json:"price,omitempty"`
-	Currency  string                  `json:"currency,omitempty"`
-	Vcpu      string                  `json:"vcpu,omitempty"`
-	RAM       string                  `json:"ram,omitempty"`
-	Disk      string                  `json:"disk,omitempty"`
-	Traffic   string                  `json:"traffic,omitempty"`
-	Slug      string                  `json:"slug,omitempty"`
-	Category  *struct {
+	Category *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	} `json:"category,omitempty"`
-	Hot              bool `json:"hot,omitempty"`
-	AvailableOnTrial bool `json:"available_on_trial,omitempty"`
+	ID               string                  `json:"id,omitempty"`
+	CreatedAt        string                  `json:"created_at,omitempty"`
+	UpdatedAt        string                  `json:"updated_at,omitempty"`
+	Name             string                  `json:"name,omitempty"`
+	Type             string                  `json:"type,omitempty"`
+	Price            string                  `json:"price,omitempty"`
+	Currency         string                  `json:"currency,omitempty"`
+	Vcpu             string                  `json:"vcpu,omitempty"`
+	RAM              string                  `json:"ram,omitempty"`
+	Disk             string                  `json:"disk,omitempty"`
+	Traffic          string                  `json:"traffic,omitempty"`
+	Slug             string                  `json:"slug,omitempty"`
+	Tariff           []InstanceProductTariff `json:"tariff,omitempty"`
+	Hot              bool                    `json:"hot,omitempty"`
+	AvailableOnTrial bool                    `json:"available_on_trial,omitempty"`
 }
 
 // InstanceProductsAPI is an interface for instance products.
@@ -63,8 +63,8 @@ type InstanceProductsService struct {
 }
 
 type instanceProductsRoot struct {
-	Products []InstanceProduct `json:"products"`
 	Meta     *Meta             `json:"meta,omitempty"`
+	Products []InstanceProduct `json:"products"`
 }
 
 // List returns all available volume products

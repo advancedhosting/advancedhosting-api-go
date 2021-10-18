@@ -23,27 +23,14 @@ import (
 // VolumeProductTariff object
 type VolumeProductTariff struct {
 	Component    string  `json:"component,omitempty"`
+	Measure      string  `json:"measure,omitempty"`
 	TariffPrice  float64 `json:"tariff_price,omitempty"`
 	MonthlyHours int     `json:"monthly_hours,omitempty"`
-	Measure      string  `json:"measure,omitempty"`
 }
 
 // VolumeProduct object
 type VolumeProduct struct {
-	ID            string                `json:"id,omitempty"`
-	CreatedAt     string                `json:"created_at,omitempty"`
-	UpdatedAt     string                `json:"updated_at,omitempty"`
-	Name          string                `json:"name,omitempty"`
-	Type          string                `json:"type,omitempty"`
-	Price         string                `json:"price,omitempty"`
-	Currency      string                `json:"currency,omitempty"`
-	Hot           bool                  `json:"hot,omitempty"`
-	Tariff        []VolumeProductTariff `json:"tariff,omitempty"`
-	MinSize       int                   `json:"min_size,omitempty"`
-	MaxSize       int                   `json:"max_size,omitempty"`
-	DatacenterIDs []string              `json:"datacenter_ids,omitempty"`
-	Slug          string                `json:"slug,omitempty"`
-	Category      *struct {
+	Category *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	} `json:"category,omitempty"`
@@ -54,6 +41,19 @@ type VolumeProduct struct {
 		DiskType         string `json:"disk_type,omitempty"`
 		ReplicationLevel int    `json:"replication_level,omitempty"`
 	}
+	ID            string                `json:"id,omitempty"`
+	CreatedAt     string                `json:"created_at,omitempty"`
+	UpdatedAt     string                `json:"updated_at,omitempty"`
+	Name          string                `json:"name,omitempty"`
+	Type          string                `json:"type,omitempty"`
+	Price         string                `json:"price,omitempty"`
+	Currency      string                `json:"currency,omitempty"`
+	Slug          string                `json:"slug,omitempty"`
+	DatacenterIDs []string              `json:"datacenter_ids,omitempty"`
+	Tariff        []VolumeProductTariff `json:"tariff,omitempty"`
+	Hot           bool                  `json:"hot,omitempty"`
+	MinSize       int                   `json:"min_size,omitempty"`
+	MaxSize       int                   `json:"max_size,omitempty"`
 }
 
 // VolumeProductsAPI is an interface for volume products.
@@ -67,8 +67,8 @@ type VolumeProductsService struct {
 }
 
 type productsRoot struct {
-	Products []VolumeProduct `json:"products"`
 	Meta     *Meta           `json:"meta,omitempty"`
+	Products []VolumeProduct `json:"products"`
 }
 
 // List returns all available volume products
