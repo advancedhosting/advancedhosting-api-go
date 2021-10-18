@@ -47,6 +47,8 @@ type APIClient struct {
 	InstancePrivateNetworks InstancePrivateNetworksAPI
 	Volumes                 VolumesAPI
 	VolumeProducts          VolumeProductsAPI
+	InstancePlans           InstancePlansAPI
+	VolumePlans             VolumePlansAPI
 	SSHKeys                 SSHKeysAPI
 	Backups                 BackupsAPI
 	Datacenters             DatacentersAPI
@@ -81,7 +83,9 @@ func (c *APIClient) newRequest(method string, path string, body interface{}) (*h
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Content-Type", "application/json")
+	if body != nil {
+		req.Header.Add("Content-Type", "application/json")
+	}
 	return req, nil
 
 }
@@ -179,5 +183,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Images = &ImagesService{client: c}
 	c.InstanceProducts = &InstanceProductsService{client: c}
 	c.LoadBalancers = &LoadBalancersService{client: c}
+	c.InstancePlans = &InstancePlansService{client: c}
+	c.VolumePlans = &VolumePlansService{client: c}
 	return c, nil
 }

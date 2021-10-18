@@ -4,4 +4,9 @@ run:
 linters:
   enable: 
     - gofmt
-    - maligned
+
+linters-settings:
+  govet:
+    enable:
+      - fieldalignment
+    enable-all: false
