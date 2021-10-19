@@ -24,18 +24,7 @@ import (
 
 // Volume object
 type Volume struct {
-	ID         string `json:"id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	FileSystem string `json:"file_system,omitempty"`
-	Size       int    `json:"size,omitempty"`
-	Port       int    `json:"port,omitempty"`
-	State      string `json:"state,omitempty"`
-	Number     string `json:"number,omitempty"`
-	OriginalID string `json:"original_id,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
-	AttachedAt string `json:"attached_at,omitempty"`
-	ProductID  string `json:"product_id,omitempty"`
-	Instance   *struct {
+	Instance *struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	} `json:"instance,omitempty"`
@@ -50,6 +39,17 @@ type Volume struct {
 		DatacenterIDs    []string `json:"datacenter_ids,omitempty"`
 		ReplicationLevel int      `json:"replication_level,omitempty"`
 	} `json:"volume_pool,omitempty"`
+	ID         string `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	FileSystem string `json:"file_system,omitempty"`
+	State      string `json:"state,omitempty"`
+	Number     string `json:"number,omitempty"`
+	OriginalID string `json:"original_id,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	AttachedAt string `json:"attached_at,omitempty"`
+	ProductID  string `json:"product_id,omitempty"`
+	Size       int    `json:"size,omitempty"`
+	Port       int    `json:"port,omitempty"`
 }
 
 // VolumeAction object
@@ -87,8 +87,8 @@ type VolumesService struct {
 }
 
 type volumesRoot struct {
-	Volumes []Volume `json:"volumes"`
 	Meta    *Meta    `json:"meta"`
+	Volumes []Volume `json:"volumes"`
 }
 
 // List returns all available private networks
@@ -130,11 +130,11 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
 	Name        string `json:"name"`
-	Size        int    `json:"size"`
 	ProductID   string `json:"product_id,omitempty"`
 	ProductSlug string `json:"product_slug,omitempty"`
 	FileSystem  string `json:"file_system,omitempty"`
 	InstanceID  string `json:"instance_id,omitempty"`
+	Size        int    `json:"size"`
 }
 
 // Create volume
@@ -222,8 +222,8 @@ func (vs *VolumesService) Copy(ctx context.Context, volumeID string, request *Vo
 }
 
 type volumeResizeActionRequest struct {
-	Size int    `json:"size"`
 	Type string `json:"type"`
+	Size int    `json:"size"`
 }
 
 // Resize volume

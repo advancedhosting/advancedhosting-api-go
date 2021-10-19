@@ -24,23 +24,23 @@ import (
 
 // InstancePrivateNetworkInfo object
 type InstancePrivateNetworkInfo struct {
-	ID          string `json:"id,omitempty"`
-	IP          string `json:"ip"`
-	MACAddress  string `json:"mac_address"`
-	State       string `json:"state,omitempty"`
-	ConnectedAt string `json:"connected_at,omitempty"`
-	Instance    *struct {
+	Instance *struct {
 		ID      string `json:"id,omitempty"`
 		ImageID string `json:"image_id"`
 		Name    string `json:"name"`
 		Number  string `json:"number,omitempty"`
 	} `json:"instance,omitempty"`
+	ID          string `json:"id,omitempty"`
+	IP          string `json:"ip"`
+	MACAddress  string `json:"mac_address"`
+	State       string `json:"state,omitempty"`
+	ConnectedAt string `json:"connected_at,omitempty"`
 }
 
 // InstancePrivateNetwork object
 type InstancePrivateNetwork struct {
-	InstancePrivateNetworkInfo
 	PrivateNetwork *PrivateNetwork `json:"private_network,omitempty"`
+	InstancePrivateNetworkInfo
 }
 
 // InstancePrivateNetworksAPI is an interface for instance connection to private network.

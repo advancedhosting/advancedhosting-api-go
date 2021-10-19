@@ -29,11 +29,11 @@ type Backup struct {
 	CreatedAt   string `json:"created_at,omitempty"`
 	UpdatedAt   string `json:"updated_at,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Size        int    `json:"size,omitempty"`
-	Public      bool   `json:"public,omitempty"`
 	Status      string `json:"status,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Note        string `json:"note,omitempty"`
+	Public      bool   `json:"public,omitempty"`
+	Size        int    `json:"size,omitempty"`
 	MinDiskSize int    `json:"min_disk_size,omitempty"`
 }
 
@@ -41,9 +41,9 @@ type Backup struct {
 type InstanceBackups struct {
 	InstanceID                 string   `json:"instance_id,omitempty"`
 	InstanceName               string   `json:"instance_name,omitempty"`
+	Backups                    []Backup `json:"backups,omitempty"`
 	InstanceRemoved            bool     `json:"instance_removed,omitempty"`
 	InstanceSnapshotBySchedule bool     `json:"instance_snapshot_by_schedule,omitempty"`
-	Backups                    []Backup `json:"backups,omitempty"`
 }
 
 // BackupsAPI is an interface for backups.

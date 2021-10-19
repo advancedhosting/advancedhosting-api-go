@@ -44,8 +44,8 @@ type ImagesService struct {
 }
 
 type imagesRoot struct {
-	Images []Image `json:"images"`
 	Meta   *Meta   `json:"meta"`
+	Images []Image `json:"images"`
 }
 
 // List returns all available images

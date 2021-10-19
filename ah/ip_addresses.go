@@ -24,7 +24,6 @@ import (
 
 // IPAddress object
 type IPAddress struct {
-	InstanceIDs                  []string `json:"instance_ids,omitempty"`
 	Address                      string   `json:"address,omitempty"`
 	Type                         string   `json:"address_type,omitempty"`
 	CreatedAt                    string   `json:"created_at,omitempty"`
@@ -32,6 +31,7 @@ type IPAddress struct {
 	ID                           string   `json:"id,omitempty"`
 	ReverseDNS                   string   `json:"reverse_dns,omitempty"`
 	UpdatedAt                    string   `json:"updated_at,omitempty"`
+	InstanceIDs                  []string `json:"instance_ids,omitempty"`
 	DeleteProtection             bool     `json:"delete_protection,omitempty"`
 	NetworkUsedForPrivateCluster bool     `json:"network_used_for_private_cluster,omitempty"`
 }
@@ -74,9 +74,9 @@ type IPAddressCreateRequest struct {
 	Type             string   `json:"address_type"`
 	DatacenterID     string   `json:"datacenter_id,omitempty"`
 	DatacenterSlug   string   `json:"datacenter_slug,omitempty"`
-	DeleteProtection bool     `json:"delete_protection,omitempty"`
 	ReverseDNS       string   `json:"reverse_dns,omitempty"`
 	InstanceIDs      []string `json:"instance_ids,omitempty"`
+	DeleteProtection bool     `json:"delete_protection,omitempty"`
 }
 
 // Create ip address
@@ -124,8 +124,8 @@ func (ips *IPAddressesService) Get(ctx context.Context, ipAddressID string) (*IP
 
 // IPAddressUpdateRequest represents a request to update an ip address resource.
 type IPAddressUpdateRequest struct {
-	DeleteProtection bool   `json:"delete_protection,omitempty"`
 	ReverseDNS       string `json:"reverse_dns,omitempty"`
+	DeleteProtection bool   `json:"delete_protection,omitempty"`
 }
 
 // Update ip address resource

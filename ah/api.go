@@ -46,20 +46,20 @@ type APIClient struct {
 	PrivateNetworks         PrivateNetworksAPI
 	InstancePrivateNetworks InstancePrivateNetworksAPI
 	Volumes                 VolumesAPI
-	VolumeProducts          VolumeProductsAPI
+	InstancePlans           InstancePlansAPI
+	VolumePlans             VolumePlansAPI
 	SSHKeys                 SSHKeysAPI
 	Backups                 BackupsAPI
 	Datacenters             DatacentersAPI
 	Images                  ImagesAPI
-	InstanceProducts        InstanceProductsAPI
 	LoadBalancers           LoadBalancersAPI
 }
 
 // ClientOptions represents options to communicate with AH API
 type ClientOptions struct {
+	HTTPClient *http.Client
 	BaseURL    string
 	Token      string
-	HTTPClient *http.Client
 }
 
 func (c *APIClient) newRequest(method string, path string, body interface{}) (*http.Request, error) {
@@ -81,7 +81,9 @@ func (c *APIClient) newRequest(method string, path string, body interface{}) (*h
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Content-Type", "application/json")
+	if body != nil {
+		req.Header.Add("Content-Type", "application/json")
+	}
 	return req, nil
 
 }
@@ -172,12 +174,12 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.PrivateNetworks = &PrivateNetworksService{client: c}
 	c.InstancePrivateNetworks = &InstancePrivateNetworksService{client: c}
 	c.Volumes = &VolumesService{client: c}
-	c.VolumeProducts = &VolumeProductsService{client: c}
 	c.SSHKeys = &SSHKeysService{client: c}
 	c.Backups = &BackupsService{client: c}
 	c.Datacenters = &DatacentersService{client: c}
 	c.Images = &ImagesService{client: c}
-	c.InstanceProducts = &InstanceProductsService{client: c}
 	c.LoadBalancers = &LoadBalancersService{client: c}
+	c.InstancePlans = &InstancePlansService{client: c}
+	c.VolumePlans = &VolumePlansService{client: c}
 	return c, nil
 }

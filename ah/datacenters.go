@@ -31,13 +31,13 @@ type DatacenterRegion struct {
 
 // Datacenter object
 type Datacenter struct {
+	Region            *DatacenterRegion `json:"region,omitempty"`
 	ID                string            `json:"id,omitempty"`
 	Name              string            `json:"name,omitempty"`
 	FullName          string            `json:"full_name,omitempty"`
 	Slug              string            `json:"slug,omitempty"`
 	InstancesRunning  int               `json:"instances_running,omitempty"`
 	PrivateNodesCount int               `json:"private_nodes_count,omitempty"`
-	Region            *DatacenterRegion `json:"region,omitempty"`
 }
 
 // DatacentersAPI is an interface for datacenters.

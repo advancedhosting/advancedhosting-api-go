@@ -24,16 +24,16 @@ import (
 
 // LoadBalancer object
 type LoadBalancer struct {
-	IPAddresses        []LBIPAddress      `json:"ip_addresses,omitempty"`
-	PrivateNetworks    []LBPrivateNetwork `json:"private_networks,omitempty"`
-	ForwardingRules    []LBForwardingRule `json:"forwarding_rules,omitempty"`
-	BackendNodes       []LBBackendNode    `json:"backend_nodes,omitempty"`
-	HealthChecks       []LBHealthCheck    `json:"health_checks,omitempty"`
 	ID                 string             `json:"id,omitempty"`
 	Name               string             `json:"name,omitempty"`
 	DatacenterID       string             `json:"datacenter_id,omitempty"`
 	State              string             `json:"state,omitempty"`
 	BalancingAlgorithm string             `json:"balancing_algorithm,omitempty"`
+	IPAddresses        []LBIPAddress      `json:"ip_addresses,omitempty"`
+	PrivateNetworks    []LBPrivateNetwork `json:"private_networks,omitempty"`
+	ForwardingRules    []LBForwardingRule `json:"forwarding_rules,omitempty"`
+	BackendNodes       []LBBackendNode    `json:"backend_nodes,omitempty"`
+	HealthChecks       []LBHealthCheck    `json:"health_checks,omitempty"`
 }
 
 // LBIPAddress object
@@ -54,8 +54,8 @@ type LBPrivateNetworkAddress struct {
 // LBPrivateNetwork object
 type LBPrivateNetwork struct {
 	ID        string                    `json:"id,omitempty"`
-	Addresses []LBPrivateNetworkAddress `json:"addresses,omitempty"`
 	State     string                    `json:"state,omitempty"`
+	Addresses []LBPrivateNetworkAddress `json:"addresses,omitempty"`
 }
 
 // LBForwardingRule object
@@ -63,8 +63,8 @@ type LBForwardingRule struct {
 	ID                    string `json:"id,omitempty"`
 	State                 string `json:"state,omitempty"`
 	RequestProtocol       string `json:"request_protocol,omitempty"`
-	RequestPort           int    `json:"request_port,omitempty"`
 	CommunicationProtocol string `json:"communication_protocol,omitempty"`
+	RequestPort           int    `json:"request_port,omitempty"`
 	CommunicationPort     int    `json:"communication_port,omitempty"`
 }
 
@@ -168,20 +168,20 @@ func (lb *LoadBalancersService) Get(ctx context.Context, lbID string) (*LoadBala
 type LoadBalancerCreateRequest struct {
 	Name                  string                          `json:"name"`
 	DatacenterID          string                          `json:"datacenter_id"`
-	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
 	BalancingAlgorithm    string                          `json:"balancing_algorithm,omitempty"`
 	IPAddressIDs          []string                        `json:"ip_address_ids,omitempty"`
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
 	ForwardingRules       []LBForwardingRuleCreateRequest `json:"forwarding_rules,omitempty"`
 	HealthChecks          []LBHealthCheckCreateRequest    `json:"health_checks,omitempty"`
 	BackendNodes          []LBBackendNodeCreateRequest    `json:"backend_nodes,omitempty"`
+	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
 }
 
 // LBForwardingRuleCreateRequest object
 type LBForwardingRuleCreateRequest struct {
 	RequestProtocol       string `json:"request_protocol"`
-	RequestPort           int    `json:"request_port"`
 	CommunicationProtocol string `json:"communication_protocol"`
+	RequestPort           int    `json:"request_port"`
 	CommunicationPort     int    `json:"communication_port"`
 }
 
