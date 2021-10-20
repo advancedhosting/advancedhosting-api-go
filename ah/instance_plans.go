@@ -20,9 +20,25 @@ import (
 	"context"
 )
 
+type InstancePlanAttributes struct {
+	RAM              string `json:"ram,omitempty"`
+	Disk             string `json:"disk,omitempty"`
+	Slug             string `json:"slug,omitempty"`
+	Vcpu             string `json:"vcpu,omitempty"`
+	Traffic          string `json:"traffic,omitempty"`
+	WebsaProductId   string `json:"websaProductId,omitempty"`
+	Hot              bool   `json:"hot,omitempty"`
+	AvailableOnTrial bool   `json:"available_on_trial,omitempty"`
+}
+
+type InstancePlan struct {
+	CustomAttributes *InstancePlanAttributes `json:"custom_attributes,omitempty"`
+	Plan
+}
+
 // InstancePlansAPI is an interface for instance plans.
 type InstancePlansAPI interface {
-	List(context.Context) ([]Plan, error)
+	List(context.Context) ([]InstancePlan, error)
 }
 
 // InstancePlansService implements InstancePlansAPI interface.
@@ -31,11 +47,11 @@ type InstancePlansService struct {
 }
 
 type instancePlansRoot struct {
-	Plans []Plan `json:"data"`
+	Plans []InstancePlan `json:"data"`
 }
 
 // List returns all available instance plans
-func (ips *InstancePlansService) List(ctx context.Context) ([]Plan, error) {
+func (ips *InstancePlansService) List(ctx context.Context) ([]InstancePlan, error) {
 
 	path := "api/v1/plans/public?type=vps"
 

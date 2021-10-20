@@ -20,9 +20,33 @@ import (
 	"context"
 )
 
+type VolumePlanAttributes struct {
+	VolumeType *struct {
+		ID               string `json:"id,omitempty"`
+		DiskType         string `json:"disk_type,omitempty"`
+		ReplicationLevel string `json:"replication_level,omitempty"`
+	} `json:"volume_type,omitempty"`
+
+	WebsaProductId  string   `json:"websaProductId,omitempty"`
+	Slug            string   `json:"slug,omitempty"`
+	DatacenterIds   []string `json:"datacenter_ids,omitempty"`
+	PredefinedSizes []struct {
+		Name string `json:"name,omitempty"`
+		Size int    `json:"size,omitempty"`
+	} `json:"predefined_sizes,omitempty"`
+	Hot     bool `json:"hot,omitempty"`
+	MaxSize int  `json:"max_size,omitempty"`
+	MinSize int  `json:"min_size,omitempty"`
+}
+
+type VolumePlan struct {
+	CustomAttributes *VolumePlanAttributes `json:"custom_attributes,omitempty"`
+	Plan
+}
+
 // VolumePlansAPI is an interface for volume plans.
 type VolumePlansAPI interface {
-	List(context.Context) ([]Plan, error)
+	List(context.Context) ([]VolumePlan, error)
 }
 
 // VolumePlansService implements VolumePlansAPI interface.
@@ -31,11 +55,11 @@ type VolumePlansService struct {
 }
 
 type volumePlansRoot struct {
-	Plans []Plan `json:"data"`
+	Plans []VolumePlan `json:"data"`
 }
 
 // List returns all available volume plans
-func (ips *VolumePlansService) List(ctx context.Context) ([]Plan, error) {
+func (ips *VolumePlansService) List(ctx context.Context) ([]VolumePlan, error) {
 
 	path := "api/v1/plans/public?type=volume"
 
