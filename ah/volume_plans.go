@@ -24,7 +24,7 @@ type VolumePlanAttributes struct {
 	VolumeType *struct {
 		ID               string `json:"id,omitempty"`
 		DiskType         string `json:"disk_type,omitempty"`
-		ReplicationLevel string `json:"replication_level,omitempty"`
+		ReplicationLevel int    `json:"replication_level,omitempty"`
 	} `json:"volume_type,omitempty"`
 
 	WebsaProductId  string   `json:"websaProductId,omitempty"`
@@ -59,13 +59,13 @@ type volumePlansRoot struct {
 }
 
 // List returns all available volume plans
-func (ips *VolumePlansService) List(ctx context.Context) ([]VolumePlan, error) {
+func (vp *VolumePlansService) List(ctx context.Context) ([]VolumePlan, error) {
 
 	path := "api/v1/plans/public?type=volume"
 
 	var ipRoot volumePlansRoot
 
-	if err := ips.client.list(ctx, path, nil, &ipRoot); err != nil {
+	if err := vp.client.list(ctx, path, nil, &ipRoot); err != nil {
 		return nil, err
 	}
 	return ipRoot.Plans, nil
