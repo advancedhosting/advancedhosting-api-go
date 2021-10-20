@@ -37,7 +37,8 @@ const volumePlanResponse = `{
 		"min_size": 1,
 		"volume_type": {
 			"id": "987768d4-9049-4d1e-ad70-c73ffa50bf58",
-			"disk_type": "HDD"
+			"disk_type": "HDD",
+			"replication_level": 2
 		},
 		"datacenter_ids": [
 			"62893e3a-84e7-46a4-9cc2-ad892ef37a48"
