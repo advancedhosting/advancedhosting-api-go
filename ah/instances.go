@@ -107,6 +107,7 @@ type Instance struct {
 	RAM                        int                      `json:"ram,omitempty"`
 	Traffic                    int                      `json:"traffic,omitempty"`
 	MaxVolumesNumber           int                      `json:"max_volumes_number,omitempty"`
+	PlanID                     int                      `json:"plan_id,omitempty"`
 }
 
 // InstanceAction object
@@ -149,19 +150,23 @@ type instanceRoot struct {
 
 // InstanceCreateRequest represents a request to create a instance.
 type InstanceCreateRequest struct {
-	Name                  string   `json:"name"`
-	DatacenterID          string   `json:"datacenter_id,omitempty"`
-	DatacenterSlug        string   `json:"datacenter_slug,omitempty"`
-	ImageID               string   `json:"image_id,omitempty"`
-	ImageSlug             string   `json:"image_slug,omitempty"`
-	ProductID             string   `json:"product_id,omitempty"`
+	Name           string `json:"name"`
+	DatacenterID   string `json:"datacenter_id,omitempty"`
+	DatacenterSlug string `json:"datacenter_slug,omitempty"`
+	ImageID        string `json:"image_id,omitempty"`
+	ImageSlug      string `json:"image_slug,omitempty"`
+	// Deprecated: Please use PlanID instead.
+	ProductID string `json:"product_id,omitempty"`
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug           string   `json:"product_slug,omitempty"`
+	PlanSlug              string   `json:"plan_slug,omitempty"`
 	SnapshotPeriod        string   `json:"snapshot_period"`
 	Tags                  []string `json:"tags"`
 	SSHKeyIDs             []string `json:"ssh_key_ids"`
 	UseSSHPassword        bool     `json:"use_ssh_password"`
 	CreatePublicIPAddress bool     `json:"create_public_ip_address"`
 	SnapshotBySchedule    bool     `json:"snapshot_by_schedule"`
+	PlanID                int      `json:"plan_id,omitempty"`
 }
 
 // InstanceRenameRequest represents a request to rename the instance.
@@ -250,15 +255,23 @@ func (is *InstancesService) Rename(ctx context.Context, instanceID, name string)
 
 // InstanceUpgradeRequest represents a request to upgrade the instance.
 type InstanceUpgradeRequest struct {
-	ProductID   string
+	// Deprecated: Please use PlanID instead.
+	ProductID string
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug string
+	PlanSlug    string
+	PlanID      int
 }
 
 type instanceUpgradeRequest struct {
-	ID          string `json:"id"`
-	Type        string `json:"type"`
-	ProductID   string `json:"product_id,omitempty"`
+	ID   string `json:"id"`
+	Type string `json:"type"`
+	// Deprecated: Please use PlanID instead.
+	ProductID string `json:"product_id,omitempty"`
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug string `json:"product_slug,omitempty"`
+	PlanSlug    string `json:"plan_slug,omitempty"`
+	PlanID      int    `json:"plan_id,omitempty"`
 }
 
 // Upgrade instance.
@@ -268,10 +281,18 @@ func (is *InstancesService) Upgrade(ctx context.Context, instanceID string, requ
 		Type: "upgrade",
 	}
 
-	if request.ProductSlug != "" {
-		upgradeRequest.ProductSlug = request.ProductSlug
+	if request.PlanSlug != "" {
+		upgradeRequest.PlanSlug = request.PlanSlug
 	} else {
-		upgradeRequest.ProductID = request.ProductID
+		upgradeRequest.PlanID = request.PlanID
+	}
+
+	if request.PlanSlug == "" && request.PlanID == 0 {
+		if request.ProductSlug != "" {
+			upgradeRequest.ProductSlug = request.ProductSlug
+		} else {
+			upgradeRequest.ProductID = request.ProductID
+		}
 	}
 
 	path := fmt.Sprintf("api/v1/instances/%s/actions", instanceID)
