@@ -35,7 +35,7 @@ const volumeResponse = `{
 	"original_id": null,
 	"created_at": "2020-07-27T13:15:24.730Z",
 	"attached_at": "2020-07-27T13:15:40.278Z",
-	"product_id": "03bebb65-22d8-43c6-819b-5b85b5e49c82",
+	"plan_id": 380171553,
 	"current_action": null,
 	"last_action": {
 		"id": "3305c748-d8e7-4ec8-be7e-f1c21385bb0d",
@@ -48,12 +48,6 @@ const volumeResponse = `{
 	"instance": {
 		"id": "2a758843-b82c-435d-b2b2-65581361345b",
 		"name": "ExternalLoadBalancerNewSchema"
-	},
-	"product": {
-		"id": "03bebb65-22d8-43c6-819b-5b85b5e49c82",
-		"name": "HDD. Level 2 ASH1",
-		"min_volume_size": 10,
-		"max_volume_size": 10000
 	},
 	"volume_pool": {
 		"name": "hdd2",
@@ -186,7 +180,7 @@ func TestVolumes_Copy(t *testing.T) {
 
 	request := &VolumeCopyActionRequest{
 		Name:      "new name",
-		ProductID: "test_product_id",
+		ProductID: "test_plan_id",
 	}
 
 	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
@@ -238,6 +232,78 @@ func TestVolumes_CopyWithProductSlug(t *testing.T) {
 	}
 }
 
+func TestVolumes_CopyWithPlanID(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse}
+	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+
+	var expectedResult volumeActionRoot
+	if err := json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
+
+	request := &VolumeCopyActionRequest{
+		Name:   "new name",
+		PlanID: 123,
+	}
+
+	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if action == nil {
+		t.Errorf("Invalid response: %v", action)
+	}
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
+func TestVolumes_CopyWithPlanSlug(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse}
+	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+
+	var expectedResult volumeActionRoot
+	if err := json.Unmarshal([]byte(actionGetResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
+
+	request := &VolumeCopyActionRequest{
+		Name:     "new name",
+		PlanSlug: "test_plan_slug",
+	}
+
+	action, err := api.Volumes.Copy(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if action == nil {
+		t.Errorf("Invalid response: %v", action)
+	}
+
+	if !reflect.DeepEqual(expectedResult.Action, action) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, action)
+	}
+}
+
 func TestVolumes_Resize(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: actionGetResponse}
 	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a/actions", fakeResponse)
@@ -269,7 +335,7 @@ func TestVolumes_Resize(t *testing.T) {
 	}
 }
 
-func TestVolumes_Create(t *testing.T) {
+func TestVolumes_CreateWithProductID(t *testing.T) {
 	request := &VolumeCreateRequest{
 		Name:       "test-name",
 		Size:       50,
@@ -311,6 +377,76 @@ func TestVolumes_CreateWithSlug(t *testing.T) {
 		ProductSlug: "Test_product_id",
 		FileSystem:  "ext4",
 		InstanceID:  "test_instance_id",
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: volumeGetResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/volumes", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	volume, err := api.Volumes.Create(ctx, request)
+
+	if volume == nil {
+		t.Errorf("Empty response")
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+}
+
+func TestVolumes_CreateWithPlanID(t *testing.T) {
+	request := &VolumeCreateRequest{
+		Name:       "test-name",
+		Size:       50,
+		PlanID:     123,
+		FileSystem: "ext4",
+		InstanceID: "test_instance_id",
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: volumeGetResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/volumes", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	volume, err := api.Volumes.Create(ctx, request)
+
+	if volume == nil {
+		t.Errorf("Empty response")
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+}
+
+func TestVolumes_CreateWithPlanSlug(t *testing.T) {
+	request := &VolumeCreateRequest{
+		Name:       "test-name",
+		Size:       50,
+		PlanSlug:   "Test_plan_slug",
+		FileSystem: "ext4",
+		InstanceID: "test_instance_id",
 	}
 
 	fakeResponse := &fakeServerResponse{

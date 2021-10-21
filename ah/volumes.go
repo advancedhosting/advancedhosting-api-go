@@ -28,12 +28,6 @@ type Volume struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	} `json:"instance,omitempty"`
-	Product *struct {
-		ID            string `json:"id,omitempty"`
-		Name          string `json:"name,omitempty"`
-		MinVolumeSize int    `json:"min_volume_size,omitempty"`
-		MaxVolumeSize int    `json:"max_volume_size,omitempty"`
-	} `json:"product,omitempty"`
 	VolumePool *struct {
 		Name             string   `json:"name,omitempty"`
 		DatacenterIDs    []string `json:"datacenter_ids,omitempty"`
@@ -50,6 +44,7 @@ type Volume struct {
 	ProductID  string `json:"product_id,omitempty"`
 	Size       int    `json:"size,omitempty"`
 	Port       int    `json:"port,omitempty"`
+	PlanID     int    `json:"plan_id,omitempty"`
 }
 
 // VolumeAction object
@@ -129,12 +124,16 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
-	Name        string `json:"name"`
-	ProductID   string `json:"product_id,omitempty"`
+	Name string `json:"name"`
+	// Deprecated: Please use PlanID instead.
+	ProductID string `json:"product_id,omitempty"`
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug string `json:"product_slug,omitempty"`
+	PlanSlug    string `json:"plan_slug,omitempty"`
 	FileSystem  string `json:"file_system,omitempty"`
 	InstanceID  string `json:"instance_id,omitempty"`
 	Size        int    `json:"size"`
+	PlanID      int    `json:"plan_id,omitempty"`
 }
 
 // Create volume
@@ -180,16 +179,24 @@ func (vs *VolumesService) Update(ctx context.Context, volumeID string, request *
 
 // VolumeCopyActionRequest represents a request to create new volume from origin.
 type VolumeCopyActionRequest struct {
-	Name        string
-	ProductID   string
+	Name string
+	// Deprecated: Please use PlanID instead.
+	ProductID string
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug string
+	PlanSlug    string
+	PlanID      int
 }
 
 type volumeCopyActionRequest struct {
-	Name        string `json:"name"`
-	Type        string `json:"type"`
-	ProductID   string `json:"product_id,omitempty"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// Deprecated: Please use PlanID instead.
+	ProductID string `json:"product_id,omitempty"`
+	// Deprecated: Please use PlanSlug instead.
 	ProductSlug string `json:"product_slug,omitempty"`
+	PlanSlug    string `json:"plan_slug,omitempty"`
+	PlanID      int    `json:"plan_id,omitempty"`
 }
 
 // Copy volume
@@ -201,10 +208,18 @@ func (vs *VolumesService) Copy(ctx context.Context, volumeID string, request *Vo
 		Type: "copy",
 	}
 
-	if request.ProductSlug != "" {
-		copyRequest.ProductSlug = request.ProductSlug
+	if request.PlanSlug != "" {
+		copyRequest.PlanSlug = request.PlanSlug
 	} else {
-		copyRequest.ProductID = request.ProductID
+		copyRequest.PlanID = request.PlanID
+	}
+
+	if request.PlanSlug == "" && request.PlanID == 0 {
+		if request.ProductSlug != "" {
+			copyRequest.ProductSlug = request.ProductSlug
+		} else {
+			copyRequest.ProductID = request.ProductID
+		}
 	}
 
 	req, err := vs.client.newRequest(http.MethodPost, path, copyRequest)

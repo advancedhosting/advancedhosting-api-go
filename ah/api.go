@@ -53,6 +53,10 @@ type APIClient struct {
 	Datacenters             DatacentersAPI
 	Images                  ImagesAPI
 	LoadBalancers           LoadBalancersAPI
+	// Deprecated: Please use VolumePlans instead.
+	VolumeProducts VolumeProductsAPI
+	// Deprecated: Please use InstancePlans instead.
+	InstanceProducts InstanceProductsAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -181,5 +185,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.LoadBalancers = &LoadBalancersService{client: c}
 	c.InstancePlans = &InstancePlansService{client: c}
 	c.VolumePlans = &VolumePlansService{client: c}
+	c.VolumeProducts = &VolumeProductsService{client: c}
+	c.InstanceProducts = &InstanceProductsService{client: c}
 	return c, nil
 }
