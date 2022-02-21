@@ -24,16 +24,17 @@ import (
 
 // LoadBalancer object
 type LoadBalancer struct {
-	ID                 string             `json:"id,omitempty"`
-	Name               string             `json:"name,omitempty"`
-	DatacenterID       string             `json:"datacenter_id,omitempty"`
-	State              string             `json:"state,omitempty"`
-	BalancingAlgorithm string             `json:"balancing_algorithm,omitempty"`
-	IPAddresses        []LBIPAddress      `json:"ip_addresses,omitempty"`
-	PrivateNetworks    []LBPrivateNetwork `json:"private_networks,omitempty"`
-	ForwardingRules    []LBForwardingRule `json:"forwarding_rules,omitempty"`
-	BackendNodes       []LBBackendNode    `json:"backend_nodes,omitempty"`
-	HealthChecks       []LBHealthCheck    `json:"health_checks,omitempty"`
+	Meta               map[string]interface{} `json:"meta"`
+	ID                 string                 `json:"id,omitempty"`
+	Name               string                 `json:"name,omitempty"`
+	DatacenterID       string                 `json:"datacenter_id,omitempty"`
+	State              string                 `json:"state,omitempty"`
+	BalancingAlgorithm string                 `json:"balancing_algorithm,omitempty"`
+	IPAddresses        []LBIPAddress          `json:"ip_addresses,omitempty"`
+	PrivateNetworks    []LBPrivateNetwork     `json:"private_networks,omitempty"`
+	ForwardingRules    []LBForwardingRule     `json:"forwarding_rules,omitempty"`
+	BackendNodes       []LBBackendNode        `json:"backend_nodes,omitempty"`
+	HealthChecks       []LBHealthCheck        `json:"health_checks,omitempty"`
 }
 
 // LBIPAddress object
@@ -166,6 +167,7 @@ func (lb *LoadBalancersService) Get(ctx context.Context, lbID string) (*LoadBala
 
 // LoadBalancerCreateRequest object
 type LoadBalancerCreateRequest struct {
+	Meta                  map[string]interface{}          `json:"meta"`
 	Name                  string                          `json:"name"`
 	DatacenterID          string                          `json:"datacenter_id"`
 	BalancingAlgorithm    string                          `json:"balancing_algorithm,omitempty"`
