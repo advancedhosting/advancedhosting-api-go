@@ -71,6 +71,14 @@ const lbIPAddressResponse = `{
 const loadBalancerResponse = `{
 	"id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
 	"name": "string",
+	"meta": {
+		"kubernetes": {
+			"cluster": {
+				"id": "id",
+				"number": "number"
+			}
+		}
+	},
 	"datacenter_id": "5839cebe-c7a5-4a27-8253-7bd619ca430d",
 	"state": "defined",
 	"balancing_algorithm": "round_robin",
@@ -217,8 +225,15 @@ func TestLoadBalancers_Create(t *testing.T) {
 				CloudServerID: "cs_id1",
 			},
 		},
+		Meta: map[string]interface{}{
+			"kubernetes": map[string]map[string]string{
+				"cluster": {
+					"id":     "id",
+					"number": "number",
+				},
+			},
+		},
 	}
-
 	fakeResponse := &fakeServerResponse{
 		responseBody: loadBalancerGetResponse,
 		statusCode:   202,
