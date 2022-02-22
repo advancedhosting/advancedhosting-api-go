@@ -24,7 +24,7 @@ import (
 
 // LoadBalancer object
 type LoadBalancer struct {
-	Meta               map[string]interface{} `json:"meta"`
+	Meta               map[string]interface{} `json:"meta,omitempty"`
 	ID                 string                 `json:"id,omitempty"`
 	Name               string                 `json:"name,omitempty"`
 	DatacenterID       string                 `json:"datacenter_id,omitempty"`
@@ -167,7 +167,7 @@ func (lb *LoadBalancersService) Get(ctx context.Context, lbID string) (*LoadBala
 
 // LoadBalancerCreateRequest object
 type LoadBalancerCreateRequest struct {
-	Meta                  map[string]interface{}          `json:"meta"`
+	Meta                  map[string]interface{}          `json:"meta,omitempty"`
 	Name                  string                          `json:"name"`
 	DatacenterID          string                          `json:"datacenter_id"`
 	BalancingAlgorithm    string                          `json:"balancing_algorithm,omitempty"`
