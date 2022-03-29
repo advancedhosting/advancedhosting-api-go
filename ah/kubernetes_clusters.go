@@ -34,9 +34,19 @@ type Cluster struct {
 	PlanID       int    `json:"plan_id"`
 }
 
-// ClustersAPI is an interface for load balancers.
+// ClusterConfig object
+type ClusterConfig struct {
+	Config string `json:"config"`
+}
+
+// ClustersAPI is an interface for cluster API.
 type ClustersAPI interface {
 	Get(context.Context, string) (*Cluster, error)
+	List(context.Context, *ListOptions) ([]Cluster, error)
+	Create(context.Context, *ClusterCreateRequest) (*Cluster, error)
+	Update(context.Context, string, *ClusterUpdateRequest) error
+	GetConfig(context.Context, string) (string, error)
+	Delete(context.Context, string) error
 }
 
 // ClustersService implements ClustersAPI interface.
@@ -48,6 +58,43 @@ type clusterRoot struct {
 	Cluster *Cluster `json:"cluster,omitempty"`
 }
 
+type clustersRoot struct {
+	Clusters []Cluster `json:"clusters,omitempty"`
+}
+
+// ClusterCreateRequest represents a request to create a cluster.
+type ClusterCreateRequest struct {
+	Name         string `json:"name"`
+	DatacenterID string `json:"datacenter_id,omitempty"`
+	PlanId       int    `json:"plan_id,omitempty"`
+	Count        int    `json:"count,omitempty"`
+	PrivateCloud bool   `json:"private_cloud"`
+}
+
+// ClusterUpdateRequest represents a request to update a cluster
+type ClusterUpdateRequest struct {
+	Name string `json:"name,omitempty"`
+}
+
+// Create kubernetes cluster
+func (kc *ClustersService) Create(ctx context.Context, createRequest *ClusterCreateRequest) (*Cluster, error) {
+	type request struct {
+		Cluster *ClusterCreateRequest `json:"cluster"`
+	}
+
+	req, err := kc.client.newRequest(http.MethodPost, "api/v1/kubernetes/clusters", &request{createRequest})
+	if err != nil {
+		return nil, err
+	}
+
+	var clusterRoot clusterRoot
+	if _, err := kc.client.Do(ctx, req, &clusterRoot); err != nil {
+		return nil, err
+	}
+
+	return clusterRoot.Cluster, nil
+}
+
 // Get kubernetes cluster
 func (kc *ClustersService) Get(ctx context.Context, clusterID string) (*Cluster, error) {
 	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterID)
@@ -57,12 +104,75 @@ func (kc *ClustersService) Get(ctx context.Context, clusterID string) (*Cluster,
 		return nil, err
 	}
 
-	var csRoot clusterRoot
-	_, err = kc.client.Do(ctx, req, &csRoot)
-
+	var clusterRoot clusterRoot
+	_, err = kc.client.Do(ctx, req, &clusterRoot)
 	if err != nil {
 		return nil, err
 	}
 
-	return csRoot.Cluster, nil
+	return clusterRoot.Cluster, nil
+}
+
+// List returns list of kubernetes clusters
+func (kc *ClustersService) List(ctx context.Context, options *ListOptions) ([]Cluster, error) {
+	path := "/api/v1/kubernetes/clusters"
+
+	var clustersRoot clustersRoot
+	if err := kc.client.list(ctx, path, options, &clustersRoot); err != nil {
+		return nil, err
+	}
+
+	return clustersRoot.Clusters, nil
+}
+
+// Update kubernetes cluster. Returns error
+func (kc *ClustersService) Update(ctx context.Context, clusterId string, request *ClusterUpdateRequest) error {
+	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterId)
+
+	req, err := kc.client.newRequest(http.MethodPatch, path, request)
+	if err != nil {
+		return err
+	}
+
+	_, err = kc.client.Do(ctx, req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Delete kubernetes cluster. Returns error
+func (kc *ClustersService) Delete(ctx context.Context, clusterId string) error {
+	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterId)
+
+	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = kc.client.Do(ctx, req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetConfig returns kubernetes cluster config
+func (kc ClustersService) GetConfig(ctx context.Context, clusterId string) (string, error) {
+	path := fmt.Sprintf("/api/v1/kubernetes/clusters/%s/kubeconfig", clusterId)
+
+	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
+	if err != nil {
+		return "", err
+	}
+
+	var configRoot ClusterConfig
+	_, err = kc.client.Do(ctx, req, &configRoot)
+	if err != nil {
+		return "", err
+	}
+
+	return configRoot.Config, nil
 }

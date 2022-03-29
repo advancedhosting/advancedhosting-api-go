@@ -20,8 +20,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"reflect"
 	"testing"
 )
@@ -169,22 +167,6 @@ var (
 	actionGetResponse  = fmt.Sprintf(`{"action": %s}`, instanceActionResponse)
 	actionListResponse = fmt.Sprintf(`{"actions": [%s]}`, instanceActionResponse)
 )
-
-type fakeServerResponse struct {
-	responseBody string
-	statusCode   int
-}
-
-func newFakeServer(url string, response *fakeServerResponse) *httptest.Server {
-	mux := http.NewServeMux()
-	mux.HandleFunc(url, func(rw http.ResponseWriter, r *http.Request) {
-		if response.statusCode != 0 {
-			rw.WriteHeader(response.statusCode)
-		}
-		_, _ = rw.Write([]byte(response.responseBody))
-	})
-	return httptest.NewServer(mux)
-}
 
 func TestInstances_List(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: listResponse}
