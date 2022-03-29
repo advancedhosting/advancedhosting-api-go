@@ -34,8 +34,8 @@ type Cluster struct {
 	PlanID       int    `json:"plan_id"`
 }
 
-// ClusterConfig object
-type ClusterConfig struct {
+// clusterConfig object
+type clusterConfig struct {
 	Config string `json:"config"`
 }
 
@@ -163,12 +163,13 @@ func (kc *ClustersService) Delete(ctx context.Context, clusterId string) error {
 func (kc ClustersService) GetConfig(ctx context.Context, clusterId string) (string, error) {
 	path := fmt.Sprintf("/api/v1/kubernetes/clusters/%s/kubeconfig", clusterId)
 
-	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
+	req, err := kc.client.newRequest(http.MethodGet, path, nil)
+	req.Header.Add("Accept", "application/json")
 	if err != nil {
 		return "", err
 	}
 
-	var configRoot ClusterConfig
+	var configRoot clusterConfig
 	_, err = kc.client.Do(ctx, req, &configRoot)
 	if err != nil {
 		return "", err

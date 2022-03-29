@@ -86,7 +86,6 @@ func (c *APIClient) newRequest(method string, path string, body interface{}) (*h
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Accept", "application/json")
 	if body != nil {
 		req.Header.Add("Content-Type", "application/json")
 	}
