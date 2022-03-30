@@ -164,10 +164,10 @@ func (kc ClustersService) GetConfig(ctx context.Context, clusterId string) (stri
 	path := fmt.Sprintf("/api/v1/kubernetes/clusters/%s/kubeconfig", clusterId)
 
 	req, err := kc.client.newRequest(http.MethodGet, path, nil)
-	req.Header.Add("Accept", "application/json")
 	if err != nil {
 		return "", err
 	}
+	req.Header.Add("Accept", "application/json")
 
 	var configRoot clusterConfig
 	_, err = kc.client.Do(ctx, req, &configRoot)
