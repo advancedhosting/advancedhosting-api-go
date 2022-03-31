@@ -35,20 +35,20 @@ const clusterResponse = `{
 	"number": "string"
 }`
 
+const configResponse = "Cluster config"
+
 var (
-	clusterGetResponse = fmt.Sprintf(`{"cluster": %s}`, clusterResponse)
+	clusterGetResponse    = fmt.Sprintf(`{"cluster": %s}`, clusterResponse)
+	clusterListResponse   = fmt.Sprintf(`{"clusters": [%s]}`, clusterResponse)
+	clusterConfigResponse = fmt.Sprintf(`{"config": "%s"}`, configResponse)
 )
 
-func TestClusters_Get(t *testing.T) {
+func TestCluster_Get(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: clusterGetResponse}
-	server := newFakeServer("/api/v1/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08", fakeResponse)
-
-	fakeClientOptions := &ClientOptions{
-		Token:      "test_token",
-		BaseURL:    server.URL,
-		HTTPClient: server.Client(),
-	}
-	api, _ := NewAPIClient(fakeClientOptions)
+	api, _ := newFakeAPIClient(
+		"/api/v1/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08",
+		fakeResponse,
+	)
 
 	ctx := context.Background()
 
@@ -67,5 +67,111 @@ func TestClusters_Get(t *testing.T) {
 
 	if !reflect.DeepEqual(expectedResult.Cluster, cluster) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, cluster)
+	}
+}
+
+func TestClusters_List(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: clusterListResponse}
+	api, _ := newFakeAPIClient("/api/v1/kubernetes/clusters", fakeResponse)
+
+	ctx := context.Background()
+
+	clusters, err := api.Clusters.List(ctx, nil)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	var expectedResult clustersRoot
+	if err := json.Unmarshal([]byte(clusterListResponse), &expectedResult); err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
+	}
+
+	if !reflect.DeepEqual(expectedResult.Clusters, clusters) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, clusters)
+	}
+}
+
+func TestCluster_Create(t *testing.T) {
+	request := &ClusterCreateRequest{
+		Name:         "New Kubernetes Cluster",
+		DatacenterID: "5839cebe-c7a5-4a27-8253-7bd619ca430d",
+		PlanId:       0,
+		Count:        1,
+		PrivateCloud: true,
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: clusterGetResponse,
+		statusCode:   201,
+	}
+	api, _ := newFakeAPIClient("/api/v1/kubernetes/clusters", fakeResponse)
+
+	ctx := context.Background()
+
+	cluster, err := api.Clusters.Create(ctx, request)
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+	if cluster == nil {
+		t.Errorf("Empty response")
+	}
+}
+
+func TestCluster_Update(t *testing.T) {
+	var clusterId = "5839cebe-c7a5-4a27-8253-7bd619ca430d"
+	request := &ClusterUpdateRequest{
+		Name: "Updated Kubernetes Cluster Name",
+	}
+	fakeResponse := &fakeServerResponse{responseBody: "", statusCode: 204}
+	api, _ := newFakeAPIClient(
+		fmt.Sprintf("/api/v1/kubernetes/clusters/%s", clusterId),
+		fakeResponse,
+	)
+
+	ctx := context.Background()
+
+	err := api.Clusters.Update(ctx, clusterId, request)
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+}
+
+func TestCluster_Delete(t *testing.T) {
+	var clusterId = "5839cebe-c7a5-4a27-8253-7bd619ca430d"
+
+	fakeResponse := &fakeServerResponse{responseBody: "", statusCode: 202}
+	api, _ := newFakeAPIClient(
+		fmt.Sprintf("/api/v1/kubernetes/clusters/%s", clusterId),
+		fakeResponse,
+	)
+
+	ctx := context.Background()
+
+	err := api.Clusters.Delete(ctx, clusterId)
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+}
+
+func TestCluster_GetConfig(t *testing.T) {
+	var clusterId = "5839cebe-c7a5-4a27-8253-7bd619ca430d"
+
+	fakeResponse := &fakeServerResponse{responseBody: clusterConfigResponse, statusCode: 200}
+	api, _ := newFakeAPIClient(
+		fmt.Sprintf("/api/v1/kubernetes/clusters/%s/kubeconfig", clusterId),
+		fakeResponse,
+	)
+
+	ctx := context.Background()
+
+	config, err := api.Clusters.GetConfig(ctx, clusterId)
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+	if config == "" {
+		t.Errorf("Empty response")
+	}
+	if config != configResponse {
+		t.Errorf("Unexpected response")
 	}
 }
