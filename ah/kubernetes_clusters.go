@@ -67,7 +67,7 @@ type ClusterCreateRequest struct {
 	Name         string `json:"name"`
 	DatacenterID string `json:"datacenter_id,omitempty"`
 	PlanId       int    `json:"plan_id,omitempty"`
-	Count        int    `json:"count,omitempty"`
+	NodesCount   int    `json:"nodes_count,omitempty"`
 	PrivateCloud bool   `json:"private_cloud"`
 }
 

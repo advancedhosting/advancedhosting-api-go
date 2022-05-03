@@ -29,7 +29,7 @@ const clusterResponse = `{
 	"name": "string",
 	"datacenter_id": "5839cebe-c7a5-4a27-8253-7bd619ca430d",
 	"state": "defined",
-	"count": 0,
+	"nodes_count": 0,
 	"created_at": "2019-08-24T14:15:22Z",
 	"plan_id": 0,
 	"number": "string"
@@ -96,7 +96,7 @@ func TestCluster_Create(t *testing.T) {
 		Name:         "New Kubernetes Cluster",
 		DatacenterID: "5839cebe-c7a5-4a27-8253-7bd619ca430d",
 		PlanId:       0,
-		Count:        1,
+		NodesCount:   1,
 		PrivateCloud: true,
 	}
 
