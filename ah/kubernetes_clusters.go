@@ -78,11 +78,7 @@ type ClusterUpdateRequest struct {
 
 // Create kubernetes cluster
 func (kc *ClustersService) Create(ctx context.Context, createRequest *ClusterCreateRequest) (*Cluster, error) {
-	type request struct {
-		Cluster *ClusterCreateRequest `json:"cluster"`
-	}
-
-	req, err := kc.client.newRequest(http.MethodPost, "api/v1/kubernetes/clusters", &request{createRequest})
+	req, err := kc.client.newRequest(http.MethodPost, "api/v1/kubernetes/clusters", createRequest)
 	if err != nil {
 		return nil, err
 	}
