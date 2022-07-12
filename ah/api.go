@@ -58,6 +58,7 @@ type APIClient struct {
 	VolumeProducts VolumeProductsAPI
 	// Deprecated: Please use InstancePlans instead.
 	InstanceProducts InstanceProductsAPI
+	PrivateClusters  PrivateClustersAPI
 }
 
 // ClientOptions represents options to communicate with AH API
@@ -189,5 +190,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.VolumePlans = &VolumePlansService{client: c}
 	c.VolumeProducts = &VolumeProductsService{client: c}
 	c.InstanceProducts = &InstanceProductsService{client: c}
+	c.PrivateClusters = &PrivateClustersService{client: c}
 	return c, nil
 }
