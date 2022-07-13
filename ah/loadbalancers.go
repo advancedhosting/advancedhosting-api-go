@@ -34,7 +34,7 @@ type LoadBalancer struct {
 	PrivateNetworks    []LBPrivateNetwork     `json:"private_networks,omitempty"`
 	ForwardingRules    []LBForwardingRule     `json:"forwarding_rules,omitempty"`
 	BackendNodes       []LBBackendNode        `json:"backend_nodes,omitempty"`
-	HealthChecks       []LBHealthCheck        `json:"health_checks,omitempty"`
+	HealthCheck        *LBHealthCheck         `json:"health_check,omitempty"`
 }
 
 // LBIPAddress object
