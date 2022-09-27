@@ -203,6 +203,7 @@ func TestLoadBalancers_Create(t *testing.T) {
 		DatacenterID:          "test_dc_id",
 		CreatePublicIPAddress: true,
 		BalancingAlgorithm:    "round_robin",
+		ProxyProtocol:         "proxy_protocol",
 		IPAddressIDs:          []string{"ip_address_id1", "ip_address_id2"},
 		PrivateNetworkIDs:     []string{"pn_id1", "pn_id2"},
 		ForwardingRules: []LBForwardingRuleCreateRequest{
@@ -273,6 +274,7 @@ func TestLoadBalancers_Update(t *testing.T) {
 	request := &LoadBalancerUpdateRequest{
 		Name:               "test-name",
 		BalancingAlgorithm: "round_robin",
+		ProxyProtocol:      "v1",
 	}
 
 	fakeResponse := &fakeServerResponse{

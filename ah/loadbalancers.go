@@ -31,6 +31,7 @@ type LoadBalancer struct {
 	DatacenterID       string                 `json:"datacenter_id,omitempty"`
 	State              string                 `json:"state,omitempty"`
 	BalancingAlgorithm string                 `json:"balancing_algorithm,omitempty"`
+	ProxyProtocol      string                 `json:"proxy_protocol,omitempty"`
 	IPAddresses        []LBIPAddress          `json:"ip_addresses,omitempty"`
 	PrivateNetworks    []LBPrivateNetwork     `json:"private_networks,omitempty"`
 	ForwardingRules    []LBForwardingRule     `json:"forwarding_rules,omitempty"`
@@ -171,6 +172,7 @@ type LoadBalancerCreateRequest struct {
 	Name                  string                          `json:"name"`
 	DatacenterID          string                          `json:"datacenter_id"`
 	BalancingAlgorithm    string                          `json:"balancing_algorithm,omitempty"`
+	ProxyProtocol         string                          `json:"proxy_protocol,omitempty"`
 	IPAddressIDs          []string                        `json:"ip_address_ids,omitempty"`
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
 	ForwardingRules       []LBForwardingRuleCreateRequest `json:"forwarding_rules,omitempty"`
@@ -227,6 +229,7 @@ func (lb *LoadBalancersService) Create(ctx context.Context, createRequest *LoadB
 type LoadBalancerUpdateRequest struct {
 	Name               string `json:"name,omitempty"`
 	BalancingAlgorithm string `json:"balancing_algorithm,omitempty"`
+	ProxyProtocol      string `json:"proxy_protocol,omitempty"`
 }
 
 // Update load balancer
