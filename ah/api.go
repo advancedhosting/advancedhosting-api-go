@@ -112,7 +112,7 @@ func (c *APIClient) list(ctx context.Context, path string, options *ListOptions,
 	return nil
 }
 
-//Do sends an API request
+// Do sends an API request
 func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
 	req = req.WithContext(ctx)
 	resp, err := c.client.Do(req)
@@ -146,7 +146,7 @@ func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*
 
 }
 
-//NewAPIClient returns APIClient instance
+// NewAPIClient returns APIClient instance
 func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 
 	baseURL := defaultAPIURL
