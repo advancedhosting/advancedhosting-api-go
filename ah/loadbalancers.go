@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // LoadBalancer object
@@ -92,7 +93,7 @@ type LBHealthCheck struct {
 
 // LoadBalancersAPI is an interface for load balancers.
 type LoadBalancersAPI interface {
-	List(context.Context) ([]LoadBalancer, error)
+	List(context.Context, map[string]string) ([]LoadBalancer, error)
 	Get(context.Context, string) (*LoadBalancer, error)
 	Create(context.Context, *LoadBalancerCreateRequest) (*LoadBalancer, error)
 	Update(context.Context, string, *LoadBalancerUpdateRequest) error
@@ -135,8 +136,16 @@ type loadBalancersRoot struct {
 }
 
 // List returns all available load balancers
-func (lb *LoadBalancersService) List(ctx context.Context) ([]LoadBalancer, error) {
+func (lb *LoadBalancersService) List(ctx context.Context, filters map[string]string) ([]LoadBalancer, error) {
 	path := "api/v1/load_balancers"
+	if filters != nil {
+		var query []string
+		for filterName, filterVal := range filters {
+			query = append(query, fmt.Sprintf("%s=%s", filterName, filterVal))
+		}
+		params := strings.Join(query, "&")
+		path = fmt.Sprintf("%s?%s", path, params)
+	}
 
 	var lbsRoot loadBalancersRoot
 

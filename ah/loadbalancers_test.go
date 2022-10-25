@@ -76,6 +76,9 @@ const loadBalancerResponse = `{
 			"cluster": {
 				"id": "id",
 				"number": "number"
+			},
+			"service": {
+				"id": "service-id"
 			}
 		}
 	},
@@ -150,7 +153,11 @@ func TestLoadBalancers_List(t *testing.T) {
 	api, _ := NewAPIClient(fakeClientOptions)
 
 	ctx := context.Background()
-	loadBalancers, err := api.LoadBalancers.List(ctx)
+	filters := map[string]string{
+		"meta": "{\"kubernetes\":{\"service\":{\"id\":\"service-id\"}}",
+	}
+
+	loadBalancers, err := api.LoadBalancers.List(ctx, filters)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -229,6 +236,9 @@ func TestLoadBalancers_Create(t *testing.T) {
 				"cluster": {
 					"id":     "id",
 					"number": "number",
+				},
+				"service": {
+					"id": "service-id",
 				},
 			},
 		},
