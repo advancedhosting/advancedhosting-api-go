@@ -430,6 +430,49 @@ func TestInstance_CreateWithPlanSlug(t *testing.T) {
 
 }
 
+func TestInstance_CreateInPrivateCloud(t *testing.T) {
+	request := &InstanceCreateRequest{
+		Name:                  "Test",
+		DatacenterID:          "test-datacenter-id",
+		ImageID:               "test-image-id",
+		CreatePublicIPAddress: true,
+		UseSSHPassword:        true,
+		PrivateCloud:          true,
+		ClusterID:             "cluster-id",
+		NodeID:                "node-id",
+		IPNetworkID:           "network-id",
+		Vcpu:                  1,
+		Ram:                   64,
+		Disk:                  10,
+	}
+
+	fakeResponse := &fakeServerResponse{
+		responseBody: getResponse,
+		statusCode:   202,
+	}
+
+	server := newFakeServer("/api/v1/instances/", fakeResponse)
+
+	fakeClientOptions := &ClientOptions{
+		Token:      "test_token",
+		BaseURL:    server.URL,
+		HTTPClient: server.Client(),
+	}
+	api, _ := NewAPIClient(fakeClientOptions)
+
+	ctx := context.Background()
+	instance, err := api.Instances.Create(ctx, request)
+
+	if instance == nil {
+		t.Errorf("Invalid response %v", instance)
+	}
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
+}
+
 func TestInstance_Rename(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: getResponse}
 
