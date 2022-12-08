@@ -161,12 +161,19 @@ type InstanceCreateRequest struct {
 	ProductSlug           string   `json:"product_slug,omitempty"`
 	PlanSlug              string   `json:"plan_slug,omitempty"`
 	SnapshotPeriod        string   `json:"snapshot_period"`
+	ClusterID             string   `json:"clusterID,omitempty"`
+	NodeID                string   `json:"nodeID,omitempty"`
+	IPNetworkID           string   `json:"networkID,omitempty"`
 	Tags                  []string `json:"tags"`
 	SSHKeyIDs             []string `json:"ssh_key_ids"`
 	UseSSHPassword        bool     `json:"use_ssh_password"`
 	CreatePublicIPAddress bool     `json:"create_public_ip_address"`
 	SnapshotBySchedule    bool     `json:"snapshot_by_schedule"`
+	PrivateCloud          bool     `json:"private_cloud,omitempty"`
 	PlanID                int      `json:"plan_id,omitempty"`
+	Vcpu                  int      `json:"vcpu,omitempty"`
+	Ram                   int      `json:"ram,omitempty"`
+	Disk                  int      `json:"disk,omitempty"`
 }
 
 // InstanceRenameRequest represents a request to rename the instance.
