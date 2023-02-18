@@ -24,12 +24,12 @@ import (
 
 // Token object
 type Token struct {
-	ID        string     `json:"id,omitempty"`
-	Name      string     `json:"name,omitempty"`
-	Token     string     `json:"token,omitempty"`
-	Scopes    [88]string `json:"scopes,omitempty"`
-	ExpiresIn string     `json:"expires_in,omitempty"`
-	CreatedAt string     `json:"created_at,omitempty"`
+	ID        string   `json:"id,omitempty"`
+	Name      string   `json:"name,omitempty"`
+	Token     string   `json:"token,omitempty"`
+	ExpiresIn string   `json:"expires_in,omitempty"`
+	CreatedAt string   `json:"created_at,omitempty"`
+	Scopes    []string `json:"scopes,omitempty"`
 }
 
 // TokenCreateRequest object
@@ -50,12 +50,6 @@ type TokensService struct {
 	client *APIClient
 }
 
-// tokensRoot is a root object for tokens
-type tokensRoot struct {
-	Token  *Token  `json:"token,omitempty"`
-	Tokens []Token `json:"tokens,omitempty"`
-}
-
 // Get returns a token by ID
 func (s *TokensService) Get(ctx context.Context, tokenId string) (*Token, error) {
 	path := fmt.Sprintf("id/api/v1/access_tokens/%s", tokenId)
@@ -64,25 +58,25 @@ func (s *TokensService) Get(ctx context.Context, tokenId string) (*Token, error)
 		return nil, err
 	}
 
-	var tokensRoot tokensRoot
-	_, err = s.client.Do(ctx, req, &tokensRoot)
+	var token *Token
+	_, err = s.client.Do(ctx, req, &token)
 	if err != nil {
 		return nil, err
 	}
 
-	return tokensRoot.Token, nil
+	return token, nil
 }
 
 // List returns all available tokens
 func (s *TokensService) List(ctx context.Context, options *ListOptions) ([]Token, error) {
 	path := "id/api/v1/access_tokens"
 
-	var tokensRoot tokensRoot
-	if err := s.client.list(ctx, path, options, &tokensRoot); err != nil {
+	var tokens []Token
+	if err := s.client.list(ctx, path, options, &tokens); err != nil {
 		return nil, err
 	}
 
-	return tokensRoot.Tokens, nil
+	return tokens, nil
 }
 
 // Create creates a new token
@@ -94,12 +88,12 @@ func (s *TokensService) Create(ctx context.Context, request *TokenCreateRequest)
 		return nil, err
 	}
 
-	var tokensRoot tokensRoot
-	if _, err := s.client.Do(ctx, req, &tokensRoot); err != nil {
+	var token *Token
+	if _, err := s.client.Do(ctx, req, &token); err != nil {
 		return nil, err
 	}
 
-	return tokensRoot.Token, nil
+	return token, nil
 }
 
 // Delete deletes a token by ID

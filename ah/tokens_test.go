@@ -34,10 +34,7 @@ const tokenResponse = `{
     "created_at": "2021-12-15T17:51:29.765Z"
 }`
 
-var (
-	tokenGetResponse  = fmt.Sprintf(`{"token": %s}`, tokenResponse)
-	tokenListResponse = fmt.Sprintf(`{"tokens": [%s]}`, tokenResponse)
-)
+var tokenListResponse = fmt.Sprintf(`[%s]`, tokenResponse)
 
 func TestTokensService_List(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: tokenListResponse, statusCode: http.StatusOK}
@@ -54,18 +51,18 @@ func TestTokensService_List(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	var expectedResult tokensRoot
+	var expectedResult []Token
 	if err = json.Unmarshal([]byte(tokenListResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected unmarshal error: %v", err)
 	}
 
-	if !reflect.DeepEqual(expectedResult.Tokens, tokens) {
+	if !reflect.DeepEqual(expectedResult, tokens) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, tokens)
 	}
 }
 
 func TestTokensService_Get(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: tokenGetResponse, statusCode: http.StatusOK}
+	fakeResponse := &fakeServerResponse{responseBody: tokenResponse, statusCode: http.StatusOK}
 	server := newFakeServer("/id/api/v1/access_tokens/ded95980-05d8-44aa-977d-3dfc1e7966ba", fakeResponse)
 	fakeClientOptions := &ClientOptions{
 		Token:      "test_token",
@@ -79,18 +76,18 @@ func TestTokensService_Get(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error getting token: %v", err)
 	}
-	var expectedResult tokensRoot
-	if err = json.Unmarshal([]byte(tokenGetResponse), &expectedResult); err != nil {
+	var expectedResult *Token
+	if err = json.Unmarshal([]byte(tokenResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected unmarshal error: %v", err)
 	}
 
-	if !reflect.DeepEqual(expectedResult.Token, token) {
+	if !reflect.DeepEqual(expectedResult, token) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult.Token, token)
 	}
 }
 
 func TestTokensService_Create(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: tokenGetResponse, statusCode: http.StatusOK}
+	fakeResponse := &fakeServerResponse{responseBody: tokenResponse, statusCode: http.StatusOK}
 	server := newFakeServer("/id/api/v1/access_tokens", fakeResponse)
 	fakeClientOptions := &ClientOptions{
 		Token:      "test_token",
@@ -104,12 +101,12 @@ func TestTokensService_Create(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	var expectedResult tokensRoot
-	if err = json.Unmarshal([]byte(tokenGetResponse), &expectedResult); err != nil {
+	var expectedResult *Token
+	if err = json.Unmarshal([]byte(tokenResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected unmarshal error: %v", err)
 	}
 
-	if !reflect.DeepEqual(expectedResult.Token, token) {
+	if !reflect.DeepEqual(expectedResult, token) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, token)
 	}
 }
