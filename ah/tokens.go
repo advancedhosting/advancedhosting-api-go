@@ -24,12 +24,12 @@ import (
 
 // Token object
 type Token struct {
-	ID        string   `json:"id,omitempty"`
-	Name      string   `json:"name,omitempty"`
-	Token     string   `json:"token,omitempty"`
-	Scopes    []string `json:"scopes,omitempty"`
-	ExpiresIn string   `json:"expires_in,omitempty"`
-	CreatedAt string   `json:"created_at,omitempty"`
+	ID        string     `json:"id,omitempty"`
+	Name      string     `json:"name,omitempty"`
+	Token     string     `json:"token,omitempty"`
+	Scopes    [88]string `json:"scopes,omitempty"`
+	ExpiresIn string     `json:"expires_in,omitempty"`
+	CreatedAt string     `json:"created_at,omitempty"`
 }
 
 // TokenCreateRequest object
