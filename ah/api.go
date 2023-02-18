@@ -34,7 +34,7 @@ var (
 	ErrResourceNotFound = errors.New("resource not found")
 )
 
-const defaultAPIURL = "https://api.staging.mback.me"
+const defaultAPIURL = "https://api.websa.com"
 
 // APIClient implements communication with AH API
 type APIClient struct {
