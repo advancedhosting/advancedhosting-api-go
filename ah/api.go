@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"golang.org/x/oauth2"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -130,7 +129,7 @@ func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*
 		case http.StatusBadRequest:
 			err = fmt.Errorf("bad Request")
 		default:
-			body, _ := ioutil.ReadAll(resp.Body)
+			body, _ := io.ReadAll(resp.Body)
 			err = fmt.Errorf(string(body))
 		}
 		return nil, err
