@@ -25,7 +25,6 @@ import (
 
 // LoadBalancer object
 type LoadBalancer struct {
-	HealthCheck        *LBHealthCheck         `json:"health_check,omitempty"`
 	Meta               map[string]interface{} `json:"meta,omitempty"`
 	ID                 string                 `json:"id,omitempty"`
 	Name               string                 `json:"name,omitempty"`
@@ -37,6 +36,7 @@ type LoadBalancer struct {
 	PrivateNetworks    []LBPrivateNetwork     `json:"private_networks,omitempty"`
 	ForwardingRules    []LBForwardingRule     `json:"forwarding_rules,omitempty"`
 	BackendNodes       []LBBackendNode        `json:"backend_nodes,omitempty"`
+	HealthChecks       []LBHealthCheck        `json:"health_checks,omitempty"`
 }
 
 // LBIPAddress object
@@ -186,7 +186,7 @@ type LoadBalancerCreateRequest struct {
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
 	ForwardingRules       []LBForwardingRuleCreateRequest `json:"forwarding_rules,omitempty"`
 	BackendNodes          []LBBackendNodeCreateRequest    `json:"backend_nodes,omitempty"`
-	HealthCheck           LBHealthCheckCreateRequest      `json:"health_check,omitempty"`
+	HealthChecks          []LBHealthCheckCreateRequest    `json:"health_checks,omitempty"`
 	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
 }
 
