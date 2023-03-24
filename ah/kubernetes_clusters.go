@@ -32,6 +32,9 @@ type Cluster struct {
 	CreatedAt    string `json:"created_at"`
 	Count        int    `json:"count"`
 	PlanID       int    `json:"plan_id"`
+	Vcpu         int    `json:"vcpu"`
+	Ram          int    `json:"ram"`
+	Disk         int    `json:"disk"`
 }
 
 // clusterConfig object
@@ -67,6 +70,9 @@ type ClusterCreateRequest struct {
 	Name         string `json:"name"`
 	DatacenterID string `json:"datacenter_id,omitempty"`
 	PlanId       int    `json:"plan_id,omitempty"`
+	Vcpu         int    `json:"vcpu,omitempty"`
+	Ram          int    `json:"ram,omitempty"`
+	Disk         int    `json:"disk,omitempty"`
 	Count        int    `json:"count,omitempty"`
 	PrivateCloud bool   `json:"private_cloud"`
 }
