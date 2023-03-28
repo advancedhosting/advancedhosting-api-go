@@ -6,33 +6,35 @@ import (
 	"net/http"
 )
 
+// PublicProperties object
 type PublicProperties struct {
 	PlanId int `json:"plan_id,omitempty"`
 }
 
+// PrivateProperties object
 type PrivateProperties struct {
-	Vcpu          int    `json:"vcpu,omitempty"`
-	Ram           int    `json:"ram,omitempty"`
-	Disk          int    `json:"disk,omitempty"`
 	NetworlId     string `json:"network_id,omitempty"`
 	ClusterId     string `json:"cluster_id,omitempty"`
 	ClusterNodeId string `json:"cluster_node_id,omitempty"`
+	Vcpu          int    `json:"vcpu,omitempty"`
+	Ram           int    `json:"ram,omitempty"`
+	Disk          int    `json:"disk,omitempty"`
 }
 
 // NodePool object
 type NodePool struct {
+	Labels            map[string]string `json:"labels,omitempty"`
 	ID                string            `json:"id"`
 	Name              string            `json:"name"`
 	Type              string            `json:"type"`
 	CreatedAt         string            `json:"created_at"`
+	Nodes             []Nodes           `json:"nodes,omitempty"`
+	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
+	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
 	Count             int               `json:"count,omitempty"`
-	Labels            map[string]string `json:"labels,omitempty"`
 	Autoscale         bool              `json:"autoscale,omitempty"`
 	MinCount          int               `json:"min_count,omitempty"`
 	MaxCount          int               `json:"max_count,omitempty"`
-	Nodes             []Nodes           `json:"nodes,omitempty"`
-	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
-	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
 }
 
 type NodePoolRoot struct {
@@ -45,22 +47,22 @@ type NodePoolsRoot struct {
 
 // CreateNodePoolRequest represents a request to create a node pool.
 type CreateNodePoolRequest struct {
+	Labels            map[string]string `json:"labels,omitempty"`
 	Name              string            `json:"name"`
 	Type              string            `json:"type"`
+	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
+	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
 	Count             int               `json:"count,omitempty"`
-	Labels            map[string]string `json:"labels,omitempty"`
-	Autoscale         bool              `json:"autoscale,omitempty"`
 	MinCount          int               `json:"min_count,omitempty"`
 	MaxCount          int               `json:"max_count,omitempty"`
-	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
-	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
+	Autoscale         bool              `json:"autoscale,omitempty"`
 }
 
 // NodePoolUpdateRequest represents a request to update a node pool
 type NodePoolUpdateRequest struct {
+	Labels    map[string]string `json:"labels,omitempty"`
 	Name      string            `json:"name,omitempty"`
 	Count     int               `json:"count,omitempty"`
-	Labels    map[string]string `json:"labels,omitempty"`
 	Autoscale bool              `json:"autoscale,omitempty"`
 	MinCount  int               `json:"min_count,omitempty"`
 	MaxCount  int               `json:"max_count,omitempty"`
