@@ -63,7 +63,7 @@ var (
 	nodePoolListResponse       = fmt.Sprintf(`{"node_pools": [%s, %s]}`, nodePoolPublicResponse, nodePoolPrivateResponse)
 )
 
-func TestNodePooPubliclGet(t *testing.T) {
+func TestNodePoolPublicGet(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: nodePoolPublicGetResponse}
 	api, _ := newFakeAPIClient(
 		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
@@ -72,12 +72,12 @@ func TestNodePooPubliclGet(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult NodePoolRoot
+	var expectedResult ClusterNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.NodePools.Get(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
+	nodePool, err := api.Clusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestNodePooPubliclGet(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.NodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -99,12 +99,12 @@ func TestNodePooPrivatelGet(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult NodePoolRoot
+	var expectedResult ClusterNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.NodePools.Get(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
+	nodePool, err := api.Clusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -112,7 +112,7 @@ func TestNodePooPrivatelGet(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.NodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -126,12 +126,12 @@ func TestNodePoolList(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult NodePoolsRoot
+	var expectedResult ClusterNodePoolsRoot
 	if err := json.Unmarshal([]byte(nodePoolListResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePools, err := api.NodePools.List(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
+	nodePools, err := api.Clusters.ListNodePools(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -143,7 +143,7 @@ func TestNodePoolList(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePools)
 	}
 
-	if !reflect.DeepEqual(expectedResult.NodePools, nodePools) {
+	if !reflect.DeepEqual(expectedResult.ClusterNodePools, nodePools) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePools)
 	}
 }
@@ -157,22 +157,22 @@ func TestNodePoolPublicCreate(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult NodePoolRoot
+	var expectedResult ClusterNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	PublicProperties := &PublicProperties{PlanId: 111111111}
+	publicProperties := &PublicProperties{PlanID: 111111111}
 
-	request := &CreateNodePoolRequest{
+	request := &CreateClusterNodePoolRequest{
 		Name:             "test",
 		Type:             "public",
 		Count:            1,
 		Labels:           map[string]string{},
-		PublicProperties: *PublicProperties,
+		PublicProperties: *publicProperties,
 	}
 
-	nodePool, err := api.NodePools.Create(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	nodePool, err := api.Clusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -181,7 +181,7 @@ func TestNodePoolPublicCreate(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.NodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -195,29 +195,29 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult NodePoolRoot
+	var expectedResult ClusterNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	PrivateProperties := &PrivateProperties{
+	privateProperties := &PrivateProperties{
 		Vcpu:          4,
 		Ram:           4096,
 		Disk:          40,
-		NetworlId:     "0a1004fb-6930-49f5-9a2e-1e713b50d850",
-		ClusterId:     "ca2a8d11-8426-4493-8ee3-82b700c6092b",
-		ClusterNodeId: "33bb3e37-7e2d-4a55-936d-fae0223d5a00",
+		NetworlID:     "0a1004fb-6930-49f5-9a2e-1e713b50d850",
+		ClusterID:     "ca2a8d11-8426-4493-8ee3-82b700c6092b",
+		ClusterNodeID: "33bb3e37-7e2d-4a55-936d-fae0223d5a00",
 	}
 
-	request := &CreateNodePoolRequest{
+	request := &CreateClusterNodePoolRequest{
 		Name:              "test",
 		Type:              "private",
 		Count:             1,
 		Labels:            map[string]string{},
-		PrivateProperties: *PrivateProperties,
+		PrivateProperties: *privateProperties,
 	}
 
-	nodePool, err := api.NodePools.Create(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	nodePool, err := api.Clusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -226,7 +226,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.NodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -240,14 +240,14 @@ func TestNodePoolUpdate(t *testing.T) {
 
 	ctx := context.Background()
 
-	request := &NodePoolUpdateRequest{
+	request := &UpdateClusterNodePoolRequest{
 		Name:      "test",
 		Count:     1,
 		Labels:    map[string]string{},
-		Autoscale: false,
+		AutoScale: false,
 	}
 
-	err := api.NodePools.Update(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
+	err := api.Clusters.UpdateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -263,7 +263,7 @@ func TestNodePoolDelete(t *testing.T) {
 
 	ctx := context.Background()
 
-	err := api.NodePools.Delete(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
+	err := api.Clusters.DeleteNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

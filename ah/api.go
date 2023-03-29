@@ -54,7 +54,6 @@ type APIClient struct {
 	LoadBalancers           LoadBalancersAPI
 	Clusters                ClustersAPI
 	Tokens                  TokensAPI
-	NodePools               NodePoolsAPI
 	// Deprecated: Please use VolumePlans instead.
 	VolumeProducts VolumeProductsAPI
 	// Deprecated: Please use InstancePlans instead.
@@ -187,7 +186,6 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.LoadBalancers = &LoadBalancersService{client: c}
 	c.Clusters = &ClustersService{client: c}
 	c.Tokens = &TokensService{client: c}
-	c.NodePools = &NodePoolsService{client: c}
 	c.InstancePlans = &InstancePlansService{client: c}
 	c.VolumePlans = &VolumePlansService{client: c}
 	c.VolumeProducts = &VolumeProductsService{client: c}
