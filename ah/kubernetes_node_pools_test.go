@@ -204,7 +204,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		Vcpu:          4,
 		Ram:           4096,
 		Disk:          40,
-		NetworlID:     "0a1004fb-6930-49f5-9a2e-1e713b50d850",
+		NetworkID:     "0a1004fb-6930-49f5-9a2e-1e713b50d850",
 		ClusterID:     "ca2a8d11-8426-4493-8ee3-82b700c6092b",
 		ClusterNodeID: "33bb3e37-7e2d-4a55-936d-fae0223d5a00",
 	}

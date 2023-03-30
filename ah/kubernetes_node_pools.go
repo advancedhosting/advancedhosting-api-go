@@ -13,7 +13,7 @@ type PublicProperties struct {
 
 // PrivateProperties object
 type PrivateProperties struct {
-	NetworlID     string `json:"network_id,omitempty"`
+	NetworkID     string `json:"network_id,omitempty"`
 	ClusterID     string `json:"cluster_id,omitempty"`
 	ClusterNodeID string `json:"cluster_node_id,omitempty"`
 	Vcpu          int    `json:"vcpu,omitempty"`
