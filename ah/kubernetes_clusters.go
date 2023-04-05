@@ -50,6 +50,11 @@ type ClustersAPI interface {
 	Update(context.Context, string, *ClusterUpdateRequest) error
 	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
+	GetKubernetesNodePool(context.Context, string, string) (*KubernetesNodePool, error)
+	ListKubernetesNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
+	CreateKubernetesNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
+	UpdateKubernetesNodePool(context.Context, string, string, *UpdateKubernetesNodePoolRequest) error
+	DeleteKubernetesNodePool(context.Context, string, string, bool) error
 }
 
 // ClustersService implements ClustersAPI interface.
