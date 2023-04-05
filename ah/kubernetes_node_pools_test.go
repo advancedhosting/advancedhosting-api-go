@@ -77,7 +77,7 @@ func TestNodePoolPublicGet(t *testing.T) {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.Clusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
+	nodePool, err := api.Clusters.GetKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -104,7 +104,7 @@ func TestNodePooPrivatelGet(t *testing.T) {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.Clusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
+	nodePool, err := api.Clusters.GetKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -131,7 +131,7 @@ func TestNodePoolList(t *testing.T) {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePools, err := api.Clusters.ListNodePools(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
+	nodePools, err := api.Clusters.ListKubernetesNodePools(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -172,7 +172,7 @@ func TestNodePoolPublicCreate(t *testing.T) {
 		PublicProperties: *publicProperties,
 	}
 
-	nodePool, err := api.Clusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	nodePool, err := api.Clusters.CreateKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -217,7 +217,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		PrivateProperties: *privateProperties,
 	}
 
-	nodePool, err := api.Clusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	nodePool, err := api.Clusters.CreateKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -247,7 +247,7 @@ func TestNodePoolUpdate(t *testing.T) {
 		AutoScale: false,
 	}
 
-	err := api.Clusters.UpdateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
+	err := api.Clusters.UpdateKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -263,7 +263,7 @@ func TestNodePoolDelete(t *testing.T) {
 
 	ctx := context.Background()
 
-	err := api.Clusters.DeleteNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
+	err := api.Clusters.DeleteKubernetesNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

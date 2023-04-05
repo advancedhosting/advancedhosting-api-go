@@ -28,7 +28,7 @@ type KubernetesNodePool struct {
 	Name              string            `json:"name"`
 	Type              string            `json:"type"`
 	CreatedAt         string            `json:"created_at,omitempty"`
-	Nodes             []ClusterNodes    `json:"nodes,omitempty"`
+	Nodes             []KubernetesNodes `json:"nodes,omitempty"`
 	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
 	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
 	Count             int               `json:"count,omitempty"`
@@ -68,8 +68,8 @@ type UpdateKubernetesNodePoolRequest struct {
 	MaxCount  int               `json:"max_count,omitempty"`
 }
 
-// GetNodePool returns node pool
-func (kc *ClustersService) GetNodePool(ctx context.Context, clusterId, nodePoolId string) (*KubernetesNodePool, error) {
+// GetKubernetesNodePool returns node pool
+func (kc *ClustersService) GetKubernetesNodePool(ctx context.Context, clusterId, nodePoolId string) (*KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
 	req, err := kc.client.newRequest(http.MethodGet, path, nil)
 
@@ -86,8 +86,8 @@ func (kc *ClustersService) GetNodePool(ctx context.Context, clusterId, nodePoolI
 	return nodePoolRoot.KubernetesNodePool, nil
 }
 
-// ListNodePools returns list of node pools
-func (kc *ClustersService) ListNodePools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesNodePool, error) {
+// ListKubernetesNodePools returns list of node pools
+func (kc *ClustersService) ListKubernetesNodePools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
 
 	var NodePoolsRoot KubernetesNodePoolsRoot
@@ -99,8 +99,8 @@ func (kc *ClustersService) ListNodePools(ctx context.Context, options *ListOptio
 	return NodePoolsRoot.KubernetesNodePools, nil
 }
 
-// CreateNodePool creates node pool
-func (kc *ClustersService) CreateNodePool(ctx context.Context, clusterId string, request *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error) {
+// CreateKubernetesNodePool creates node pool
+func (kc *ClustersService) CreateKubernetesNodePool(ctx context.Context, clusterId string, request *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
 	req, err := kc.client.newRequest(http.MethodPost, path, request)
 	if err != nil {
@@ -115,8 +115,8 @@ func (kc *ClustersService) CreateNodePool(ctx context.Context, clusterId string,
 	return nodePoolRoot.KubernetesNodePool, nil
 }
 
-// UpdateNodePool updates node pool
-func (kc *ClustersService) UpdateNodePool(ctx context.Context, clusterId, nodePoolId string, request *UpdateKubernetesNodePoolRequest) error {
+// UpdateKubernetesNodePool updates node pool
+func (kc *ClustersService) UpdateKubernetesNodePool(ctx context.Context, clusterId, nodePoolId string, request *UpdateKubernetesNodePoolRequest) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
 	req, err := kc.client.newRequest(http.MethodPut, path, request)
 	if err != nil {
@@ -130,8 +130,8 @@ func (kc *ClustersService) UpdateNodePool(ctx context.Context, clusterId, nodePo
 	return nil
 }
 
-// DeleteNodePool deletes node pool
-func (kc *ClustersService) DeleteNodePool(ctx context.Context, clusterId string, nodePoolId string, replace bool) error {
+// DeleteKubernetesNodePool deletes node pool
+func (kc *ClustersService) DeleteKubernetesNodePool(ctx context.Context, clusterId string, nodePoolId string, replace bool) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s?replace=%v", clusterId, nodePoolId, replace)
 	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
 	if err != nil {
