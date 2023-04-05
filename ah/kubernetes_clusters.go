@@ -50,10 +50,10 @@ type ClustersAPI interface {
 	Update(context.Context, string, *ClusterUpdateRequest) error
 	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
-	GetNodePool(context.Context, string, string) (*ClusterNodePool, error)
-	ListNodePools(context.Context, *ListOptions, string) ([]ClusterNodePool, error)
-	CreateNodePool(context.Context, string, *CreateClusterNodePoolRequest) (*ClusterNodePool, error)
-	UpdateNodePool(context.Context, string, string, *UpdateClusterNodePoolRequest) error
+	GetNodePool(context.Context, string, string) (*KubernetesNodePool, error)
+	ListNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
+	CreateNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
+	UpdateNodePool(context.Context, string, string, *UpdateKubernetesNodePoolRequest) error
 	DeleteNodePool(context.Context, string, string, bool) error
 }
 

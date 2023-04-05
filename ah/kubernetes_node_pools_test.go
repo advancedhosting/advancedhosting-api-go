@@ -72,7 +72,7 @@ func TestNodePoolPublicGet(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult ClusterNodePoolRoot
+	var expectedResult KubernetesNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestNodePoolPublicGet(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -99,7 +99,7 @@ func TestNodePooPrivatelGet(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult ClusterNodePoolRoot
+	var expectedResult KubernetesNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
@@ -112,7 +112,7 @@ func TestNodePooPrivatelGet(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -126,7 +126,7 @@ func TestNodePoolList(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult ClusterNodePoolsRoot
+	var expectedResult KubernetesNodePoolsRoot
 	if err := json.Unmarshal([]byte(nodePoolListResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
@@ -143,7 +143,7 @@ func TestNodePoolList(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePools)
 	}
 
-	if !reflect.DeepEqual(expectedResult.ClusterNodePools, nodePools) {
+	if !reflect.DeepEqual(expectedResult.KubernetesNodePools, nodePools) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePools)
 	}
 }
@@ -157,14 +157,14 @@ func TestNodePoolPublicCreate(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult ClusterNodePoolRoot
+	var expectedResult KubernetesNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
 	publicProperties := &PublicProperties{PlanID: 111111111}
 
-	request := &CreateClusterNodePoolRequest{
+	request := &CreateKubernetesNodePoolRequest{
 		Name:             "test",
 		Type:             "public",
 		Count:            1,
@@ -181,7 +181,7 @@ func TestNodePoolPublicCreate(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -195,7 +195,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 
 	ctx := context.Background()
 
-	var expectedResult ClusterNodePoolRoot
+	var expectedResult KubernetesNodePoolRoot
 	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
@@ -209,7 +209,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		ClusterNodeID: "33bb3e37-7e2d-4a55-936d-fae0223d5a00",
 	}
 
-	request := &CreateClusterNodePoolRequest{
+	request := &CreateKubernetesNodePoolRequest{
 		Name:              "test",
 		Type:              "private",
 		Count:             1,
@@ -226,7 +226,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		t.Errorf("Invalid response: %v", nodePool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.ClusterNodePool, nodePool) {
+	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
 	}
 }
@@ -240,7 +240,7 @@ func TestNodePoolUpdate(t *testing.T) {
 
 	ctx := context.Background()
 
-	request := &UpdateClusterNodePoolRequest{
+	request := &UpdateKubernetesNodePoolRequest{
 		Name:      "test",
 		Count:     1,
 		Labels:    map[string]string{},
