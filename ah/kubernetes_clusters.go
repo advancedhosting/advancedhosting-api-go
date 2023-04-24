@@ -22,126 +22,124 @@ import (
 	"net/http"
 )
 
-// Cluster object
-type Cluster struct {
-	ID           string `json:"id,omitempty"`
-	Name         string `json:"name,omitempty"`
-	DatacenterID string `json:"datacenter_id,omitempty"`
-	State        string `json:"state,omitempty"`
-	Number       string `json:"number"`
-	CreatedAt    string `json:"created_at"`
-	Count        int    `json:"count"`
-	PlanID       int    `json:"plan_id"`
-	Vcpu         int    `json:"vcpu"`
-	Ram          int    `json:"ram"`
-	Disk         int    `json:"disk"`
+// KubernetesCluster object
+type KubernetesCluster struct {
+	ID               string               `json:"id,omitempty"`
+	Name             string               `json:"name,omitempty"`
+	TokenID          string               `json:"token_id,omitempty"`
+	DatacenterID     string               `json:"datacenter_id,omitempty"`
+	DatacenterSlug   string               `json:"datacenter_slug,omitempty"`
+	PrivateNetwork   string               `json:"private_network,omitempty"`
+	State            string               `json:"state,omitempty"`
+	Number           string               `json:"number"`
+	CreatedAt        string               `json:"created_at"`
+	AccountID        string               `json:"account_id"`
+	PrivateNetworkID string               `json:"private_network_id"`
+	K8sVersion       string               `json:"k8s_version"`
+	NodePools        []KubernetesNodePool `json:"node_pools,omitempty"`
 }
 
-// clusterConfig object
-type clusterConfig struct {
+// KubernetesClusterConfig object
+type KubernetesClusterConfig struct {
 	Config string `json:"config"`
 }
 
-// ClustersAPI is an interface for cluster API.
-type ClustersAPI interface {
-	Get(context.Context, string) (*Cluster, error)
-	List(context.Context, *ListOptions) ([]Cluster, error)
-	Create(context.Context, *ClusterCreateRequest) (*Cluster, error)
-	Update(context.Context, string, *ClusterUpdateRequest) error
+// KubernetesClustersAPI is an interface for cluster API.
+type KubernetesClustersAPI interface {
+	Get(context.Context, string) (*KubernetesCluster, error)
+	List(context.Context, *ListOptions) ([]KubernetesCluster, error)
+	Create(context.Context, *KubernetesClusterCreateRequest) (*KubernetesCluster, error)
+	Update(context.Context, string, *KubernetesClusterUpdateRequest) error
 	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
-	GetKubernetesNodePool(context.Context, string, string) (*KubernetesNodePool, error)
-	ListKubernetesNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
-	CreateKubernetesNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
-	UpdateKubernetesNodePool(context.Context, string, string, *UpdateKubernetesNodePoolRequest) error
-	DeleteKubernetesNodePool(context.Context, string, string, bool) error
+	GetNodePool(context.Context, string, string) (*KubernetesNodePool, error)
+	ListNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
+	CreateNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
+	UpdateNodePool(context.Context, string, string, *UpdateKubernetesNodePoolRequest) error
+	DeleteNodePool(context.Context, string, string, bool) error
 }
 
-// ClustersService implements ClustersAPI interface.
-type ClustersService struct {
+// KubernetesClustersService implements ClustersAPI interface.
+type KubernetesClustersService struct {
 	client *APIClient
 }
 
-type clusterRoot struct {
-	Cluster *Cluster `json:"cluster,omitempty"`
+type KubernetesClusterRoot struct {
+	KubernetesCluster *KubernetesCluster `json:"cluster,omitempty"`
 }
 
-type clustersRoot struct {
-	Clusters []Cluster `json:"clusters,omitempty"`
+type KubernetesClustersRoot struct {
+	KubernetesClusters []KubernetesCluster `json:"clusters,omitempty"`
 }
 
-// ClusterCreateRequest represents a request to create a cluster.
-type ClusterCreateRequest struct {
-	Name         string `json:"name"`
-	DatacenterID string `json:"datacenter_id,omitempty"`
-	PlanId       int    `json:"plan_id,omitempty"`
-	Vcpu         int    `json:"vcpu,omitempty"`
-	Ram          int    `json:"ram,omitempty"`
-	Disk         int    `json:"disk,omitempty"`
-	Count        int    `json:"count,omitempty"`
-	PrivateCloud bool   `json:"private_cloud"`
+// KubernetesClusterCreateRequest represents a request to create a cluster.
+type KubernetesClusterCreateRequest struct {
+	Name         string                            `json:"name"`
+	DatacenterID string                            `json:"datacenter_id,omitempty"`
+	K8sVersion   string                            `json:"k8s_version"`
+	NodePools    []CreateKubernetesNodePoolRequest `json:"node_pools"`
 }
 
-// ClusterUpdateRequest represents a request to update a cluster
-type ClusterUpdateRequest struct {
+// KubernetesClusterUpdateRequest represents a request to update a cluster
+type KubernetesClusterUpdateRequest struct {
 	Name string `json:"name,omitempty"`
 }
 
 // Create kubernetes cluster
-func (kc *ClustersService) Create(ctx context.Context, createRequest *ClusterCreateRequest) (*Cluster, error) {
-	req, err := kc.client.newRequest(http.MethodPost, "api/v1/kubernetes/clusters", createRequest)
+func (kcs *KubernetesClustersService) Create(ctx context.Context, createRequest *KubernetesClusterCreateRequest) (*KubernetesCluster, error) {
+	req, err := kcs.client.newRequest(http.MethodPost, "api/v2/kubernetes/clusters", createRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	var clusterRoot clusterRoot
-	if _, err := kc.client.Do(ctx, req, &clusterRoot); err != nil {
+	var kubernetesClusterRoot KubernetesClusterRoot
+	if _, err := kcs.client.Do(ctx, req, &kubernetesClusterRoot); err != nil {
 		return nil, err
 	}
 
-	return clusterRoot.Cluster, nil
+	return kubernetesClusterRoot.KubernetesCluster, nil
 }
 
 // Get kubernetes cluster
-func (kc *ClustersService) Get(ctx context.Context, clusterID string) (*Cluster, error) {
-	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterID)
+func (kcs *KubernetesClustersService) Get(ctx context.Context, clusterID string) (*KubernetesCluster, error) {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s", clusterID)
 
-	req, err := kc.client.newRequest(http.MethodGet, path, nil)
+	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var clusterRoot clusterRoot
-	_, err = kc.client.Do(ctx, req, &clusterRoot)
+	var kubernetesClusterRoot KubernetesClusterRoot
+	_, err = kcs.client.Do(ctx, req, &kubernetesClusterRoot)
 	if err != nil {
 		return nil, err
 	}
 
-	return clusterRoot.Cluster, nil
+	return kubernetesClusterRoot.KubernetesCluster, nil
 }
 
 // List returns list of kubernetes clusters
-func (kc *ClustersService) List(ctx context.Context, options *ListOptions) ([]Cluster, error) {
-	path := "/api/v1/kubernetes/clusters"
+func (kcs *KubernetesClustersService) List(ctx context.Context, options *ListOptions) ([]KubernetesCluster, error) {
+	path := "/api/v2/kubernetes/clusters"
 
-	var clustersRoot clustersRoot
-	if err := kc.client.list(ctx, path, options, &clustersRoot); err != nil {
+	var kubernetesClustersRoot KubernetesClustersRoot
+	if err := kcs.client.list(ctx, path, options, &kubernetesClustersRoot); err != nil {
 		return nil, err
 	}
 
-	return clustersRoot.Clusters, nil
+	return kubernetesClustersRoot.KubernetesClusters, nil
 }
 
 // Update kubernetes cluster. Returns error
-func (kc *ClustersService) Update(ctx context.Context, clusterId string, request *ClusterUpdateRequest) error {
-	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterId)
+func (kcs *KubernetesClustersService) Update(ctx context.Context, clusterId string, request *KubernetesClusterUpdateRequest) error {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s", clusterId)
 
-	req, err := kc.client.newRequest(http.MethodPatch, path, request)
+	req, err := kcs.client.newRequest(http.MethodPatch, path, request)
 	if err != nil {
 		return err
 	}
 
-	_, err = kc.client.Do(ctx, req, nil)
+	_, err = kcs.client.Do(ctx, req, nil)
 	if err != nil {
 		return err
 	}
@@ -150,15 +148,15 @@ func (kc *ClustersService) Update(ctx context.Context, clusterId string, request
 }
 
 // Delete kubernetes cluster. Returns error
-func (kc *ClustersService) Delete(ctx context.Context, clusterId string) error {
-	path := fmt.Sprintf("api/v1/kubernetes/clusters/%s", clusterId)
+func (kcs *KubernetesClustersService) Delete(ctx context.Context, clusterId string) error {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s", clusterId)
 
-	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
+	req, err := kcs.client.newRequest(http.MethodDelete, path, nil)
 	if err != nil {
 		return err
 	}
 
-	_, err = kc.client.Do(ctx, req, nil)
+	_, err = kcs.client.Do(ctx, req, nil)
 	if err != nil {
 		return err
 	}
@@ -167,17 +165,17 @@ func (kc *ClustersService) Delete(ctx context.Context, clusterId string) error {
 }
 
 // GetConfig returns kubernetes cluster config
-func (kc ClustersService) GetConfig(ctx context.Context, clusterId string) (string, error) {
-	path := fmt.Sprintf("/api/v1/kubernetes/clusters/%s/kubeconfig", clusterId)
+func (kcs KubernetesClustersService) GetConfig(ctx context.Context, clusterId string) (string, error) {
+	path := fmt.Sprintf("/api/v2/kubernetes/clusters/%s/kubeconfig", clusterId)
 
-	req, err := kc.client.newRequest(http.MethodGet, path, nil)
+	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return "", err
 	}
 	req.Header.Add("Accept", "application/json")
 
-	var configRoot clusterConfig
-	_, err = kc.client.Do(ctx, req, &configRoot)
+	var configRoot KubernetesClusterConfig
+	_, err = kcs.client.Do(ctx, req, &configRoot)
 	if err != nil {
 		return "", err
 	}
