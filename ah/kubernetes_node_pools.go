@@ -68,10 +68,10 @@ type UpdateKubernetesNodePoolRequest struct {
 	MaxCount  int               `json:"max_count,omitempty"`
 }
 
-// GetKubernetesNodePool returns node pool
-func (kc *ClustersService) GetKubernetesNodePool(ctx context.Context, clusterId, nodePoolId string) (*KubernetesNodePool, error) {
+// GetNodePool returns node pool
+func (kcs *KubernetesClustersService) GetNodePool(ctx context.Context, clusterId, nodePoolId string) (*KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
-	req, err := kc.client.newRequest(http.MethodGet, path, nil)
+	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
 
 	if err != nil {
 		return nil, err
@@ -79,66 +79,66 @@ func (kc *ClustersService) GetKubernetesNodePool(ctx context.Context, clusterId,
 
 	var nodePoolRoot KubernetesNodePoolRoot
 
-	if _, err = kc.client.Do(ctx, req, &nodePoolRoot); err != nil {
+	if _, err = kcs.client.Do(ctx, req, &nodePoolRoot); err != nil {
 		return nil, err
 	}
 
 	return nodePoolRoot.KubernetesNodePool, nil
 }
 
-// ListKubernetesNodePools returns list of node pools
-func (kc *ClustersService) ListKubernetesNodePools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesNodePool, error) {
+// ListNodePools returns list of node pools
+func (kcs *KubernetesClustersService) ListNodePools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
 
 	var NodePoolsRoot KubernetesNodePoolsRoot
 
-	if err := kc.client.list(ctx, path, options, &NodePoolsRoot); err != nil {
+	if err := kcs.client.list(ctx, path, options, &NodePoolsRoot); err != nil {
 		return nil, err
 	}
 
 	return NodePoolsRoot.KubernetesNodePools, nil
 }
 
-// CreateKubernetesNodePool creates node pool
-func (kc *ClustersService) CreateKubernetesNodePool(ctx context.Context, clusterId string, request *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error) {
+// CreateNodePool creates node pool
+func (kcs *KubernetesClustersService) CreateNodePool(ctx context.Context, clusterId string, request *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error) {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
-	req, err := kc.client.newRequest(http.MethodPost, path, request)
+	req, err := kcs.client.newRequest(http.MethodPost, path, request)
 	if err != nil {
 		return nil, err
 	}
 
 	var nodePoolRoot KubernetesNodePoolRoot
-	if _, err := kc.client.Do(ctx, req, &nodePoolRoot); err != nil {
+	if _, err := kcs.client.Do(ctx, req, &nodePoolRoot); err != nil {
 		return nil, err
 	}
 
 	return nodePoolRoot.KubernetesNodePool, nil
 }
 
-// UpdateKubernetesNodePool updates node pool
-func (kc *ClustersService) UpdateKubernetesNodePool(ctx context.Context, clusterId, nodePoolId string, request *UpdateKubernetesNodePoolRequest) error {
+// UpdateNodePool updates node pool
+func (kcs *KubernetesClustersService) UpdateNodePool(ctx context.Context, clusterId, nodePoolId string, request *UpdateKubernetesNodePoolRequest) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
-	req, err := kc.client.newRequest(http.MethodPut, path, request)
+	req, err := kcs.client.newRequest(http.MethodPut, path, request)
 	if err != nil {
 		return err
 	}
 
-	if _, err := kc.client.Do(ctx, req, nil); err != nil {
+	if _, err := kcs.client.Do(ctx, req, nil); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// DeleteKubernetesNodePool deletes node pool
-func (kc *ClustersService) DeleteKubernetesNodePool(ctx context.Context, clusterId string, nodePoolId string, replace bool) error {
+// DeleteNodePool deletes node pool
+func (kcs *KubernetesClustersService) DeleteNodePool(ctx context.Context, clusterId string, nodePoolId string, replace bool) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s?replace=%v", clusterId, nodePoolId, replace)
-	req, err := kc.client.newRequest(http.MethodDelete, path, nil)
+	req, err := kcs.client.newRequest(http.MethodDelete, path, nil)
 	if err != nil {
 		return err
 	}
 
-	if _, err := kc.client.Do(ctx, req, nil); err != nil {
+	if _, err := kcs.client.Do(ctx, req, nil); err != nil {
 		return err
 	}
 

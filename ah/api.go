@@ -52,7 +52,7 @@ type APIClient struct {
 	Datacenters             DatacentersAPI
 	Images                  ImagesAPI
 	LoadBalancers           LoadBalancersAPI
-	Clusters                ClustersAPI
+	KubernetesClusters      KubernetesClustersAPI
 	Tokens                  TokensAPI
 	// Deprecated: Please use VolumePlans instead.
 	VolumeProducts VolumeProductsAPI
@@ -184,7 +184,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Datacenters = &DatacentersService{client: c}
 	c.Images = &ImagesService{client: c}
 	c.LoadBalancers = &LoadBalancersService{client: c}
-	c.Clusters = &ClustersService{client: c}
+	c.KubernetesClusters = &KubernetesClustersService{client: c}
 	c.Tokens = &TokensService{client: c}
 	c.InstancePlans = &InstancePlansService{client: c}
 	c.VolumePlans = &VolumePlansService{client: c}
