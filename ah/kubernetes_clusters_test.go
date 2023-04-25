@@ -30,12 +30,12 @@ var clusterResponse = fmt.Sprintf(`{
 	"token_id": "ad85a5d3-99ad-4f05-a5ac-24eb27b9cd8c",
 	"datacenter_id": "5839cebe-c7a5-4a27-8253-7bd619ca430d",
 	"datacenter_slug": "ams1",
-	"private_network": "NET10000000",
 	"state": "active",
 	"created_at": "2019-08-24T14:15:22Z",
 	"number": "KUB1000000",
 	"account_id": "085592e9-dd2f-490d-b972-7c70142f91b0",
 	"private_network_id": "c2a96164-d7f4-45db-b61a-e757de64483e",
+	"private_network_name": "NET10000000",
 	"k8s_version": "1.19.3",
 	"node_pools": [%s,%s]
 }`, NodePoolPublicResponse, NodePoolPrivateResponse)

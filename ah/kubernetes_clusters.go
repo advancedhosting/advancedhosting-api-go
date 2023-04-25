@@ -24,19 +24,19 @@ import (
 
 // KubernetesCluster object
 type KubernetesCluster struct {
-	ID               string               `json:"id,omitempty"`
-	Name             string               `json:"name,omitempty"`
-	TokenID          string               `json:"token_id,omitempty"`
-	DatacenterID     string               `json:"datacenter_id,omitempty"`
-	DatacenterSlug   string               `json:"datacenter_slug,omitempty"`
-	PrivateNetwork   string               `json:"private_network,omitempty"`
-	State            string               `json:"state,omitempty"`
-	Number           string               `json:"number"`
-	CreatedAt        string               `json:"created_at"`
-	AccountID        string               `json:"account_id"`
-	PrivateNetworkID string               `json:"private_network_id"`
-	K8sVersion       string               `json:"k8s_version"`
-	NodePools        []KubernetesNodePool `json:"node_pools,omitempty"`
+	ID                 string               `json:"id,omitempty"`
+	Name               string               `json:"name,omitempty"`
+	TokenID            string               `json:"token_id,omitempty"`
+	DatacenterID       string               `json:"datacenter_id,omitempty"`
+	DatacenterSlug     string               `json:"datacenter_slug,omitempty"`
+	State              string               `json:"state,omitempty"`
+	Number             string               `json:"number"`
+	CreatedAt          string               `json:"created_at"`
+	AccountID          string               `json:"account_id"`
+	PrivateNetworkID   string               `json:"private_network_id"`
+	PrivateNetworkName string               `json:"private_network_name,omitempty"`
+	K8sVersion         string               `json:"k8s_version"`
+	NodePools          []KubernetesNodePool `json:"node_pools,omitempty"`
 }
 
 // KubernetesClusterConfig object
