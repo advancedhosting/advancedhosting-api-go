@@ -52,6 +52,7 @@ type KubernetesClustersAPI interface {
 	Update(context.Context, string, *KubernetesClusterUpdateRequest) error
 	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
+	GetKubernetesClustersVersions(context.Context) ([]string, error)
 	GetNodePool(context.Context, string, string) (*KubernetesNodePool, error)
 	ListNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
 	CreateNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
@@ -162,6 +163,25 @@ func (kcs *KubernetesClustersService) Delete(ctx context.Context, clusterId stri
 	}
 
 	return nil
+}
+
+// GetKubernetesClustersVersions returns kubernetes version
+func (kcs *KubernetesClustersService) GetKubernetesClustersVersions(ctx context.Context) ([]string, error) {
+	path := "/api/v2/kubernetes/clusters/versions"
+
+	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var versions []string
+
+	_, err = kcs.client.Do(ctx, req, &versions)
+	if err != nil {
+		return nil, err
+	}
+
+	return versions, nil
 }
 
 // GetConfig returns kubernetes cluster config

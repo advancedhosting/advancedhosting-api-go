@@ -24,7 +24,8 @@ import (
 	"testing"
 )
 
-var clusterResponse = fmt.Sprintf(`{
+var (
+	clusterResponse = fmt.Sprintf(`{
 	"id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
 	"name": "New Kubernetes Cluster",
 	"token_id": "ad85a5d3-99ad-4f05-a5ac-24eb27b9cd8c",
@@ -39,6 +40,8 @@ var clusterResponse = fmt.Sprintf(`{
 	"k8s_version": "1.19.3",
 	"node_pools": [%s,%s]
 }`, NodePoolPublicResponse, NodePoolPrivateResponse)
+	kubernetesVersions = `["v1.19.3", "v1.18.10", "v1.17.13"]`
+)
 
 const configResponse = "Cluster config"
 
@@ -176,5 +179,36 @@ func TestCluster_GetConfig(t *testing.T) {
 	}
 	if config != configResponse {
 		t.Errorf("Unexpected response")
+	}
+}
+
+func TestKubernetesClustersVersions(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: kubernetesVersions, statusCode: 200}
+
+	api, _ := newFakeAPIClient(
+		"/api/v2/kubernetes/clusters/versions",
+		fakeResponse,
+	)
+
+	ctx := context.Background()
+
+	versions, err := api.KubernetesClusters.GetKubernetesClustersVersions(ctx)
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+	if versions == nil {
+		t.Errorf("Empty response")
+	}
+
+	found := false
+	for _, version := range versions {
+		if version == "v1.19.3" {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		t.Errorf("Version v1.19.3 not found in the response")
 	}
 }
