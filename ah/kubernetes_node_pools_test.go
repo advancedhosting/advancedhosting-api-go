@@ -168,7 +168,6 @@ func TestNodePoolPublicCreate(t *testing.T) {
 		Name:             "test",
 		Type:             "public",
 		Count:            1,
-		Labels:           map[string]string{},
 		PublicProperties: publicProperties,
 	}
 
@@ -213,7 +212,6 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		Name:              "test",
 		Type:              "private",
 		Count:             1,
-		Labels:            map[string]string{},
 		PrivateProperties: privateProperties,
 	}
 
@@ -243,7 +241,6 @@ func TestNodePoolUpdate(t *testing.T) {
 	request := &UpdateKubernetesNodePoolRequest{
 		Name:      "test",
 		Count:     1,
-		Labels:    map[string]string{},
 		AutoScale: false,
 	}
 
