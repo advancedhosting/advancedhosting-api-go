@@ -169,7 +169,7 @@ func TestNodePoolPublicCreate(t *testing.T) {
 		Type:             "public",
 		Count:            1,
 		Labels:           map[string]string{},
-		PublicProperties: *publicProperties,
+		PublicProperties: publicProperties,
 	}
 
 	nodePool, err := api.KubernetesClusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
@@ -214,7 +214,7 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		Type:              "private",
 		Count:             1,
 		Labels:            map[string]string{},
-		PrivateProperties: *privateProperties,
+		PrivateProperties: privateProperties,
 	}
 
 	nodePool, err := api.KubernetesClusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)

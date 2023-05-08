@@ -47,15 +47,15 @@ type KubernetesNodePoolsRoot struct {
 
 // CreateKubernetesNodePoolRequest represents a request to create a node pool.
 type CreateKubernetesNodePoolRequest struct {
-	Labels            map[string]string `json:"labels,omitempty"`
-	Name              string            `json:"name"`
-	Type              string            `json:"type"`
-	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
-	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
-	Count             int               `json:"count,omitempty"`
-	MinCount          int               `json:"min_count,omitempty"`
-	MaxCount          int               `json:"max_count,omitempty"`
-	AutoScale         bool              `json:"autoscale,omitempty"`
+	PrivateProperties *PrivateProperties `json:"private_properties,omitempty"`
+	PublicProperties  *PublicProperties  `json:"public_properties,omitempty"`
+	Labels            map[string]string  `json:"labels,omitempty"`
+	Name              string             `json:"name"`
+	Type              string             `json:"type"`
+	Count             int                `json:"count,omitempty"`
+	MinCount          int                `json:"min_count,omitempty"`
+	MaxCount          int                `json:"max_count,omitempty"`
+	AutoScale         bool               `json:"autoscale,omitempty"`
 }
 
 // UpdateKubernetesNodePoolRequest represents a request to update a node pool
