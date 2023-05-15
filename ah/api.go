@@ -54,6 +54,7 @@ type APIClient struct {
 	LoadBalancers           LoadBalancersAPI
 	KubernetesClusters      KubernetesClustersAPI
 	Tokens                  TokensAPI
+	AccessTokens            AccessTokensAPI
 	// Deprecated: Please use VolumePlans instead.
 	VolumeProducts VolumeProductsAPI
 	// Deprecated: Please use InstancePlans instead.
@@ -188,6 +189,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Tokens = &TokensService{client: c}
 	c.InstancePlans = &InstancePlansService{client: c}
 	c.VolumePlans = &VolumePlansService{client: c}
+	c.AccessTokens = &AccessTokensService{client: c}
 	c.VolumeProducts = &VolumeProductsService{client: c}
 	c.InstanceProducts = &InstanceProductsService{client: c}
 	return c, nil
