@@ -81,12 +81,12 @@ func TestAccessToken_Create(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
-	var expectedResult AccessTokenRoot
+	var expectedResult *AccessToken
 	if err := json.Unmarshal([]byte(accessTokenResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected unmarshal error: %v", err)
 	}
 
-	if !reflect.DeepEqual(expectedResult.AccessToken, accessToken) {
+	if !reflect.DeepEqual(expectedResult, accessToken) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, accessToken)
 	}
 }

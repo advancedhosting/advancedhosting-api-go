@@ -47,10 +47,6 @@ type AccessTokensAPI interface {
 	Delete(context.Context, string, string) error
 }
 
-type AccessTokenRoot struct {
-	AccessToken *AccessToken `json:"access_token,omitempty"`
-}
-
 // List access tokens
 func (ats *AccessTokensService) List(ctx context.Context, userID string, options *ListOptions) ([]AccessToken, error) {
 	path := fmt.Sprintf("api/internal/users/%s/access_tokens", userID)
@@ -72,12 +68,12 @@ func (ats *AccessTokensService) Create(ctx context.Context, userID string, creat
 		return nil, err
 	}
 
-	var accessTokenRoot AccessTokenRoot
-	if _, err := ats.client.Do(ctx, req, &accessTokenRoot); err != nil {
+	var accessToken *AccessToken
+	if _, err := ats.client.Do(ctx, req, &accessToken); err != nil {
 		return nil, err
 	}
 
-	return accessTokenRoot.AccessToken, nil
+	return accessToken, nil
 }
 
 // Delete access token
