@@ -39,18 +39,12 @@ type KubernetesCluster struct {
 	NodePools          []KubernetesNodePool `json:"node_pools,omitempty"`
 }
 
-// KubernetesClusterConfig object
-type KubernetesClusterConfig struct {
-	Config string `json:"config"`
-}
-
 // KubernetesClustersAPI is an interface for cluster API.
 type KubernetesClustersAPI interface {
 	Get(context.Context, string) (*KubernetesCluster, error)
 	List(context.Context, *ListOptions) ([]KubernetesCluster, error)
 	Create(context.Context, *KubernetesClusterCreateRequest) (*KubernetesCluster, error)
 	Update(context.Context, string, *KubernetesClusterUpdateRequest) error
-	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
 	GetKubernetesClustersVersions(context.Context) ([]string, error)
 	GetNodePool(context.Context, string, string) (*KubernetesNodePool, error)
@@ -182,23 +176,4 @@ func (kcs *KubernetesClustersService) GetKubernetesClustersVersions(ctx context.
 	}
 
 	return versions, nil
-}
-
-// GetConfig returns kubernetes cluster config
-func (kcs KubernetesClustersService) GetConfig(ctx context.Context, clusterId string) (string, error) {
-	path := fmt.Sprintf("/api/v2/kubernetes/clusters/%s/kubeconfig", clusterId)
-
-	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Add("Accept", "application/json")
-
-	var configRoot KubernetesClusterConfig
-	_, err = kcs.client.Do(ctx, req, &configRoot)
-	if err != nil {
-		return "", err
-	}
-
-	return configRoot.Config, nil
 }

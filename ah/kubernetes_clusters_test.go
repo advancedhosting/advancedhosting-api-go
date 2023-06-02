@@ -43,12 +43,9 @@ var (
 	kubernetesVersions = `["v1.19.3", "v1.18.10", "v1.17.13"]`
 )
 
-const configResponse = "Cluster config"
-
 var (
-	clusterGetResponse    = fmt.Sprintf(`{"cluster": %s}`, clusterResponse)
-	clusterListResponse   = fmt.Sprintf(`{"clusters": [%s]}`, clusterResponse)
-	clusterConfigResponse = fmt.Sprintf(`{"config": "%s"}`, configResponse)
+	clusterGetResponse  = fmt.Sprintf(`{"cluster": %s}`, clusterResponse)
+	clusterListResponse = fmt.Sprintf(`{"clusters": [%s]}`, clusterResponse)
 )
 
 func TestCluster_Get(t *testing.T) {
@@ -156,29 +153,6 @@ func TestCluster_Delete(t *testing.T) {
 	err := api.KubernetesClusters.Delete(ctx, clusterId)
 	if err != nil {
 		t.Errorf("Unexpected error: %s", err)
-	}
-}
-
-func TestCluster_GetConfig(t *testing.T) {
-	var clusterId = "5839cebe-c7a5-4a27-8253-7bd619ca430d"
-
-	fakeResponse := &fakeServerResponse{responseBody: clusterConfigResponse, statusCode: 200}
-	api, _ := newFakeAPIClient(
-		fmt.Sprintf("/api/v2/kubernetes/clusters/%s/kubeconfig", clusterId),
-		fakeResponse,
-	)
-
-	ctx := context.Background()
-
-	config, err := api.KubernetesClusters.GetConfig(ctx, clusterId)
-	if err != nil {
-		t.Errorf("Unexpected error: %s", err)
-	}
-	if config == "" {
-		t.Errorf("Empty response")
-	}
-	if config != configResponse {
-		t.Errorf("Unexpected response")
 	}
 }
 

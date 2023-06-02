@@ -37,23 +37,24 @@ const defaultAPIURL = "https://api.websa.com"
 
 // APIClient implements communication with AH API
 type APIClient struct {
-	client                  *http.Client
-	apiURL                  *url.URL
-	Instances               InstancesAPI
-	IPAddresses             IPAddressesAPI
-	IPAddressAssignments    IPAddressAssignmentsAPI
-	PrivateNetworks         PrivateNetworksAPI
-	InstancePrivateNetworks InstancePrivateNetworksAPI
-	Volumes                 VolumesAPI
-	InstancePlans           InstancePlansAPI
-	VolumePlans             VolumePlansAPI
-	SSHKeys                 SSHKeysAPI
-	Backups                 BackupsAPI
-	Datacenters             DatacentersAPI
-	Images                  ImagesAPI
-	LoadBalancers           LoadBalancersAPI
-	KubernetesClusters      KubernetesClustersAPI
-	Tokens                  TokensAPI
+	client                   *http.Client
+	apiURL                   *url.URL
+	Instances                InstancesAPI
+	IPAddresses              IPAddressesAPI
+	IPAddressAssignments     IPAddressAssignmentsAPI
+	PrivateNetworks          PrivateNetworksAPI
+	InstancePrivateNetworks  InstancePrivateNetworksAPI
+	Volumes                  VolumesAPI
+	InstancePlans            InstancePlansAPI
+	VolumePlans              VolumePlansAPI
+	SSHKeys                  SSHKeysAPI
+	Backups                  BackupsAPI
+	Datacenters              DatacentersAPI
+	Images                   ImagesAPI
+	LoadBalancers            LoadBalancersAPI
+	KubernetesClusters       KubernetesClustersAPI
+	KubernetesClustersTokens KubernetesClustersTokensAPI
+	Tokens                   TokensAPI
 	// Deprecated: Please use VolumePlans instead.
 	VolumeProducts VolumeProductsAPI
 	// Deprecated: Please use InstancePlans instead.
@@ -185,6 +186,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 	c.Images = &ImagesService{client: c}
 	c.LoadBalancers = &LoadBalancersService{client: c}
 	c.KubernetesClusters = &KubernetesClustersService{client: c}
+	c.KubernetesClustersTokens = &KubernetesClustersTokensService{client: c}
 	c.Tokens = &TokensService{client: c}
 	c.InstancePlans = &InstancePlansService{client: c}
 	c.VolumePlans = &VolumePlansService{client: c}
