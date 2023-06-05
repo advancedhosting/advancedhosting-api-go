@@ -10,7 +10,7 @@ import (
 
 const NodePoolPublicResponse = `{
 	"id": "e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
-	"name": "test",
+	"name": "KNP100000",
 	"type": "public",
     "count": 1,
 	"labels": {"labels.websa.com/test": "test"},
@@ -32,7 +32,7 @@ const NodePoolPublicResponse = `{
 
 const NodePoolPrivateResponse = `{
 	"id": "7a41f73b-009d-4e52-9f20-edf4b8c5b072",
-	"name": "test",
+	"name": "KNP100000",
 	"type": "public",
     "count": 0,
 	"labels": {"labels.websa.com/test": "test"},
@@ -165,7 +165,6 @@ func TestNodePoolPublicCreate(t *testing.T) {
 	publicProperties := &PublicProperties{PlanID: 111111111}
 
 	request := &CreateKubernetesNodePoolRequest{
-		Name:             "test",
 		Type:             "public",
 		Count:            1,
 		PublicProperties: publicProperties,
@@ -209,7 +208,6 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 	}
 
 	request := &CreateKubernetesNodePoolRequest{
-		Name:              "test",
 		Type:              "private",
 		Count:             1,
 		PrivateProperties: privateProperties,
@@ -239,7 +237,6 @@ func TestNodePoolUpdate(t *testing.T) {
 	ctx := context.Background()
 
 	request := &UpdateKubernetesNodePoolRequest{
-		Name:      "test",
 		Count:     1,
 		AutoScale: false,
 	}

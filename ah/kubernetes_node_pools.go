@@ -28,7 +28,7 @@ type PrivateProperties struct {
 type KubernetesNodePool struct {
 	Labels            Labels            `json:"labels,omitempty"`
 	ID                string            `json:"id,omitempty"`
-	Name              string            `json:"name"`
+	Name              string            `json:"name,omitempty"`
 	Type              string            `json:"type"`
 	CreatedAt         string            `json:"created_at,omitempty"`
 	Nodes             []KubernetesNodes `json:"nodes,omitempty"`
@@ -53,7 +53,6 @@ type CreateKubernetesNodePoolRequest struct {
 	PrivateProperties *PrivateProperties `json:"private_properties,omitempty"`
 	PublicProperties  *PublicProperties  `json:"public_properties,omitempty"`
 	Labels            *Labels            `json:"labels,omitempty"`
-	Name              string             `json:"name"`
 	Type              string             `json:"type"`
 	Count             int                `json:"count,omitempty"`
 	MinCount          int                `json:"min_count,omitempty"`
@@ -64,7 +63,6 @@ type CreateKubernetesNodePoolRequest struct {
 // UpdateKubernetesNodePoolRequest represents a request to update a node pool
 type UpdateKubernetesNodePoolRequest struct {
 	Labels    *Labels `json:"labels,omitempty"`
-	Name      string  `json:"name,omitempty"`
 	Count     int     `json:"count,omitempty"`
 	AutoScale bool    `json:"autoscale,omitempty"`
 	MinCount  int     `json:"min_count,omitempty"`
