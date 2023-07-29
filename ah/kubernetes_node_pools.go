@@ -24,32 +24,32 @@ type PrivateProperties struct {
 	Disk          int    `json:"disk,omitempty"`
 }
 
-// KubernetesNodePool object
-type KubernetesNodePool struct {
-	Labels            Labels            `json:"labels,omitempty"`
-	ID                string            `json:"id,omitempty"`
-	Name              string            `json:"name,omitempty"`
-	Type              string            `json:"type"`
-	CreatedAt         string            `json:"created_at,omitempty"`
-	Nodes             []KubernetesNodes `json:"nodes,omitempty"`
-	PrivateProperties PrivateProperties `json:"private_properties,omitempty"`
-	PublicProperties  PublicProperties  `json:"public_properties,omitempty"`
-	Count             int               `json:"count,omitempty"`
-	AutoScale         bool              `json:"autoscale,omitempty"`
-	MinCount          int               `json:"min_count,omitempty"`
-	MaxCount          int               `json:"max_count,omitempty"`
+// KubernetesWorkerPool object
+type KubernetesWorkerPool struct {
+	Labels            Labels              `json:"labels,omitempty"`
+	ID                string              `json:"id,omitempty"`
+	Name              string              `json:"name,omitempty"`
+	Type              string              `json:"type"`
+	CreatedAt         string              `json:"created_at,omitempty"`
+	Workers           []KubernetesWorkers `json:"workers,omitempty"`
+	PrivateProperties PrivateProperties   `json:"private_properties,omitempty"`
+	PublicProperties  PublicProperties    `json:"public_properties,omitempty"`
+	Count             int                 `json:"count,omitempty"`
+	AutoScale         bool                `json:"autoscale,omitempty"`
+	MinCount          int                 `json:"min_count,omitempty"`
+	MaxCount          int                 `json:"max_count,omitempty"`
 }
 
-type KubernetesNodePoolRoot struct {
-	KubernetesNodePool *KubernetesNodePool `json:"node_pool,omitempty"`
+type KubernetesWorkerPoolRoot struct {
+	KubernetesWorkerPool *KubernetesWorkerPool `json:"worker_pool,omitempty"`
 }
 
-type KubernetesNodePoolsRoot struct {
-	KubernetesNodePools []KubernetesNodePool `json:"node_pools,omitempty"`
+type KubernetesWorkerPoolsRoot struct {
+	KubernetesWorkerPools []KubernetesWorkerPool `json:"worker_pools,omitempty"`
 }
 
-// CreateKubernetesNodePoolRequest represents a request to create a node pool.
-type CreateKubernetesNodePoolRequest struct {
+// CreateKubernetesWorkerPoolRequest represents a request to create a worker pool.
+type CreateKubernetesWorkerPoolRequest struct {
 	PrivateProperties *PrivateProperties `json:"private_properties,omitempty"`
 	PublicProperties  *PublicProperties  `json:"public_properties,omitempty"`
 	Labels            *Labels            `json:"labels,omitempty"`
@@ -60,8 +60,8 @@ type CreateKubernetesNodePoolRequest struct {
 	AutoScale         bool               `json:"autoscale,omitempty"`
 }
 
-// UpdateKubernetesNodePoolRequest represents a request to update a node pool
-type UpdateKubernetesNodePoolRequest struct {
+// UpdateKubernetesWorkerPoolRequest represents a request to update a worker pool
+type UpdateKubernetesWorkerPoolRequest struct {
 	Labels    *Labels `json:"labels,omitempty"`
 	Count     int     `json:"count,omitempty"`
 	AutoScale bool    `json:"autoscale,omitempty"`
@@ -69,56 +69,56 @@ type UpdateKubernetesNodePoolRequest struct {
 	MaxCount  int     `json:"max_count,omitempty"`
 }
 
-// GetNodePool returns node pool
-func (kcs *KubernetesClustersService) GetNodePool(ctx context.Context, clusterId, nodePoolId string) (*KubernetesNodePool, error) {
-	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
+// GetWorkerPool returns worker pool
+func (kcs *KubernetesClustersService) GetWorkerPool(ctx context.Context, clusterId, workerPoolId string) (*KubernetesWorkerPool, error) {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools/%s", clusterId, workerPoolId)
 	req, err := kcs.client.newRequest(http.MethodGet, path, nil)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var nodePoolRoot KubernetesNodePoolRoot
+	var workerPoolRoot KubernetesWorkerPoolRoot
 
-	if _, err = kcs.client.Do(ctx, req, &nodePoolRoot); err != nil {
+	if _, err = kcs.client.Do(ctx, req, &workerPoolRoot); err != nil {
 		return nil, err
 	}
 
-	return nodePoolRoot.KubernetesNodePool, nil
+	return workerPoolRoot.KubernetesWorkerPool, nil
 }
 
-// ListNodePools returns list of node pools
-func (kcs *KubernetesClustersService) ListNodePools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesNodePool, error) {
-	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
+// ListWorkerPools returns list of worker pools
+func (kcs *KubernetesClustersService) ListWorkerPools(ctx context.Context, options *ListOptions, clusterId string) ([]KubernetesWorkerPool, error) {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools", clusterId)
 
-	var NodePoolsRoot KubernetesNodePoolsRoot
+	var WorkerPoolsRoot KubernetesWorkerPoolsRoot
 
-	if err := kcs.client.list(ctx, path, options, &NodePoolsRoot); err != nil {
+	if err := kcs.client.list(ctx, path, options, &WorkerPoolsRoot); err != nil {
 		return nil, err
 	}
 
-	return NodePoolsRoot.KubernetesNodePools, nil
+	return WorkerPoolsRoot.KubernetesWorkerPools, nil
 }
 
-// CreateNodePool creates node pool
-func (kcs *KubernetesClustersService) CreateNodePool(ctx context.Context, clusterId string, request *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error) {
-	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools", clusterId)
+// CreateWorkerPool creates worker pool
+func (kcs *KubernetesClustersService) CreateWorkerPool(ctx context.Context, clusterId string, request *CreateKubernetesWorkerPoolRequest) (*KubernetesWorkerPool, error) {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools", clusterId)
 	req, err := kcs.client.newRequest(http.MethodPost, path, request)
 	if err != nil {
 		return nil, err
 	}
 
-	var nodePoolRoot KubernetesNodePoolRoot
-	if _, err := kcs.client.Do(ctx, req, &nodePoolRoot); err != nil {
+	var workerPoolRoot KubernetesWorkerPoolRoot
+	if _, err := kcs.client.Do(ctx, req, &workerPoolRoot); err != nil {
 		return nil, err
 	}
 
-	return nodePoolRoot.KubernetesNodePool, nil
+	return workerPoolRoot.KubernetesWorkerPool, nil
 }
 
-// UpdateNodePool updates node pool
-func (kcs *KubernetesClustersService) UpdateNodePool(ctx context.Context, clusterId, nodePoolId string, request *UpdateKubernetesNodePoolRequest) error {
-	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s", clusterId, nodePoolId)
+// UpdateWorkerPool updates worker pool
+func (kcs *KubernetesClustersService) UpdateWorkerPool(ctx context.Context, clusterId, workerPoolId string, request *UpdateKubernetesWorkerPoolRequest) error {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools/%s", clusterId, workerPoolId)
 	req, err := kcs.client.newRequest(http.MethodPut, path, request)
 	if err != nil {
 		return err
@@ -131,9 +131,9 @@ func (kcs *KubernetesClustersService) UpdateNodePool(ctx context.Context, cluste
 	return nil
 }
 
-// DeleteNodePool deletes node pool
-func (kcs *KubernetesClustersService) DeleteNodePool(ctx context.Context, clusterId string, nodePoolId string, replace bool) error {
-	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/node_pools/%s?replace=%v", clusterId, nodePoolId, replace)
+// DeleteWorkerPool deletes worker pool
+func (kcs *KubernetesClustersService) DeleteWorkerPool(ctx context.Context, clusterId string, workerPoolId string, replace bool) error {
+	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools/%s?replace=%v", clusterId, workerPoolId, replace)
 	req, err := kcs.client.newRequest(http.MethodDelete, path, nil)
 	if err != nil {
 		return err

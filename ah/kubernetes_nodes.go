@@ -1,7 +1,7 @@
 package ah
 
-// KubernetesNodes object
-type KubernetesNodes struct {
+// KubernetesWorkers object
+type KubernetesWorkers struct {
 	Labels           map[string]string `json:"labels,omitempty"`
 	Id               string            `json:"id,omitempty"`
 	Name             string            `json:"name,omitempty"`

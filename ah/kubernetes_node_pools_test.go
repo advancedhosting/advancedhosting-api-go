@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const NodePoolPublicResponse = `{
+const WorkerPoolPublicResponse = `{
 	"id": "e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
 	"name": "KNP100000",
 	"type": "public",
@@ -17,7 +17,7 @@ const NodePoolPublicResponse = `{
     "public_properties": {
 		"plan_id": 111111111
 	},
-    "nodes": [{
+    "workers": [{
 		"id": "339e3dd3-9734-40ec-8e5c-aa7c4c3be319",
         "name": "kub1000000-620d6",
         "labels": {},
@@ -30,7 +30,7 @@ const NodePoolPublicResponse = `{
 	}]
 }`
 
-const NodePoolPrivateResponse = `{
+const WorkerPoolPrivateResponse = `{
 	"id": "7a41f73b-009d-4e52-9f20-edf4b8c5b072",
 	"name": "KNP100000",
 	"type": "public",
@@ -44,7 +44,7 @@ const NodePoolPrivateResponse = `{
 	    "cluster_id": "ca2a8d11-8426-4493-8ee3-82b700c6092b",
 	    "cluster_node_id": "33bb3e37-7e2d-4a55-936d-fae0223d5a00"
 	},
-	"nodes": [{
+	"workers": [{
 		"id": "339e3dd3-9734-40ec-8e5c-aa7c4c3be319",
         "name": "kub1000000-620d6",
         "labels": {},
@@ -58,143 +58,143 @@ const NodePoolPrivateResponse = `{
 }`
 
 var (
-	nodePoolPublicGetResponse  = fmt.Sprintf(`{"node_pool": %s}`, NodePoolPublicResponse)
-	nodePoolPrivateGetResponse = fmt.Sprintf(`{"node_pool": %s}`, NodePoolPrivateResponse)
-	nodePoolListResponse       = fmt.Sprintf(`{"node_pools": [%s, %s]}`, NodePoolPublicResponse, NodePoolPrivateResponse)
+	workerPoolPublicGetResponse  = fmt.Sprintf(`{"worker_pool": %s}`, WorkerPoolPublicResponse)
+	workerPoolPrivateGetResponse = fmt.Sprintf(`{"worker_pool": %s}`, WorkerPoolPrivateResponse)
+	workerPoolListResponse       = fmt.Sprintf(`{"worker_pools": [%s, %s]}`, WorkerPoolPublicResponse, WorkerPoolPrivateResponse)
 )
 
-func TestNodePoolPublicGet(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: nodePoolPublicGetResponse}
+func TestWorkerPoolPublicGet(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: workerPoolPublicGetResponse}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	var expectedResult KubernetesNodePoolRoot
-	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
+	var expectedResult KubernetesWorkerPoolRoot
+	if err := json.Unmarshal([]byte(workerPoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.KubernetesClusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
+	workerPool, err := api.KubernetesClusters.GetWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if nodePool == nil || nodePool.ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
-		t.Errorf("Invalid response: %v", nodePool)
+	if workerPool == nil || workerPool.ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
+		t.Errorf("Invalid response: %v", workerPool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
-		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
+	if !reflect.DeepEqual(expectedResult.KubernetesWorkerPool, workerPool) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, workerPool)
 	}
 }
 
-func TestNodePooPrivateGet(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: nodePoolPrivateGetResponse}
+func TestWorkerPooPrivateGet(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: workerPoolPrivateGetResponse}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools/7a41f73b-009d-4e52-9f20-edf4b8c5b072",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools/7a41f73b-009d-4e52-9f20-edf4b8c5b072",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	var expectedResult KubernetesNodePoolRoot
-	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
+	var expectedResult KubernetesWorkerPoolRoot
+	if err := json.Unmarshal([]byte(workerPoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePool, err := api.KubernetesClusters.GetNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
+	workerPool, err := api.KubernetesClusters.GetWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "7a41f73b-009d-4e52-9f20-edf4b8c5b072")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if nodePool == nil || nodePool.ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
-		t.Errorf("Invalid response: %v", nodePool)
+	if workerPool == nil || workerPool.ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
+		t.Errorf("Invalid response: %v", workerPool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
-		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
+	if !reflect.DeepEqual(expectedResult.KubernetesWorkerPool, workerPool) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, workerPool)
 	}
 }
 
-func TestNodePoolList(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: nodePoolListResponse}
+func TestWorkerPoolList(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: workerPoolListResponse}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	var expectedResult KubernetesNodePoolsRoot
-	if err := json.Unmarshal([]byte(nodePoolListResponse), &expectedResult); err != nil {
+	var expectedResult KubernetesWorkerPoolsRoot
+	if err := json.Unmarshal([]byte(workerPoolListResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
-	nodePools, err := api.KubernetesClusters.ListNodePools(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
+	workerPools, err := api.KubernetesClusters.ListWorkerPools(ctx, nil, "497f6eca-6276-4993-bfeb-53cbbbba6f08")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if nodePools == nil || nodePools[0].ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
-		t.Errorf("Invalid response: %v", nodePools)
+	if workerPools == nil || workerPools[0].ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
+		t.Errorf("Invalid response: %v", workerPools)
 	}
 
-	if nodePools == nil || nodePools[1].ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
-		t.Errorf("Invalid response: %v", nodePools)
+	if workerPools == nil || workerPools[1].ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
+		t.Errorf("Invalid response: %v", workerPools)
 	}
 
-	if !reflect.DeepEqual(expectedResult.KubernetesNodePools, nodePools) {
-		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePools)
+	if !reflect.DeepEqual(expectedResult.KubernetesWorkerPools, workerPools) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, workerPools)
 	}
 }
 
-func TestNodePoolPublicCreate(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: nodePoolPublicGetResponse}
+func TestWorkerPoolPublicCreate(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: workerPoolPublicGetResponse}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	var expectedResult KubernetesNodePoolRoot
-	if err := json.Unmarshal([]byte(nodePoolPublicGetResponse), &expectedResult); err != nil {
+	var expectedResult KubernetesWorkerPoolRoot
+	if err := json.Unmarshal([]byte(workerPoolPublicGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
 	publicProperties := &PublicProperties{PlanID: 111111111}
 
-	request := &CreateKubernetesNodePoolRequest{
+	request := &CreateKubernetesWorkerPoolRequest{
 		Type:             "public",
 		Count:            1,
 		PublicProperties: publicProperties,
 	}
 
-	nodePool, err := api.KubernetesClusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	workerPool, err := api.KubernetesClusters.CreateWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if nodePool == nil || nodePool.ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
-		t.Errorf("Invalid response: %v", nodePool)
+	if workerPool == nil || workerPool.ID != "e312aa01-d123-4a90-9c6d-f7641d2e4cc7" {
+		t.Errorf("Invalid response: %v", workerPool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
-		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
+	if !reflect.DeepEqual(expectedResult.KubernetesWorkerPool, workerPool) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, workerPool)
 	}
 }
 
-func TestNodePoolPrivateCreate(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: nodePoolPrivateGetResponse}
+func TestWorkerPoolPrivateCreate(t *testing.T) {
+	fakeResponse := &fakeServerResponse{responseBody: workerPoolPrivateGetResponse}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	var expectedResult KubernetesNodePoolRoot
-	if err := json.Unmarshal([]byte(nodePoolPrivateGetResponse), &expectedResult); err != nil {
+	var expectedResult KubernetesWorkerPoolRoot
+	if err := json.Unmarshal([]byte(workerPoolPrivateGetResponse), &expectedResult); err != nil {
 		t.Errorf("Unexpected Unmarshal error: %v", err)
 	}
 
@@ -207,57 +207,57 @@ func TestNodePoolPrivateCreate(t *testing.T) {
 		ClusterNodeID: "33bb3e37-7e2d-4a55-936d-fae0223d5a00",
 	}
 
-	request := &CreateKubernetesNodePoolRequest{
+	request := &CreateKubernetesWorkerPoolRequest{
 		Type:              "private",
 		Count:             1,
 		PrivateProperties: privateProperties,
 	}
 
-	nodePool, err := api.KubernetesClusters.CreateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
+	workerPool, err := api.KubernetesClusters.CreateWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if nodePool == nil || nodePool.ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
-		t.Errorf("Invalid response: %v", nodePool)
+	if workerPool == nil || workerPool.ID != "7a41f73b-009d-4e52-9f20-edf4b8c5b072" {
+		t.Errorf("Invalid response: %v", workerPool)
 	}
 
-	if !reflect.DeepEqual(expectedResult.KubernetesNodePool, nodePool) {
-		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, nodePool)
+	if !reflect.DeepEqual(expectedResult.KubernetesWorkerPool, workerPool) {
+		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, workerPool)
 	}
 }
 
-func TestNodePoolUpdate(t *testing.T) {
+func TestWorkerPoolUpdate(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: "", statusCode: 202}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	request := &UpdateKubernetesNodePoolRequest{
+	request := &UpdateKubernetesWorkerPoolRequest{
 		Count:     1,
 		AutoScale: false,
 	}
 
-	err := api.KubernetesClusters.UpdateNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
+	err := api.KubernetesClusters.UpdateWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", request)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 }
 
-func TestNodePoolDelete(t *testing.T) {
+func TestWorkerPoolDelete(t *testing.T) {
 	fakeResponse := &fakeServerResponse{responseBody: "", statusCode: 202}
 	api, _ := newFakeAPIClient(
-		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/node_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
+		"/api/v2/kubernetes/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/worker_pools/e312aa01-d123-4a90-9c6d-f7641d2e4cc7",
 		fakeResponse,
 	)
 
 	ctx := context.Background()
 
-	err := api.KubernetesClusters.DeleteNodePool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
+	err := api.KubernetesClusters.DeleteWorkerPool(ctx, "497f6eca-6276-4993-bfeb-53cbbbba6f08", "e312aa01-d123-4a90-9c6d-f7641d2e4cc7", false)
 
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

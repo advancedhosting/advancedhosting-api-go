@@ -38,8 +38,8 @@ var (
 	"private_network_id": "c2a96164-d7f4-45db-b61a-e757de64483e",
 	"private_network_name": "NET10000000",
 	"k8s_version": "1.19.3",
-	"node_pools": [%s,%s]
-}`, NodePoolPublicResponse, NodePoolPrivateResponse)
+	"worker_pools": [%s,%s]
+}`, WorkerPoolPublicResponse, WorkerPoolPrivateResponse)
 	kubernetesVersions = `["v1.19.3", "v1.18.10", "v1.17.13"]`
 )
 
