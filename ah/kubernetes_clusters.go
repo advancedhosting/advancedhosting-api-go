@@ -24,19 +24,19 @@ import (
 
 // KubernetesCluster object
 type KubernetesCluster struct {
-	ID                 string               `json:"id,omitempty"`
-	Name               string               `json:"name,omitempty"`
-	TokenID            string               `json:"token_id,omitempty"`
-	DatacenterID       string               `json:"datacenter_id,omitempty"`
-	DatacenterSlug     string               `json:"datacenter_slug,omitempty"`
-	State              string               `json:"state,omitempty"`
-	Number             string               `json:"number"`
-	CreatedAt          string               `json:"created_at"`
-	AccountID          string               `json:"account_id"`
-	PrivateNetworkID   string               `json:"private_network_id"`
-	PrivateNetworkName string               `json:"private_network_name,omitempty"`
-	K8sVersion         string               `json:"k8s_version"`
-	NodePools          []KubernetesNodePool `json:"node_pools,omitempty"`
+	ID                 string                 `json:"id,omitempty"`
+	Name               string                 `json:"name,omitempty"`
+	TokenID            string                 `json:"token_id,omitempty"`
+	DatacenterID       string                 `json:"datacenter_id,omitempty"`
+	DatacenterSlug     string                 `json:"datacenter_slug,omitempty"`
+	State              string                 `json:"state,omitempty"`
+	Number             string                 `json:"number"`
+	CreatedAt          string                 `json:"created_at"`
+	AccountID          string                 `json:"account_id"`
+	PrivateNetworkID   string                 `json:"private_network_id"`
+	PrivateNetworkName string                 `json:"private_network_name,omitempty"`
+	K8sVersion         string                 `json:"k8s_version"`
+	WorkerPools        []KubernetesWorkerPool `json:"worker_pools,omitempty"`
 }
 
 // KubernetesClusterConfig object
@@ -53,11 +53,11 @@ type KubernetesClustersAPI interface {
 	GetConfig(context.Context, string) (string, error)
 	Delete(context.Context, string) error
 	GetKubernetesClustersVersions(context.Context) ([]string, error)
-	GetNodePool(context.Context, string, string) (*KubernetesNodePool, error)
-	ListNodePools(context.Context, *ListOptions, string) ([]KubernetesNodePool, error)
-	CreateNodePool(context.Context, string, *CreateKubernetesNodePoolRequest) (*KubernetesNodePool, error)
-	UpdateNodePool(context.Context, string, string, *UpdateKubernetesNodePoolRequest) error
-	DeleteNodePool(context.Context, string, string, bool) error
+	GetWorkerPool(context.Context, string, string) (*KubernetesWorkerPool, error)
+	ListWorkerPools(context.Context, *ListOptions, string) ([]KubernetesWorkerPool, error)
+	CreateWorkerPool(context.Context, string, *CreateKubernetesWorkerPoolRequest) (*KubernetesWorkerPool, error)
+	UpdateWorkerPool(context.Context, string, string, *UpdateKubernetesWorkerPoolRequest) error
+	DeleteWorkerPool(context.Context, string, string, bool) error
 }
 
 // KubernetesClustersService implements ClustersAPI interface.
@@ -75,10 +75,10 @@ type KubernetesClustersRoot struct {
 
 // KubernetesClusterCreateRequest represents a request to create a cluster.
 type KubernetesClusterCreateRequest struct {
-	Name         string                            `json:"name"`
-	DatacenterID string                            `json:"datacenter_id,omitempty"`
-	K8sVersion   string                            `json:"k8s_version"`
-	NodePools    []CreateKubernetesNodePoolRequest `json:"node_pools"`
+	Name         string                              `json:"name"`
+	DatacenterID string                              `json:"datacenter_id,omitempty"`
+	K8sVersion   string                              `json:"k8s_version"`
+	WorkerPools  []CreateKubernetesWorkerPoolRequest `json:"worker_pools"`
 }
 
 // KubernetesClusterUpdateRequest represents a request to update a cluster
