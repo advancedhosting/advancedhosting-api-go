@@ -113,7 +113,7 @@ const loadBalancerResponse = `{
 		"cloud_server_id": "296c68d1-bbc6-488b-a29f-f0578806b001",
 		"state": "defined"
 	}],
-	"health_checks": [{
+	"health_check": {
 		"type": "tcp",
 		"url": "string",
 		"interval": 10,
@@ -123,7 +123,7 @@ const loadBalancerResponse = `{
 		"port": 0,
 		"id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
 		"state": "defined"
-	}]
+	}
 }`
 
 var (
@@ -221,12 +221,10 @@ func TestLoadBalancers_Create(t *testing.T) {
 				CommunicationPort:     8080,
 			},
 		},
-		HealthChecks: []LBHealthCheckCreateRequest{
-			{
-				Type:     "tcp",
-				Interval: 10,
-				Port:     9090,
-			},
+		HealthCheck: LBHealthCheckCreateRequest{
+			Type:     "tcp",
+			Interval: 10,
+			Port:     9090,
 		},
 		BackendNodes: []LBBackendNodeCreateRequest{
 			{
