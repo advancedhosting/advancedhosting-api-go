@@ -467,10 +467,6 @@ func (lb *LoadBalancersService) GetBackendNode(ctx context.Context, lbID, bnID s
 	return bnRoot.BackendNode, nil
 }
 
-type addLBBackendNodesRequest struct {
-	BackendNodes []LBBackendNodeCreateRequest `json:"backend_nodes,omitempty"`
-}
-
 // AddBackendNodes connects backend nodes to the LB
 func (lb *LoadBalancersService) AddBackendNodes(ctx context.Context, lbID string, bnIDs []string) ([]LBBackendNode, error) {
 	path := fmt.Sprintf("api/v1/load_balancers/%s/backend_nodes", lbID)
@@ -478,10 +474,10 @@ func (lb *LoadBalancersService) AddBackendNodes(ctx context.Context, lbID string
 	var lbCloudServers []LBBackendNodeCreateRequest
 
 	for _, bnID := range bnIDs {
-		lbCloudServers = append(lbCloudServers, LBBackendNodeCreateRequest{bnID})
+		lbCloudServers = append(lbCloudServers, LBBackendNodeCreateRequest{CloudServerID: bnID})
 	}
 
-	req, err := lb.client.newRequest(http.MethodPost, path, &addLBBackendNodesRequest{BackendNodes: lbCloudServers})
+	req, err := lb.client.newRequest(http.MethodPost, path, lbCloudServers)
 	if err != nil {
 		return nil, err
 	}
