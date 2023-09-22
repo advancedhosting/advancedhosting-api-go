@@ -186,7 +186,7 @@ type LoadBalancerCreateRequest struct {
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
 	ForwardingRules       []LBForwardingRuleCreateRequest `json:"forwarding_rules,omitempty"`
 	BackendNodes          []LBBackendNodeCreateRequest    `json:"backend_nodes,omitempty"`
-	HealthCheck           LBHealthCheckCreateRequest      `json:"health_check,omitempty"`
+	HealthCheck           *LBHealthCheckCreateRequest     `json:"health_check,omitempty"`
 	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
 }
 

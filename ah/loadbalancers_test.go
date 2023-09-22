@@ -221,7 +221,7 @@ func TestLoadBalancers_Create(t *testing.T) {
 				CommunicationPort:     8080,
 			},
 		},
-		HealthCheck: LBHealthCheckCreateRequest{
+		HealthCheck: &LBHealthCheckCreateRequest{
 			Type:     "tcp",
 			Interval: 10,
 			Port:     9090,
