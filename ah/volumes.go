@@ -159,7 +159,8 @@ func (vs *VolumesService) Create(ctx context.Context, createRequest *VolumeCreat
 
 // VolumeUpdateRequest represents a request to update a volume.
 type VolumeUpdateRequest struct {
-	Name string `json:"name,omitempty"`
+	Name string                 `json:"name,omitempty"`
+	Meta map[string]interface{} `json:"meta,omitempty"`
 }
 
 // Update volume
