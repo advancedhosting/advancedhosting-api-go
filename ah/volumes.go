@@ -139,12 +139,12 @@ type VolumeCreateRequest struct {
 	ProductID string                 `json:"product_id,omitempty"`
 	Meta      map[string]interface{} `json:"meta,omitempty"`
 	// Deprecated: Please use PlanSlug instead.
-	ProductSlug string `json:"product_slug,omitempty"`
-	PlanSlug    string `json:"plan_slug,omitempty"`
-	FileSystem  string `json:"file_system,omitempty"`
-	InstanceID  string `json:"instance_id,omitempty"`
-	Size        int    `json:"size"`
-	PlanID      int    `json:"plan_id,omitempty"`
+	ProductSlug string                 `json:"product_slug,omitempty"`
+	PlanSlug    string                 `json:"plan_slug,omitempty"`
+	FileSystem  string                 `json:"file_system,omitempty"`
+	InstanceID  string                 `json:"instance_id,omitempty"`
+	Size        int                    `json:"size"`
+	PlanID      int                    `json:"plan_id,omitempty"`
 }
 
 // Create volume
