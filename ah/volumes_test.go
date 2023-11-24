@@ -55,6 +55,14 @@ const volumeResponse = `{
 			"c54e8896-53d8-479a-8ff1-4d7d9d856a50"
 		],
 		"replication_level": 2
+	},
+	"meta": {
+		"kubernetes": {
+			"cluster": {
+				"id": "193e10b3-25ce-4488-9c5a-840b6a22abd6",
+				"number": "KUB1000001"
+			}
+		}
 	}
 }`
 
@@ -145,13 +153,17 @@ func TestVolumes_Update(t *testing.T) {
 
 	request := &VolumeUpdateRequest{
 		Name: "New Name",
+		Meta: map[string]interface{}{
+			"id":     "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
+			"number": "KUB1000002",
+		},
 	}
 
 	volume, err := api.Volumes.Update(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" {
+	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" || volume.Meta["kubernetes"].(map[string]interface{})["cluster"].(map[string]interface{})["id"] != "193e10b3-25ce-4488-9c5a-840b6a22abd6" {
 		t.Errorf("Invalid response: %v", volume)
 	}
 
@@ -412,6 +424,14 @@ func TestVolumes_CreateWithPlanID(t *testing.T) {
 		PlanID:     123,
 		FileSystem: "ext4",
 		InstanceID: "test_instance_id",
+		Meta: map[string]interface{}{
+			"kubernetes": map[string]interface{}{
+				"cluster": map[string]interface{}{
+					"id":     "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
+					"number": "KUB1000002",
+				},
+			},
+		},
 	}
 
 	fakeResponse := &fakeServerResponse{
