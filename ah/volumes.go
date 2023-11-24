@@ -35,6 +35,7 @@ type Volume struct {
 	} `json:"volume_pool,omitempty"`
 	ID         string                 `json:"id,omitempty"`
 	Name       string                 `json:"name,omitempty"`
+	Meta       map[string]interface{} `json:"meta,omitempty"`
 	FileSystem string                 `json:"file_system,omitempty"`
 	State      string                 `json:"state,omitempty"`
 	Number     string                 `json:"number,omitempty"`
@@ -45,7 +46,6 @@ type Volume struct {
 	Size       int                    `json:"size,omitempty"`
 	Port       int                    `json:"port,omitempty"`
 	PlanID     int                    `json:"plan_id,omitempty"`
-	Meta       map[string]interface{} `json:"meta,omitempty"`
 }
 
 // VolumeAction object
@@ -129,13 +129,13 @@ type VolumeCreateRequest struct {
 	// Deprecated: Please use PlanID instead.
 	ProductID string `json:"product_id,omitempty"`
 	// Deprecated: Please use PlanSlug instead.
+	Meta        map[string]interface{} `json:"meta,omitempty"`
 	ProductSlug string                 `json:"product_slug,omitempty"`
 	PlanSlug    string                 `json:"plan_slug,omitempty"`
 	FileSystem  string                 `json:"file_system,omitempty"`
 	InstanceID  string                 `json:"instance_id,omitempty"`
 	Size        int                    `json:"size"`
 	PlanID      int                    `json:"plan_id,omitempty"`
-	Meta        map[string]interface{} `json:"meta,omitempty"`
 }
 
 // Create volume
