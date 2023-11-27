@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // Volume object
@@ -66,7 +67,7 @@ type volumeActionsRoot struct {
 
 // VolumesAPI is an interface for volumes.
 type VolumesAPI interface {
-	List(context.Context, *ListOptions) ([]Volume, *Meta, error)
+	List(context.Context, map[string]string) ([]Volume, *Meta, error)
 	Get(context.Context, string) (*Volume, error)
 	Create(context.Context, *VolumeCreateRequest) (*Volume, error)
 	Update(context.Context, string, *VolumeUpdateRequest) (*Volume, error)
@@ -88,12 +89,20 @@ type volumesRoot struct {
 }
 
 // List returns all available private networks
-func (vs *VolumesService) List(ctx context.Context, options *ListOptions) ([]Volume, *Meta, error) {
+func (vs *VolumesService) List(ctx context.Context, filters map[string]string) ([]Volume, *Meta, error) {
 	path := "api/v1/volumes"
+	if filters != nil {
+		var query []string
+		for filterName, filterVal := range filters {
+			query = append(query, fmt.Sprintf("%s=%s", filterName, filterVal))
+		}
+		params := strings.Join(query, "&")
+		path = fmt.Sprintf("%s?%s", path, params)
+	}
 
 	var vsRoot volumesRoot
 
-	if err := vs.client.list(ctx, path, options, &vsRoot); err != nil {
+	if err := vs.client.list(ctx, path, nil, &vsRoot); err != nil {
 		return nil, nil, err
 	}
 
@@ -125,17 +134,17 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
-	Name string `json:"name"`
+	Name string                 `json:"name"`
+	Meta map[string]interface{} `json:"meta,omitempty"`
 	// Deprecated: Please use PlanID instead.
 	ProductID string `json:"product_id,omitempty"`
 	// Deprecated: Please use PlanSlug instead.
-	Meta        map[string]interface{} `json:"meta,omitempty"`
-	ProductSlug string                 `json:"product_slug,omitempty"`
-	PlanSlug    string                 `json:"plan_slug,omitempty"`
-	FileSystem  string                 `json:"file_system,omitempty"`
-	InstanceID  string                 `json:"instance_id,omitempty"`
-	Size        int                    `json:"size"`
-	PlanID      int                    `json:"plan_id,omitempty"`
+	ProductSlug string `json:"product_slug,omitempty"`
+	PlanSlug    string `json:"plan_slug,omitempty"`
+	FileSystem  string `json:"file_system,omitempty"`
+	InstanceID  string `json:"instance_id,omitempty"`
+	Size        int    `json:"size"`
+	PlanID      int    `json:"plan_id,omitempty"`
 }
 
 // Create volume
