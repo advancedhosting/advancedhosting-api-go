@@ -134,17 +134,17 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
-	Name string `json:"name"`
+	Name string                 `json:"name"`
+	Meta map[string]interface{} `json:"meta,omitempty"`
 	// Deprecated: Please use PlanID instead.
-	ProductID string                 `json:"product_id,omitempty"`
-	Meta      map[string]interface{} `json:"meta,omitempty"`
+	ProductID string `json:"product_id,omitempty"`
 	// Deprecated: Please use PlanSlug instead.
-	ProductSlug string                 `json:"product_slug,omitempty"`
-	PlanSlug    string                 `json:"plan_slug,omitempty"`
-	FileSystem  string                 `json:"file_system,omitempty"`
-	InstanceID  string                 `json:"instance_id,omitempty"`
-	Size        int                    `json:"size"`
-	PlanID      int                    `json:"plan_id,omitempty"`
+	ProductSlug string `json:"product_slug,omitempty"`
+	PlanSlug    string `json:"plan_slug,omitempty"`
+	FileSystem  string `json:"file_system,omitempty"`
+	InstanceID  string `json:"instance_id,omitempty"`
+	Size        int    `json:"size"`
+	PlanID      int    `json:"plan_id,omitempty"`
 }
 
 // Create volume
