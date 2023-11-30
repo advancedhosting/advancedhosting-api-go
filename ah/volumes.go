@@ -34,19 +34,19 @@ type Volume struct {
 		DatacenterIDs    []string `json:"datacenter_ids,omitempty"`
 		ReplicationLevel int      `json:"replication_level,omitempty"`
 	} `json:"volume_pool,omitempty"`
-	ID         string                 `json:"id,omitempty"`
-	Name       string                 `json:"name,omitempty"`
-	Meta       map[string]interface{} `json:"meta,omitempty"`
-	FileSystem string                 `json:"file_system,omitempty"`
-	State      string                 `json:"state,omitempty"`
-	Number     string                 `json:"number,omitempty"`
-	OriginalID string                 `json:"original_id,omitempty"`
-	CreatedAt  string                 `json:"created_at,omitempty"`
-	AttachedAt string                 `json:"attached_at,omitempty"`
-	ProductID  string                 `json:"product_id,omitempty"`
-	Size       int                    `json:"size,omitempty"`
-	Port       int                    `json:"port,omitempty"`
-	PlanID     int                    `json:"plan_id,omitempty"`
+	ID         string `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Meta       string `json:"meta,omitempty"`
+	FileSystem string `json:"file_system,omitempty"`
+	State      string `json:"state,omitempty"`
+	Number     string `json:"number,omitempty"`
+	OriginalID string `json:"original_id,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	AttachedAt string `json:"attached_at,omitempty"`
+	ProductID  string `json:"product_id,omitempty"`
+	Size       int    `json:"size,omitempty"`
+	Port       int    `json:"port,omitempty"`
+	PlanID     int    `json:"plan_id,omitempty"`
 }
 
 // VolumeAction object
@@ -94,7 +94,7 @@ func (vs *VolumesService) List(ctx context.Context, filters map[string]string) (
 	if filters != nil {
 		var query []string
 		for filterName, filterVal := range filters {
-			query = append(query, fmt.Sprintf("%s=%s", filterName, filterVal))
+			query = append(query, fmt.Sprintf("q[within_%s_cont]=%s", filterName, filterVal))
 		}
 		params := strings.Join(query, "&")
 		path = fmt.Sprintf("%s?%s", path, params)
@@ -134,8 +134,8 @@ func (vs *VolumesService) Get(ctx context.Context, volumeID string) (*Volume, er
 
 // VolumeCreateRequest object
 type VolumeCreateRequest struct {
-	Name string                 `json:"name"`
-	Meta map[string]interface{} `json:"meta,omitempty"`
+	Name string `json:"name"`
+	Meta string `json:"meta,omitempty"`
 	// Deprecated: Please use PlanID instead.
 	ProductID string `json:"product_id,omitempty"`
 	// Deprecated: Please use PlanSlug instead.
@@ -168,8 +168,8 @@ func (vs *VolumesService) Create(ctx context.Context, createRequest *VolumeCreat
 
 // VolumeUpdateRequest represents a request to update a volume.
 type VolumeUpdateRequest struct {
-	Meta map[string]interface{} `json:"meta,omitempty"`
-	Name string                 `json:"name,omitempty"`
+	Meta map[string]string `json:"meta,omitempty"`
+	Name string            `json:"name,omitempty"`
 }
 
 // Update volume
