@@ -56,14 +56,7 @@ const volumeResponse = `{
 		],
 		"replication_level": 2
 	},
-	"meta": {
-		"kubernetes": {
-			"cluster": {
-				"id": "193e10b3-25ce-4488-9c5a-840b6a22abd6",
-				"number": "KUB1000001"
-			}
-		}
-	}
+	"meta": "{\"kubernetes\":{\"cluster\":{\"id\":\"193e10b3-25ce-4488-9c5a-840b6a22abd6\",\"number\":\"KUB1000001\"}}}"
 }`
 
 var (
@@ -84,7 +77,8 @@ func TestVolumes_List(t *testing.T) {
 
 	ctx := context.Background()
 	filters := map[string]string{
-		"meta": "{\"kubernetes\":{\"cluster\":{\"id\":\"service-id\"}}}",
+		"meta": "kubernetes-cluster-id",
+		"id":   "e88cb60e-828f-416f-8ab0-e05ab4493b1a",
 	}
 
 	volumes, meta, err := api.Volumes.List(ctx, filters)
@@ -138,6 +132,7 @@ func TestVolumes_Get(t *testing.T) {
 }
 
 func TestVolumes_Update(t *testing.T) {
+	var responseMeta map[string]interface{}
 	fakeResponse := &fakeServerResponse{responseBody: volumeGetResponse}
 	server := newFakeServer("/api/v1/volumes/e88cb60e-828f-416f-8ab0-e05ab4493b1a", fakeResponse)
 
@@ -157,17 +152,23 @@ func TestVolumes_Update(t *testing.T) {
 
 	request := &VolumeUpdateRequest{
 		Name: "New Name",
-		Meta: map[string]interface{}{
+		Meta: map[string]string{
 			"id":     "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
 			"number": "KUB1000002",
 		},
+	}
+
+	err := json.Unmarshal([]byte(expectedResult.Volume.Meta), &responseMeta)
+
+	if err != nil {
+		t.Errorf("Unexpected unmarshal error: %v", err)
 	}
 
 	volume, err := api.Volumes.Update(ctx, "e88cb60e-828f-416f-8ab0-e05ab4493b1a", request)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" || volume.Meta["kubernetes"].(map[string]interface{})["cluster"].(map[string]interface{})["id"] != "193e10b3-25ce-4488-9c5a-840b6a22abd6" {
+	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" || responseMeta["kubernetes"].(map[string]interface{})["cluster"].(map[string]interface{})["id"] != "193e10b3-25ce-4488-9c5a-840b6a22abd6" {
 		t.Errorf("Invalid response: %v", volume)
 	}
 
@@ -422,20 +423,26 @@ func TestVolumes_CreateWithSlug(t *testing.T) {
 }
 
 func TestVolumes_CreateWithPlanID(t *testing.T) {
+	meta, err := json.Marshal(map[string]interface{}{
+		"kubernetes": map[string]interface{}{
+			"cluster": map[string]interface{}{
+				"id":     "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
+				"number": "KUB1000002",
+			},
+		},
+	})
+
+	if err != nil {
+		t.Errorf("Unexpected error %s", err)
+	}
+
 	request := &VolumeCreateRequest{
 		Name:       "test-name",
 		Size:       50,
 		PlanID:     123,
 		FileSystem: "ext4",
 		InstanceID: "test_instance_id",
-		Meta: map[string]interface{}{
-			"kubernetes": map[string]interface{}{
-				"cluster": map[string]interface{}{
-					"id":     "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
-					"number": "KUB1000002",
-				},
-			},
-		},
+		Meta:       string(meta),
 	}
 
 	fakeResponse := &fakeServerResponse{
