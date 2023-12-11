@@ -79,7 +79,7 @@ func TestVolumes_List(t *testing.T) {
 	options := &ListOptions{
 		Filters: []FilterInterface{
 			&ContFilter{
-				Keys:  []string{"meta"},
+				Keys:  []string{"within_meta"},
 				Value: "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
 			},
 		},
