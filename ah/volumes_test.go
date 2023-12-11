@@ -76,12 +76,19 @@ func TestVolumes_List(t *testing.T) {
 	api, _ := NewAPIClient(fakeClientOptions)
 
 	ctx := context.Background()
-	filters := map[string]string{
-		"meta": "kubernetes-cluster-id",
-		"id":   "e88cb60e-828f-416f-8ab0-e05ab4493b1a",
+	options := &ListOptions{
+		Filters: []FilterInterface{
+			&ContFilter{
+				Keys:  []string{"meta"},
+				Value: "a0dd9450-d8a4-45f8-bbb6-4525604d6c84",
+			},
+		},
+		Meta: &ListMetaOptions{
+			Page: 1,
+		},
 	}
 
-	volumes, meta, err := api.Volumes.List(ctx, filters)
+	volumes, meta, err := api.Volumes.List(ctx, options)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
