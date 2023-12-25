@@ -220,8 +220,10 @@ type loadBalancerRoot struct {
 
 // Create a load balancer
 func (lb *LoadBalancersService) Create(ctx context.Context, createRequest *LoadBalancerCreateRequest) (*LoadBalancer, error) {
-
-	req, err := lb.client.newRequest(http.MethodPost, "api/v1/load_balancers", createRequest)
+	type request struct {
+		LoadBalancer *LoadBalancerCreateRequest `json:"load_balancer"`
+	}
+	req, err := lb.client.newRequest(http.MethodPost, "api/v1/load_balancers", &request{createRequest})
 	if err != nil {
 		return nil, err
 	}
@@ -242,9 +244,12 @@ type LoadBalancerUpdateRequest struct {
 }
 
 // Update load balancer
-func (lb *LoadBalancersService) Update(ctx context.Context, lbID string, request *LoadBalancerUpdateRequest) error {
+func (lb *LoadBalancersService) Update(ctx context.Context, lbID string, updateRequest *LoadBalancerUpdateRequest) error {
+	type request struct {
+		LoadBalancer *LoadBalancerUpdateRequest `json:"load_balancer"`
+	}
 	path := fmt.Sprintf("api/v1/load_balancers/%s", lbID)
-	req, err := lb.client.newRequest(http.MethodPatch, path, request)
+	req, err := lb.client.newRequest(http.MethodPatch, path, &request{updateRequest})
 
 	if err != nil {
 		return err
