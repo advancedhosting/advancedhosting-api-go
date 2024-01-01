@@ -58,6 +58,7 @@ type KubernetesClustersAPI interface {
 	CreateWorkerPool(context.Context, string, *CreateKubernetesWorkerPoolRequest) (*KubernetesWorkerPool, error)
 	UpdateWorkerPool(context.Context, string, string, *UpdateKubernetesWorkerPoolRequest) error
 	DeleteWorkerPool(context.Context, string, string, bool) error
+	DeleteWorker(context.Context, string, string, string, *ClusterDeleteNodeRequest) error
 }
 
 // KubernetesClustersService implements ClustersAPI interface.
