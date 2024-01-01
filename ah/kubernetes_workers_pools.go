@@ -26,18 +26,18 @@ type PrivateProperties struct {
 
 // KubernetesWorkerPool object
 type KubernetesWorkerPool struct {
-	Labels            Labels              `json:"labels,omitempty"`
-	ID                string              `json:"id,omitempty"`
-	Name              string              `json:"name,omitempty"`
-	Type              string              `json:"type"`
-	CreatedAt         string              `json:"created_at,omitempty"`
-	Workers           []KubernetesWorkers `json:"workers,omitempty"`
-	PrivateProperties PrivateProperties   `json:"private_properties,omitempty"`
-	PublicProperties  PublicProperties    `json:"public_properties,omitempty"`
-	Count             int                 `json:"count,omitempty"`
-	AutoScale         bool                `json:"autoscale,omitempty"`
-	MinCount          int                 `json:"min_count,omitempty"`
-	MaxCount          int                 `json:"max_count,omitempty"`
+	Labels            Labels             `json:"labels,omitempty"`
+	ID                string             `json:"id,omitempty"`
+	Name              string             `json:"name,omitempty"`
+	Type              string             `json:"type"`
+	CreatedAt         string             `json:"created_at,omitempty"`
+	Workers           []KubernetesWorker `json:"workers,omitempty"`
+	PrivateProperties PrivateProperties  `json:"private_properties,omitempty"`
+	PublicProperties  PublicProperties   `json:"public_properties,omitempty"`
+	Count             int                `json:"count,omitempty"`
+	AutoScale         bool               `json:"autoscale,omitempty"`
+	MinCount          int                `json:"min_count,omitempty"`
+	MaxCount          int                `json:"max_count,omitempty"`
 }
 
 type KubernetesWorkerPoolRoot struct {
