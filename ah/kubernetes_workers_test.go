@@ -14,7 +14,7 @@ func TestWorkerDelete(t *testing.T) {
 
 	ctx := context.Background()
 
-	req := &ClusterDeleteNodeRequest{
+	req := &ClusterDeleteWorkerRequest{
 		Replace: false,
 	}
 
