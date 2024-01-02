@@ -19,12 +19,12 @@ type KubernetesWorker struct {
 	CloudServerID    string            `json:"cloud_server_id,omitempty"`
 }
 
-type ClusterDeleteNodeRequest struct {
+type ClusterDeleteWorkerRequest struct {
 	Replace bool `json:"replace,omitempty"`
 }
 
 // DeleteWorker deletes worker pool
-func (kcs *KubernetesClustersService) DeleteWorker(ctx context.Context, clusterID, workerPoolID, workerID string, request *ClusterDeleteNodeRequest) error {
+func (kcs *KubernetesClustersService) DeleteWorker(ctx context.Context, clusterID, workerPoolID, workerID string, request *ClusterDeleteWorkerRequest) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools/%s/workers/%s", clusterID, workerPoolID, workerID)
 	req, err := kcs.client.newRequest(http.MethodDelete, path, nil)
 	if err != nil {
