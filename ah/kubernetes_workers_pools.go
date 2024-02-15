@@ -119,7 +119,7 @@ func (kcs *KubernetesClustersService) CreateWorkerPool(ctx context.Context, clus
 // UpdateWorkerPool updates worker pool
 func (kcs *KubernetesClustersService) UpdateWorkerPool(ctx context.Context, clusterId, workerPoolId string, request *UpdateKubernetesWorkerPoolRequest) error {
 	path := fmt.Sprintf("api/v2/kubernetes/clusters/%s/worker_pools/%s", clusterId, workerPoolId)
-	req, err := kcs.client.newRequest(http.MethodPut, path, request)
+	req, err := kcs.client.newRequest(http.MethodPatch, path, request)
 	if err != nil {
 		return err
 	}
