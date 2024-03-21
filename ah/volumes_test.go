@@ -56,14 +56,7 @@ const volumeResponse = `{
 		],
 		"replication_level": 2
 	},
-	"meta": {
-		"kubernetes": {
-			"cluster": {
-				"id": "193e10b3-25ce-4488-9c5a-840b6a22abd6",
-				"number": "KUB1000001"
-			}
-		}
-	}
+	"meta": "{\"kubernetes\":{\"cluster\":{\"id\":\"193e10b3-25ce-4488-9c5a-840b6a22abd6\",\"number\":\"KUB1000001\"}}}"
 }`
 
 var (
@@ -175,7 +168,33 @@ func TestVolumes_Update(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" || volume.Meta["kubernetes"].(map[string]interface{})["cluster"].(map[string]interface{})["id"] != "193e10b3-25ce-4488-9c5a-840b6a22abd6" {
+
+	var metaString string
+	if err := json.Unmarshal(volume.Meta, &metaString); err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	var metaMap map[string]interface{}
+	if err := json.Unmarshal([]byte(metaString), &metaMap); err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	kubernetes, ok := metaMap["kubernetes"].(map[string]interface{})
+	if !ok {
+		t.Errorf("Unexpected error: %v", err)
+		return
+	}
+	cluster, ok := kubernetes["cluster"].(map[string]interface{})
+	if !ok {
+		t.Errorf("Unexpected error: %v", err)
+		return
+	}
+	id, ok := cluster["id"].(string)
+	if !ok {
+		t.Errorf("Unexpected error: %v", err)
+		return
+	}
+
+	if volume == nil || volume.ID != "e88cb60e-828f-416f-8ab0-e05ab4493b1a" || id != "193e10b3-25ce-4488-9c5a-840b6a22abd6" {
 		t.Errorf("Invalid response: %v", volume)
 	}
 
