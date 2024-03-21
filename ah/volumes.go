@@ -33,19 +33,19 @@ type Volume struct {
 		DatacenterIDs    []string `json:"datacenter_ids,omitempty"`
 		ReplicationLevel int      `json:"replication_level,omitempty"`
 	} `json:"volume_pool,omitempty"`
-	ID         string `json:"id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	Meta       string `json:"meta,omitempty"`
-	FileSystem string `json:"file_system,omitempty"`
-	State      string `json:"state,omitempty"`
-	Number     string `json:"number,omitempty"`
-	OriginalID string `json:"original_id,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
-	AttachedAt string `json:"attached_at,omitempty"`
-	ProductID  string `json:"product_id,omitempty"`
-	Size       int    `json:"size,omitempty"`
-	Port       int    `json:"port,omitempty"`
-	PlanID     int    `json:"plan_id,omitempty"`
+	ID         string                 `json:"id,omitempty"`
+	Name       string                 `json:"name,omitempty"`
+	Meta       map[string]interface{} `json:"meta,omitempty"`
+	FileSystem string                 `json:"file_system,omitempty"`
+	State      string                 `json:"state,omitempty"`
+	Number     string                 `json:"number,omitempty"`
+	OriginalID string                 `json:"original_id,omitempty"`
+	CreatedAt  string                 `json:"created_at,omitempty"`
+	AttachedAt string                 `json:"attached_at,omitempty"`
+	ProductID  string                 `json:"product_id,omitempty"`
+	Size       int                    `json:"size,omitempty"`
+	Port       int                    `json:"port,omitempty"`
+	PlanID     int                    `json:"plan_id,omitempty"`
 }
 
 // VolumeAction object
