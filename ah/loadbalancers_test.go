@@ -85,6 +85,10 @@ const loadBalancerResponse = `{
 	"datacenter_id": "5839cebe-c7a5-4a27-8253-7bd619ca430d",
 	"state": "defined",
 	"balancing_algorithm": "round_robin",
+	"ha_on": true,
+	"instance_count": 1,
+	"cu_count": 1,
+	"cu_max": 1,
 	"ip_addresses": [{
 		"wcs_ip_address_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
 		"type": "string",
@@ -210,7 +214,11 @@ func TestLoadBalancers_Create(t *testing.T) {
 		DatacenterID:          "test_dc_id",
 		CreatePublicIPAddress: true,
 		BalancingAlgorithm:    "round_robin",
-		ProxyProtocol:         "proxy_protocol",
+		ProxyProtocol:         "v2",
+		HAOn:                  true,
+		InstanceCount:         1,
+		CUCount:               1,
+		CUMax:                 1,
 		IPAddressIDs:          []string{"ip_address_id1", "ip_address_id2"},
 		PrivateNetworkIDs:     []string{"pn_id1", "pn_id2"},
 		ForwardingRules: []LBForwardingRuleCreateRequest{
@@ -285,6 +293,10 @@ func TestLoadBalancers_Update(t *testing.T) {
 		Name:               "test-name",
 		BalancingAlgorithm: "round_robin",
 		ProxyProtocol:      "v1",
+		HAOn:               false,
+		InstanceCount:      2,
+		CUCount:            2,
+		CUMax:              2,
 	}
 
 	fakeResponse := &fakeServerResponse{
