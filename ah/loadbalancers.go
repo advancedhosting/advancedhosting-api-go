@@ -37,6 +37,10 @@ type LoadBalancer struct {
 	ForwardingRules    []LBForwardingRule     `json:"forwarding_rules,omitempty"`
 	BackendNodes       []LBBackendNode        `json:"backend_nodes,omitempty"`
 	HealthCheck        LBHealthCheck          `json:"health_check,omitempty"`
+	CUCount            int                    `json:"cu_count,omitempty"`
+	CUMax              int                    `json:"cu_max,omitempty"`
+	InstanceCount      int                    `json:"instance_count,omitempty"`
+	HAOn               bool                   `json:"ha_on,omitempty"`
 }
 
 // LBIPAddress object
@@ -187,7 +191,11 @@ type LoadBalancerCreateRequest struct {
 	PrivateNetworkIDs     []string                        `json:"private_network_ids,omitempty"`
 	ForwardingRules       []LBForwardingRuleCreateRequest `json:"forwarding_rules,omitempty"`
 	BackendNodes          []LBBackendNodeCreateRequest    `json:"backend_nodes,omitempty"`
+	CUCount               int                             `json:"cu_count"`
+	CUMax                 int                             `json:"cu_max,omitempty"`
+	InstanceCount         int                             `json:"instance_count,omitempty"`
 	CreatePublicIPAddress bool                            `json:"create_public_ip_address"`
+	HAOn                  bool                            `json:"ha_on,omitempty"`
 }
 
 // LBForwardingRuleCreateRequest object
@@ -241,6 +249,10 @@ type LoadBalancerUpdateRequest struct {
 	Name               string `json:"name,omitempty"`
 	BalancingAlgorithm string `json:"balancing_algorithm,omitempty"`
 	ProxyProtocol      string `json:"proxy_protocol,omitempty"`
+	HAOn               bool   `json:"ha_on,omitempty"`
+	CUCount            int    `json:"cu_count,omitempty"`
+	CUMax              int    `json:"cu_max,omitempty"`
+	InstanceCount      int    `json:"instance_count,omitempty"`
 }
 
 // Update load balancer
