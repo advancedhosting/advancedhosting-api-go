@@ -25,6 +25,7 @@ import (
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 )
 
@@ -115,8 +116,11 @@ func (c *APIClient) list(ctx context.Context, path string, options *ListOptions,
 // Do sends an API request
 func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
 	req = req.WithContext(ctx)
-	resp, err := c.client.Do(req)
 
+	// Log the request details
+	c.logRequest(req)
+
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +147,27 @@ func (c *APIClient) Do(ctx context.Context, req *http.Request, v interface{}) (*
 		return nil, err
 	}
 	return resp, nil
+}
 
+func (c *APIClient) logRequest(req *http.Request) {
+	fmt.Printf("Raw Request: %+v\n", *req)
+
+	// Clone the request body
+	var bodyBytes []byte
+	if req.Body != nil {
+		bodyBytes, _ = io.ReadAll(req.Body)
+		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore the body for actual request
+	}
+
+	// Dump the request
+	dump, err := httputil.DumpRequestOut(req, true)
+	if err != nil {
+		fmt.Printf("Failed to dump request: %v\n", err)
+		return
+	}
+
+	// Log the request
+	fmt.Printf("Request: %s\n", string(dump))
 }
 
 // NewAPIClient returns APIClient instance
