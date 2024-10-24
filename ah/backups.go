@@ -24,17 +24,20 @@ import (
 
 // Backup object
 type Backup struct {
-	ID          string `json:"id,omitempty"`
-	InstanceID  string `json:"instance_id,omitempty"`
-	CreatedAt   string `json:"created_at,omitempty"`
-	UpdatedAt   string `json:"updated_at,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Status      string `json:"status,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Note        string `json:"note,omitempty"`
-	Public      bool   `json:"public,omitempty"`
-	Size        int    `json:"size,omitempty"`
-	MinDiskSize int    `json:"min_disk_size,omitempty"`
+	ID                         string `json:"id,omitempty"`
+	CreatedAt                  string `json:"created_at,omitempty"`
+	UpdatedAt                  string `json:"updated_at,omitempty"`
+	Name                       string `json:"name,omitempty"`
+	Status                     string `json:"status,omitempty"`
+	Type                       string `json:"type,omitempty"`
+	Note                       string `json:"note,omitempty"`
+	Public                     bool   `json:"public,omitempty"`
+	Size                       int    `json:"size,omitempty"`
+	MinDiskSize                int    `json:"min_disk_size,omitempty"`
+	InstanceID                 string `json:"instance_id,omitempty"`
+	InstanceName               string `json:"instance_name,omitempty"`
+	InstanceRemoved            bool   `json:"instance_removed,omitempty"`
+	InstanceSnapshotBySchedule bool   `json:"instance_snapshot_by_schedule,omitempty"`
 }
 
 // InstanceBackups object
