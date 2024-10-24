@@ -97,13 +97,17 @@ func (c *APIClient) list(ctx context.Context, path string, options *ListOptions,
 	if options != nil {
 		params := buildListQuery(options)
 		path = fmt.Sprintf("%s?%s", path, params)
+		fmt.Printf("path: %v\n", path)
+		fmt.Printf("params: %v\n", params)
 	}
 	req, err := c.newRequest(http.MethodGet, path, nil)
+	fmt.Printf("req: %v\n", req)
 	if err != nil {
 		return err
 	}
 
-	_, err = c.Do(ctx, req, v)
+	output, err := c.Do(ctx, req, v)
+	fmt.Printf("output: %v\n", output)
 
 	if err != nil {
 		return err
