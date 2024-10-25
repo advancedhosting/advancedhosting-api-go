@@ -159,7 +159,7 @@ func NewAPIClient(options *ClientOptions) (*APIClient, error) {
 		return nil, err
 	}
 	if options.Token == "" {
-		return nil, fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("%s", "invalid token")
 	}
 	var httpClient *http.Client
 	if options.HTTPClient != nil {
