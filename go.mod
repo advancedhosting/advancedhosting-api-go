@@ -10,7 +10,7 @@ require (
 require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	golang.org/x/net v0.22.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 )
