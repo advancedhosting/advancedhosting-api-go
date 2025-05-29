@@ -21,14 +21,18 @@ import (
 )
 
 type InstancePlanAttributes struct {
-	RAM              string `json:"ram,omitempty"`
-	Disk             string `json:"disk,omitempty"`
 	Slug             string `json:"slug,omitempty"`
-	Vcpu             string `json:"vcpu,omitempty"`
-	Traffic          string `json:"traffic,omitempty"`
 	WebsaProductId   string `json:"websaProductId,omitempty"`
+	Optimized        string `json:"optimized,omitempty"`
 	Hot              bool   `json:"hot,omitempty"`
 	AvailableOnTrial bool   `json:"available_on_trial,omitempty"`
+	DedicatedCpu     bool   `json:"dedicated_cpu,omitempty"`
+	ForkOnPurchase   bool   `json:"fork_on_purchase,omitempty"`
+	Default          bool   `json:"default,omitempty"`
+	RAM              int    `json:"ram,omitempty"`
+	Disk             int    `json:"disk,omitempty"`
+	Vcpu             int    `json:"vcpu,omitempty"`
+	Traffic          int    `json:"traffic,omitempty"`
 }
 
 type InstancePlan struct {

@@ -31,35 +31,43 @@ const instancePlanResponse = `{
 	"name": "512 - low price",
 	"data": [],
 	"custom_attributes": {
-		"hot": false,
-		"ram": "1024",
-		"disk": "100",
-		"slug": "vps512_low",
-		"vcpu": "1",
-		"traffic": "1",
-		"websaProductId": "643c6170-7c67-425c-8c37-45da658d2065",
-		"available_on_trial": false
+        "hot": false,
+        "ram": 2048,
+        "disk": 30,
+        "slug": "dc-1-2",
+        "vcpu": 1,
+        "default": false,
+        "traffic": 4000,
+        "position": 100,
+        "optimized": "cpu",
+        "dedicated_cpu": true,
+        "fork_on_purchase": false,
+        "available_on_trial": false
 	},
 	"prices": {
-		"380171664": {
-			"id": 380171664,
-			"plan_id": 380171663,
+		"391445307": {
+			"id": 391445307,
+			"plan_id": 391445272,
 			"type": "monthly,vps",
 			"unit": "items",
 			"currency": "usd",
 			"quantity": "0",
-			"price": "0.04",
-			"object_id": null
+			"price": "21.00",
+			"object_id": null,
+			"class": "SinglePrice",
+			"formula": "cap.monthly(\u002728 days\u0027)"
 		},
-		"380171665": {
-			"id": 380171665,
-			"plan_id": 380171663,
+		"391445308": {
+			"id": 391445308,
+			"plan_id": 391445272,
 			"type": "feature,autobackup",
 			"unit": "items",
 			"currency": "usd",
 			"quantity": "0",
-			"price": "0.00",
-			"object_id": null
+			"price": "2.10",
+			"object_id": null,
+			"class": "SinglePrice",
+			"formula": "cap.monthly(\u002728 days\u0027)"
 		}
 	}
 }`
