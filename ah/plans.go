@@ -23,6 +23,9 @@ type PlanPrice struct {
 	Currency string `json:"currency,omitempty"`
 	Quantity string `json:"quantity,omitempty"`
 	Price    string `json:"price,omitempty"`
+	ObjectID string `json:"object_id,omitempty"`
+	Class    string `json:"class,omitempty"`
+	Formula  string `json:"formula,omitempty"`
 	ID       int    `json:"id,omitempty"`
 	PlanID   int    `json:"plan_id,omitempty"`
 }
