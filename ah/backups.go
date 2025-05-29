@@ -62,22 +62,59 @@ type BackupsService struct {
 	client *APIClient
 }
 
-type instancesBackupsRoot struct {
-	InstancesBackups []InstanceBackups `json:"instances_backups"`
+type BackupListRoot struct {
+	Backups []BackupWithEmbeddedInstance `json:"backups"`
+}
+
+type InstanceInfo struct {
+	Name                   string `json:"name"`
+	SnapshotBySchedule     bool   `json:"snapshot_by_schedule"`
+	InstancePrivateCluster bool   `json:"instance_private_cluster"`
+	InstanceRemoved        bool   `json:"instance_removed"`
+}
+
+type BackupWithEmbeddedInstance struct {
+	Instance InstanceInfo `json:"instance"`
+	Backup
 }
 
 // List returns all available private networks
 func (bs *BackupsService) List(ctx context.Context, options *ListOptions) ([]InstanceBackups, error) {
 	path := "api/v1/backups"
 
-	var ibRoot instancesBackupsRoot
+	var bRoot BackupListRoot
 
-	if err := bs.client.list(ctx, path, options, &ibRoot); err != nil {
+	if err := bs.client.list(ctx, path, options, &bRoot); err != nil {
 		return nil, err
 	}
 
-	return ibRoot.InstancesBackups, nil
+	// Group backups by instance ID
+	grouped := map[string]*InstanceBackups{}
 
+	for _, b := range bRoot.Backups {
+		instID := b.InstanceID
+
+		if _, exists := grouped[instID]; !exists {
+			grouped[instID] = &InstanceBackups{
+				InstanceID:                 instID,
+				InstanceName:               b.Instance.Name,
+				InstanceRemoved:            b.Instance.InstanceRemoved,
+				InstanceSnapshotBySchedule: b.Instance.SnapshotBySchedule,
+				Backups:                    []Backup{},
+			}
+		}
+
+		// Include the backup (without embedded instance)
+		grouped[instID].Backups = append(grouped[instID].Backups, b.Backup)
+	}
+
+	// Convert map to slice
+	var result []InstanceBackups
+	for _, ib := range grouped {
+		result = append(result, *ib)
+	}
+
+	return result, nil
 }
 
 type backupRoot struct {
