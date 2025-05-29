@@ -38,11 +38,7 @@ const backupResponse = `{
 	"min_disk_size": 40000000000
 }`
 
-const instancesBackupsResponse = `{
-	"instance_id": "61463ad8-f5a2-493a-80a0-7b0059ccaafb",
-	"instance_name": "kube-adm",
-	"instance_removed": false,
-	"instance_snapshot_by_schedule": false,
+const flatBackupsResponse = `{
 	"backups": [
 		{
 			"id": "437696c6-6b56-466d-92b2-6f5231124fbb",
@@ -55,7 +51,13 @@ const instancesBackupsResponse = `{
 			"status": "active",
 			"type": "backup",
 			"note": "Init 03.07.2020 at 11:33",
-			"min_disk_size": 40000000000
+			"min_disk_size": 40000000000,
+			"instance": {
+				"name": "kube-adm",
+				"snapshot_by_schedule": false,
+				"instance_private_cluster": false,
+				"instance_removed": false
+			}
 		}
 	]
 }`
@@ -65,7 +67,7 @@ var (
 )
 
 func TestBackups_List(t *testing.T) {
-	fakeResponse := &fakeServerResponse{responseBody: instancesBackupsResponse}
+	fakeResponse := &fakeServerResponse{responseBody: flatBackupsResponse}
 	server := newFakeServer("/api/v1/backups", fakeResponse)
 
 	fakeClientOptions := &ClientOptions{
@@ -81,12 +83,32 @@ func TestBackups_List(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
-	var expectedResult instancesBackupsRoot
-	if err = json.Unmarshal([]byte(instancesBackupsResponse), &expectedResult); err != nil {
-		t.Errorf("Unexpected unmarshal error: %v", err)
+	// expected reconstructed result matching grouped InstanceBackups
+	expectedResult := []InstanceBackups{
+		{
+			InstanceID:                 "61463ad8-f5a2-493a-80a0-7b0059ccaafb",
+			InstanceName:               "kube-adm",
+			InstanceRemoved:            false,
+			InstanceSnapshotBySchedule: false,
+			Backups: []Backup{
+				{
+					ID:          "437696c6-6b56-466d-92b2-6f5231124fbb",
+					InstanceID:  "61463ad8-f5a2-493a-80a0-7b0059ccaafb",
+					CreatedAt:   "2020-07-03T08:33:27.127Z",
+					UpdatedAt:   "2020-07-03T08:34:29.148Z",
+					Name:        "WVDS113828_2020-07-03T083327",
+					Size:        1759379456,
+					Public:      false,
+					Status:      "active",
+					Type:        "backup",
+					Note:        "Init 03.07.2020 at 11:33",
+					MinDiskSize: 40000000000,
+				},
+			},
+		},
 	}
 
-	if !reflect.DeepEqual(expectedResult.InstancesBackups, backups) {
+	if !reflect.DeepEqual(expectedResult, backups) {
 		t.Errorf("unexpected result, expected %v. got: %v", expectedResult, backups)
 	}
 }

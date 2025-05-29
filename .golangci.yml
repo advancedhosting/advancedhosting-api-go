@@ -1,8 +1,5 @@
-run:
-  concurrency: 4
-
 linters:
-  enable: 
+  enable:
     - gofmt
 
 linters-settings:
@@ -10,3 +7,6 @@ linters-settings:
     enable:
       - fieldalignment
     enable-all: false
+
+run:
+  concurrency: 4
